@@ -113,7 +113,8 @@ jobs:
     - name: Setup SSH key
       run: |
         mkdir -p ~/.ssh
-        echo "${{ secrets.SERVER_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        # Write the SSH key with proper formatting
+        echo "${{ secrets.SERVER_SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
         # Verify the key was written correctly
@@ -122,7 +123,9 @@ jobs:
           exit 1
         fi
         echo "SSH key file created successfully"
+        echo "Key content (first 3 lines):"
         head -3 ~/.ssh/id_rsa
+        echo "Key length: $(wc -c < ~/.ssh/id_rsa) bytes"
 
     - name: Deploy to Ubuntu server
       env:
