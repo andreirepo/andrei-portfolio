@@ -16,7 +16,7 @@ NC='\033[0m' # No Color
 SERVICE_NAME="andrei-portfolio"
 CONTAINER_NAME="portfolio"
 IMAGE_TAG="latest"
-AWS_REGION="us-east-1" # Change to your preferred  region
+AWS_REGION="us-east-1" # Change to your preferred region
 
 echo -e "${BLUE}🚀 Andrei Repo Portfolio - AWS Lightsail Deployment${NC}"
 echo -e "${BLUE}======================================================${NC}"
