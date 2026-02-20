@@ -113,30 +113,45 @@ jobs:
     - name: Setup SSH key
       run: |
         mkdir -p ~/.ssh
+        echo "🔍 Debugging SSH key setup..."
+        
+        # Check if the secret exists and has content
+        if [ -z "${{ secrets.SERVER_SSH_PRIVATE_KEY }}" ]; then
+          echo "❌ ERROR: SERVER_SSH_PRIVATE_KEY secret is empty or not set"
+          exit 1
+        fi
+        
+        echo "✅ SERVER_SSH_PRIVATE_KEY secret exists"
+        echo "Secret length: ${#SERVER_SSH_PRIVATE_KEY} characters"
+        
         # Write the SSH key with proper formatting
         echo "${{ secrets.SERVER_SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+        
         # Verify the key was written correctly
         if [ ! -f ~/.ssh/id_rsa ] || [ ! -s ~/.ssh/id_rsa ]; then
-          echo "ERROR: SSH key file is empty or missing"
+          echo "❌ ERROR: SSH key file is empty or missing"
           exit 1
         fi
-        echo "SSH key file created successfully"
+        
+        echo "✅ SSH key file created successfully"
+        echo "Key file size: $(wc -c < ~/.ssh/id_rsa) bytes"
         echo "Key content (first 3 lines):"
         head -3 ~/.ssh/id_rsa
-        echo "Key length: $(wc -c < ~/.ssh/id_rsa) bytes"
         
-        # Test if the key is valid (try both formats)
+        # Test if the key is valid
         if ssh-keygen -y -f ~/.ssh/id_rsa > /dev/null 2>&1; then
           echo "✅ SSH key is valid"
         else
           echo "❌ SSH key format is invalid"
           echo "Expected format: -----BEGIN OPENSSH PRIVATE KEY-----"
           echo "Your key format: $(head -1 ~/.ssh/id_rsa)"
-          echo "Please ensure your SSH key is properly formatted with line breaks"
           exit 1
         fi
+        
+        # Add known hosts
+        ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+        echo "✅ SSH key setup completed successfully"
 
     - name: Deploy to Ubuntu server
       env:
