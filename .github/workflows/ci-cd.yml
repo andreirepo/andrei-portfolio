@@ -110,10 +110,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Install SSH key
-      uses: webfactory/ssh-agent@v0.8.0
-      with:
-        ssh-private-key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
+    - name: Setup SSH key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SERVER_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
 
     - name: Deploy to Ubuntu server
       env:
