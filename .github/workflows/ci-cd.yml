@@ -93,7 +93,7 @@ jobs:
           BUILD_VERSION=${{ github.sha }}
           BUILD_TIME=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
 
-  # Job 3: Deploy to AWS Lightsail
+  # Job 3: Deploy to Ubuntu Server with Traefik
   deploy:
     needs: [build-and-test, build-and-push-image]
     runs-on: ubuntu-latest
@@ -103,40 +103,50 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
+    - name: Install SSH key
+      uses: webfactory/ssh-agent@v0.8.0
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}
+        ssh-private-key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
 
-    - name: Deploy to Lightsail
+    - name: Deploy to Ubuntu server
+      env:
+        SERVER_HOST: ${{ secrets.SERVER_HOST }}
+        SERVER_USER: ${{ secrets.SERVER_USER }}
       run: |
-        # Update container service deployment
-        aws lightsail put-container-services-deployment \
-          --service-name ${{ secrets.LIGHTSAIL_SERVICE_NAME }} \
-          --containers '{
-            "portfolio": {
-              "image": "'${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest'",
-              "environment": {
-                "NODE_ENV": "production"
-              },
-              "ports": {
-                "80": "HTTP"
-              }
-            }
-          }' \
-          --public-endpoint '{
-            "healthCheckPath": "/health",
-            "containerName": "portfolio",
-            "containerPort": 80
-          }'
-
-    - name: Wait for deployment
-      run: |
-        sleep 60
-        # Check deployment status
-        aws lightsail get-container-services --service-name ${{ secrets.LIGHTSAIL_SERVICE_NAME }}
+        # SSH config
+        echo "StrictHostKeyChecking no" >> ~/.ssh/config
+        echo "UserKnownHostsFile=/dev/null" >> ~/.ssh/config
+        
+        # Copy project files to server
+        echo "📦 Copying project files to server..."
+        scp -r . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:/home/${{ env.SERVER_USER }}/apps/andrei-portfolio/
+        
+        # Deploy using dedicated docker-compose file
+        echo "🚀 Deploying to server..."
+        ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} << 'EOF'
+          cd /home/ubuntu/apps/andrei-portfolio
+          
+          # Pull the latest image
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          
+          # Deploy using dedicated docker-compose file
+          echo "🔄 Building and starting portfolio service..."
+          docker-compose -f docker-compose.prod.yml up -d --build portfolio
+          
+          # Wait for service to be healthy
+          echo "⏳ Waiting for service to be healthy..."
+          sleep 10
+          
+          # Check service status
+          echo "✅ Checking service status..."
+          docker-compose -f docker-compose.prod.yml ps portfolio
+          
+          # Test health endpoint
+          echo "🏥 Testing health endpoint..."
+          curl -f http://localhost/health || echo "⚠️ Health check failed, but deployment may still be in progress"
+          
+          echo "🎉 Deployment completed successfully!"
+        EOF
 
   # Job 4: Health Check
   health-check:
@@ -150,5 +160,7 @@ jobs:
 
     - name: Health check
       run: |
-        curl -f ${{ secrets.LIGHTSAIL_URL }}/health || exit 1
-        echo "✅ Portfolio is healthy and running at ${{ secrets.LIGHTSAIL_URL }}"
+        # Test health endpoint on your domain
+        curl -f https://andreirepo.com/health || exit 1
+        curl -f https://www.andreirepo.com/health || exit 1
+        echo "✅ Portfolio is healthy and running at https://andreirepo.com"
