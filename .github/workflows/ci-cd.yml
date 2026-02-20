@@ -148,8 +148,14 @@ jobs:
           exit 1
         fi
         
-        # Add known hosts
-        ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+        # Add known hosts (with error handling)
+        echo "📡 Adding known hosts..."
+        if ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts 2>/dev/null; then
+          echo "✅ Known hosts added successfully"
+        else
+          echo "⚠️ Failed to add known hosts, but continuing..."
+        fi
+        
         echo "✅ SSH key setup completed successfully"
 
     - name: Deploy to Ubuntu server
