@@ -42,7 +42,7 @@ jobs:
       run: pnpm build
 
     - name: Run type checking
-      run: pnpm check
+      run: pnpm check-sync
 
     - name: Validate i18n translations
       run: pnpm check-sync
