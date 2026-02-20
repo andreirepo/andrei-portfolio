@@ -122,7 +122,6 @@ jobs:
         fi
         
         echo "✅ SERVER_SSH_PRIVATE_KEY secret exists"
-        echo "Secret length: ${#SERVER_SSH_PRIVATE_KEY} characters"
         
         # Write the SSH key with proper formatting
         echo "${{ secrets.SERVER_SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
