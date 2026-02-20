@@ -126,6 +126,16 @@ jobs:
         echo "Key content (first 3 lines):"
         head -3 ~/.ssh/id_rsa
         echo "Key length: $(wc -c < ~/.ssh/id_rsa) bytes"
+        
+        # Test if the key is valid
+        if ssh-keygen -y -f ~/.ssh/id_rsa > /dev/null 2>&1; then
+          echo "✅ SSH key is valid"
+        else
+          echo "❌ SSH key format is invalid"
+          echo "Expected format: -----BEGIN OPENSSH PRIVATE KEY-----"
+          echo "Your key format: $(head -1 ~/.ssh/id_rsa)"
+          exit 1
+        fi
 
     - name: Deploy to Ubuntu server
       env:
