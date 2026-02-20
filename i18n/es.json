@@ -1,0 +1,98 @@
+{
+  "description": "Ingeniero QA Senior especializado en iGaming altamente regulado, con experiencia en automatización de pruebas, tecnologías en la nube y aseguramiento de calidad. Construyendo soluciones seguras y compatibles.",
+  "nav": {
+    "about": "sobre mí",
+    "projects": "proyectos",
+    "experience": "experiencia",
+    "contact": "contacto"
+  },
+  "hero": {
+    "title": "Ingeniero QA Senior",
+    "p1": "construyendo automatización de pruebas confiable para plataformas SaaS y de iGaming reguladas. Actualmente en Lottomart, donde introduje flujos de desarrollo asistidos por IA para ayudar a los equipos a escribir código de pruebas más limpio y consistente.",
+    "p2": "Anteriormente entregué herramientas de calidad en Sketch y Playtech. Me importan las pruebas estables, los pipelines seguros y hacer que la automatización sea fácil para todo el equipo.",
+    "p3": "Cuando no estoy probando, me encontrarás gestionando infraestructura en casa, construyendo aplicaciones full-stack o explorando tecnologías cloud y herramientas open source."
+  },
+  "projects": {
+    "title": "Proyectos",
+    "item_1": {
+      "name": "Plataforma de Gestión de Tareas",
+      "description": "Plataforma full-stack segura en AWS, containerizada con Docker y Traefik, usando GitHub Actions y Playwright para puertas de calidad automatizadas.",
+      "link": "https://github.com/andreirepo/todo-app"
+    }
+  },
+  "experience": {
+    "title": "Experiencia",
+    "item_1": {
+      "period": "2025 — Presente",
+      "role": "Ingeniero QA",
+      "company": "Lottomart",
+      "description": "Desarrollé y mantuve pruebas automatizadas de extremo a extremo usando WebdriverIO y Docker, integradas en CI/CD para una retroalimentación más rápida y pruebas de regresión más confiables."
+    },
+    "item_2": {
+      "period": "2021 — 2025",
+      "role": "Ingeniero QA",
+      "company": "Sketch",
+      "description": "Lideré el cambio de Cypress a Playwright para hacer las pruebas más estables y cubrir más flujos de usuario, mientras ayudaba a los equipos a adoptar el nuevo framework."
+    },
+    "item_3": {
+      "period": "2018 — 2021",
+      "role": "Ingeniero QA Automation",
+      "company": "Playtech",
+      "description": "Construí y mantuve pruebas end-to-end Cypress integradas con Jenkins para acelerar los lanzamientos y mejorar la calidad en servicios cloud."
+    }
+  },
+  "skills": {
+    "heading": "Habilidades",
+    "playwright": {
+      "title": "Playwright",
+      "category": "Automatización de Pruebas",
+      "description": "Flujos Web Estables",
+      "experience_years": "4",
+      "experience_label": "años de experiencia"
+    },
+    "cypress": {
+      "title": "Cypress",
+      "category": "Automatización de Pruebas",
+      "description": "Bucles de Retroalimentación",
+      "experience_years": "5",
+      "experience_label": "años de experiencia"
+    },
+    "webdriverio": {
+      "title": "WebdriverIO",
+      "category": "Automatización de Pruebas",
+      "description": "Control de Driver Flexible",
+      "experience_years": "1",
+      "experience_label": "año de experiencia"
+    },
+    "aws": {
+      "title": "AWS",
+      "category": "Cloud",
+      "description": "Diseño de Infraestructura Cloud",
+      "experience_years": "3",
+      "experience_label": "años de experiencia"
+    },
+    "github_actions": {
+      "title": "GitHub Actions",
+      "category": "CI/CD",
+      "description": "Orquestación de Pipelines CI/CD",
+      "experience_years": "3",
+      "experience_label": "años de experiencia"
+    },
+    "typescript": {
+      "title": "TypeScript",
+      "category": "Lenguaje",
+      "description": "Seguridad de Tipos Estricta",
+      "experience_years": "4",
+      "experience_label": "años de experiencia"
+    }
+  },
+  "contact": {
+    "status": "Abierto a nuevas oportunidades",
+    "email_label": "Email",
+    "email_url": "mailto:andrei.repo@gmail.com",
+    "github_label": "GitHub",
+    "github_url": "https://github.com/andreirepo",
+    "linkedin_label": "LinkedIn",
+    "linkedin_url": "https://linkedin.com/in/andreirepo"
+  }
+}

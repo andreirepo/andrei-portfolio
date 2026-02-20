@@ -1,0 +1,98 @@
+{
+  "description": "Senior QA Engineer specializing in highly regulated iGaming, with expertise in test automation, cloud technologies, and quality assurance. Building secure, compliant software solutions.",
+  "nav": {
+    "about": "about",
+    "projects": "projects",
+    "experience": "experience",
+    "contact": "contact"
+  },
+  "hero": {
+    "title": "Senior QA Engineer",
+    "p1": "building reliable test automation for SaaS and regulated iGaming platforms. Currently at Lottomart, where I introduced AI-augmented development workflows to help teams write cleaner, more consistent test code.",
+    "p2": "Previously shipped quality tooling at Sketch and Playtech. I care about stable tests, secure pipelines, and making automation easy for the whole team to use.",
+    "p3": "When not testing, you'll find me managing home infrastructure, building full-stack apps, or exploring cloud technologies and open source tools."
+  },
+  "projects": {
+    "title": "Projects",
+    "item_1": {
+      "name": "Task Management Platform",
+      "description": "Secure full-stack platform on AWS, containerized with Docker and Traefik, using GitHub Actions and Playwright for automated quality gates.",
+      "link": "https://github.com/andreirepo/todo-app"
+    }
+  },
+  "experience": {
+    "title": "Experience",
+    "item_1": {
+      "period": "2025 — Present",
+      "role": "QA Engineer",
+      "company": "Lottomart",
+      "description": "Built and maintained automated end-to-end tests using WebdriverIO and Docker, integrated into CI/CD for faster feedback and more reliable testing."
+    },
+    "item_2": {
+      "period": "2021 — 2025",
+      "role": "QA Engineer",
+      "company": "Sketch",
+      "description": "Led the switch from Cypress to Playwright to make tests more stable and cover more user workflows, while helping teams adopt the new framework."
+    },
+    "item_3": {
+      "period": "2018 — 2021",
+      "role": "QA Automation Engineer",
+      "company": "Playtech",
+      "description": "Built and maintained Cypress end-to-end tests integrated with Jenkins to speed up releases and improve quality across cloud services."
+    }
+  },
+  "skills": {
+    "heading": "Skills",
+    "playwright": {
+      "title": "Playwright",
+      "category": "Test Automation",
+      "description": "Stable Web Flows",
+      "experience_years": "4",
+      "experience_label": "years of experience"
+    },
+    "cypress": {
+      "title": "Cypress",
+      "category": "Test Automation",
+      "description": "Feedback Loops",
+      "experience_years": "5",
+      "experience_label": "years of experience"
+    },
+    "webdriverio": {
+      "title": "WebdriverIO",
+      "category": "Test Automation",
+      "description": "Flexible Driver Control",
+      "experience_years": "1",
+      "experience_label": "year of experience"
+    },
+    "aws": {
+      "title": "AWS",
+      "category": "Cloud",
+      "description": "Cloud Infrastructure Design",
+      "experience_years": "3",
+      "experience_label": "years of experience"
+    },
+    "github_actions": {
+      "title": "GitHub Actions",
+      "category": "CI/CD",
+      "description": "CI/CD Pipeline Orchestration",
+      "experience_years": "3",
+      "experience_label": "years of experience"
+    },
+    "typescript": {
+      "title": "TypeScript",
+      "category": "Language",
+      "description": "Strict Type Safety",
+      "experience_years": "4",
+      "experience_label": "years of experience"
+    }
+  },
+  "contact": {
+    "status": "Open to new opportunities",
+    "email_label": "Email",
+    "email_url": "mailto:andrei.repo@gmail.com",
+    "github_label": "GitHub",
+    "github_url": "https://github.com/andreirepo",
+    "linkedin_label": "LinkedIn",
+    "linkedin_url": "https://linkedin.com/in/andreirepo"
+  }
+}
