@@ -134,8 +134,7 @@ jobs:
           echo "❌ SSH key format is invalid"
           echo "Expected format: -----BEGIN OPENSSH PRIVATE KEY-----"
           echo "Your key format: $(head -1 ~/.ssh/id_rsa)"
-          echo "If using AWS Lightsail PEM file, convert it with:"
-          echo "ssh-keygen -p -N '' -m pem -f your-lightsail-key.pem -o -a 100"
+          echo "Please ensure your SSH key is properly formatted with line breaks"
           exit 1
         fi
 
