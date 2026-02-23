@@ -119,7 +119,8 @@ jobs:
         
         # Test network connectivity
         echo "🔍 Testing network connectivity..."
-        ping -c 2 ${{ secrets.SERVER_HOST }} || echo "⚠️ Ping failed"
+        echo "Server IP: ${{ secrets.SERVER_HOST }}"
+        ping -c 2 ${{ secrets.SERVER_HOST }} || echo "⚠️ Ping failed - Server not reachable from GitHub Actions"
         
         # Test DNS resolution
         echo "🔍 Testing DNS resolution..."
@@ -128,6 +129,18 @@ jobs:
         # Test port 22 connectivity
         echo "🔍 Testing port 22 connectivity..."
         nc -zv ${{ secrets.SERVER_HOST }} 22 || echo "⚠️ Port 22 not accessible"
+        
+        # Test if server is listening on port 22
+        echo "🔍 Testing if server is listening on port 22..."
+        timeout 10 bash -c "</dev/tcp/${{ secrets.SERVER_HOST }}/22" 2>/dev/null && echo "✅ Port 22 is open" || echo "❌ Port 22 is closed or blocked"
+        
+        # Check GitHub Actions network access
+        echo "🔍 Testing GitHub Actions network access..."
+        curl -I https://api.github.com || echo "⚠️ GitHub API not accessible"
+        
+        # Check if we can reach other external services
+        echo "🔍 Testing external connectivity..."
+        curl -I https://www.google.com || echo "⚠️ External services not accessible"
 
     - name: Setup SSH key
       run: |
