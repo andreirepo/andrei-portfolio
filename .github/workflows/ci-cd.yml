@@ -115,7 +115,19 @@ jobs:
         mkdir -p ~/.ssh
         echo "StrictHostKeyChecking no" >> ~/.ssh/config
         echo "LogLevel DEBUG" >> ~/.ssh/config
-        ssh -vT user@hostname # Test SSH connection
+        echo "ConnectTimeout 30" >> ~/.ssh/config
+        
+        # Test network connectivity
+        echo "🔍 Testing network connectivity..."
+        ping -c 2 ${{ secrets.SERVER_HOST }} || echo "⚠️ Ping failed"
+        
+        # Test DNS resolution
+        echo "🔍 Testing DNS resolution..."
+        nslookup ${{ secrets.SERVER_HOST }} || echo "⚠️ DNS lookup failed"
+        
+        # Test port 22 connectivity
+        echo "🔍 Testing port 22 connectivity..."
+        nc -zv ${{ secrets.SERVER_HOST }} 22 || echo "⚠️ Port 22 not accessible"
 
     - name: Setup SSH key
       run: |
@@ -170,20 +182,6 @@ jobs:
         SERVER_HOST: ${{ secrets.SERVER_HOST }}
         SERVER_USER: ${{ secrets.SERVER_USER }}
       run: |
-        # Check if server is reachable
-        ping -c 2 ${{ secrets.SERVER_HOST }}
-
-        # Test DNS resolution
-        nslookup ${{ secrets.SERVER_HOST }}
-        dig ${{ secrets.SERVER_HOST }}
-
-        # Test port 22 specifically
-        nc -zv ${{ secrets.SERVER_HOST }} 22
-        # or
-        telnet ${{ secrets.SERVER_HOST }} 22
-
-        # Check GitHub API access
-        curl -I https://api.github.com
         # SSH config with timeout
         echo "StrictHostKeyChecking accept-new" >> ~/.ssh/config
         echo "ConnectTimeout 30" >> ~/.ssh/config
