@@ -230,6 +230,10 @@ jobs:
         
         # Copy project files to server
         echo "📦 Copying project files to server..."
+        
+        # Create directory with proper permissions if it doesn't exist
+        ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} "sudo mkdir -p /home/${{ env.SERVER_USER }}/apps/andrei-portfolio && sudo chown ${{ env.SERVER_USER }}:${{ env.SERVER_USER }} /home/${{ env.SERVER_USER }}/apps/andrei-portfolio"
+        
         if ! scp -r . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:/home/${{ env.SERVER_USER }}/apps/andrei-portfolio/; then
           echo "❌ Failed to copy files to server"
           exit 1
