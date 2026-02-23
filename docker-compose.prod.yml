@@ -18,6 +18,12 @@ services:
       - "traefik.http.routers.portfolio.tls.certresolver=le"
       - "traefik.http.services.portfolio.loadbalancer.server.port=80"
 
+      # Health check endpoint router
+      - "traefik.http.routers.portfolio-health.rule=Host(`andreirepo.com`) && Path(`/health`)"
+      - "traefik.http.routers.portfolio-health.entrypoints=websecure"
+      - "traefik.http.routers.portfolio-health.service=portfolio"
+      - "traefik.http.routers.portfolio-health.tls.certresolver=le"
+
       # HTTPS router for www subdomain (redirect to root)
       - "traefik.http.routers.portfolio-www.rule=Host(`www.andreirepo.com`)"
       - "traefik.http.routers.portfolio-www.entrypoints=websecure"
@@ -32,6 +38,7 @@ services:
       # Middleware definitions
       - "traefik.http.middlewares.redirect-to-root.redirectregex.regex=^https://www.andreirepo.com/(.*)"
       - "traefik.http.middlewares.redirect-to-root.redirectregex.replacement=https://andreirepo.com/$1"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
 
 networks:
   traefik-net:
