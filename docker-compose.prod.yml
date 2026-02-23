@@ -42,4 +42,4 @@ services:
 
 networks:
   traefik-net:
-    external: true
+    driver: bridge
