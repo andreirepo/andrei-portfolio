@@ -110,6 +110,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Debug SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "StrictHostKeyChecking no" >> ~/.ssh/config
+        echo "LogLevel DEBUG" >> ~/.ssh/config
+        ssh -vT user@hostname # Test SSH connection
+
     - name: Setup SSH key
       run: |
         mkdir -p ~/.ssh
