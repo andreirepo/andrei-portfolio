@@ -231,10 +231,11 @@ jobs:
         # Copy project files to server
         echo "📦 Copying project files to server..."
         
-        # Create directory with proper permissions if it doesn't exist
-        ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} "sudo mkdir -p /home/${{ env.SERVER_USER }}/apps/andrei-portfolio && sudo chown ${{ env.SERVER_USER }}:${{ env.SERVER_USER }} /home/${{ env.SERVER_USER }}/apps/andrei-portfolio"
+        # Create directory with proper permissions and ensure it's writable
+        ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} "sudo mkdir -p /home/${{ env.SERVER_USER }}/apps/andrei-portfolio && sudo chown ${{ env.SERVER_USER }}:${{ env.SERVER_USER }} /home/${{ env.SERVER_USER }}/apps/andrei-portfolio && sudo chmod 755 /home/${{ env.SERVER_USER }}/apps/andrei-portfolio"
         
-        if ! scp -r . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:/home/${{ env.SERVER_USER }}/apps/andrei-portfolio/; then
+        # Use rsync instead of scp for better permission handling
+        if ! rsync -avz --delete -e "ssh" . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:/home/${{ env.SERVER_USER }}/apps/andrei-portfolio/; then
           echo "❌ Failed to copy files to server"
           exit 1
         fi
