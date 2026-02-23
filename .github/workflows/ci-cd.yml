@@ -164,8 +164,7 @@ jobs:
         SERVER_USER: ${{ secrets.SERVER_USER }}
       run: |
         # SSH config with timeout
-        echo "StrictHostKeyChecking no" >> ~/.ssh/config
-        echo "UserKnownHostsFile=/dev/null" >> ~/.ssh/config
+        echo "StrictHostKeyChecking accept-new" >> ~/.ssh/config
         echo "ConnectTimeout 30" >> ~/.ssh/config
         
         # Test SSH connection before copying files
@@ -189,7 +188,7 @@ jobs:
         
         # Deploy using dedicated docker-compose file
         echo "🚀 Deploying to server..."
-        ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} << 'EOF'
+        ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} << EOF
           cd /home/${{ env.SERVER_USER }}/apps/andrei-portfolio
           
           # Pull the latest image
