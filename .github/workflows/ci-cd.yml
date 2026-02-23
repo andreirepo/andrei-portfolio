@@ -163,18 +163,34 @@ jobs:
         SERVER_HOST: ${{ secrets.SERVER_HOST }}
         SERVER_USER: ${{ secrets.SERVER_USER }}
       run: |
-        # SSH config
+        # SSH config with timeout
         echo "StrictHostKeyChecking no" >> ~/.ssh/config
         echo "UserKnownHostsFile=/dev/null" >> ~/.ssh/config
+        echo "ConnectTimeout 30" >> ~/.ssh/config
+        
+        # Test SSH connection before copying files
+        echo "🔍 Testing SSH connection..."
+        if ! ssh -o ConnectTimeout=30 ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} "echo 'SSH connection successful'" 2>/dev/null; then
+          echo "❌ SSH connection failed. Please check:"
+          echo "  - Server is reachable"
+          echo "  - SSH is enabled and listening on port 22"
+          echo "  - Firewall allows connections from GitHub Actions"
+          echo "  - SERVER_HOST and SERVER_USER secrets are correct"
+          exit 1
+        fi
+        echo "✅ SSH connection successful"
         
         # Copy project files to server
         echo "📦 Copying project files to server..."
-        scp -r . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:/home/${{ env.SERVER_USER }}/apps/andrei-portfolio/
+        if ! scp -r . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:/home/${{ env.SERVER_USER }}/apps/andrei-portfolio/; then
+          echo "❌ Failed to copy files to server"
+          exit 1
+        fi
         
         # Deploy using dedicated docker-compose file
         echo "🚀 Deploying to server..."
         ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} << 'EOF'
-          cd /home/ubuntu/apps/andrei-portfolio
+          cd /home/${{ env.SERVER_USER }}/apps/andrei-portfolio
           
           # Pull the latest image
           docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
