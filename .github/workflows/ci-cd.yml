@@ -245,6 +245,15 @@ jobs:
         ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} << EOF
           cd /home/${{ env.SERVER_USER }}/apps/andrei-portfolio
           
+          # Ensure traefik-net network exists
+          echo "🔧 Checking traefik-net network..."
+          if ! docker network ls | grep -q traefik-net; then
+            echo "🌐 Creating traefik-net network..."
+            docker network create traefik-net
+          else
+            echo "✅ traefik-net network already exists"
+          fi
+          
           # Pull the latest image
           docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           
