@@ -13,7 +13,7 @@ env:
 jobs:
   # Job 1: Build and Test
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     
     steps:
     - name: Checkout code
