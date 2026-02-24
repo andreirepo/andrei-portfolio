@@ -11,10 +11,9 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  # Job 1: Build and Test
   build-and-test:
     runs-on: self-hosted
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -44,16 +43,12 @@ jobs:
     - name: Run type checking
       run: pnpm check-sync
 
-    - name: Validate i18n translations
-      run: pnpm check-sync
-
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
         name: build-files
         path: dist/
 
-  # Job 2: Docker Build and Push
   build-and-push-image:
     needs: build-and-test
     runs-on: ubuntu-latest
@@ -100,207 +95,55 @@ jobs:
           BUILD_VERSION=${{ github.sha }}
           BUILD_TIME=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
 
-  # Job 3: Deploy to Ubuntu Server with Traefik
   deploy:
     needs: [build-and-test, build-and-push-image]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Debug SSH
-      run: |
-        mkdir -p ~/.ssh
-        echo "StrictHostKeyChecking no" >> ~/.ssh/config
-        echo "LogLevel DEBUG" >> ~/.ssh/config
-        echo "ConnectTimeout 30" >> ~/.ssh/config
-        
-        # Test network connectivity
-        echo "🔍 Testing network connectivity..."
-        echo "Server IP: ${{ secrets.SERVER_HOST }}"
-        ping -c 2 ${{ secrets.SERVER_HOST }} || echo "⚠️ Ping failed - Server not reachable from GitHub Actions"
-        
-        # Test DNS resolution
-        echo "🔍 Testing DNS resolution..."
-        nslookup ${{ secrets.SERVER_HOST }} || echo "⚠️ DNS lookup failed"
-        
-        # Test port 22 connectivity
-        echo "🔍 Testing port 22 connectivity..."
-        nc -zv ${{ secrets.SERVER_HOST }} 22 || echo "⚠️ Port 22 not accessible"
-        
-        # Test if server is listening on port 22
-        echo "🔍 Testing if server is listening on port 22..."
-        timeout 10 bash -c "</dev/tcp/${{ secrets.SERVER_HOST }}/22" 2>/dev/null && echo "✅ Port 22 is open" || echo "❌ Port 22 is closed or blocked"
-        
-        # Check GitHub Actions network access
-        echo "🔍 Testing GitHub Actions network access..."
-        curl -I https://api.github.com || echo "⚠️ GitHub API not accessible"
-        
-        # Check if we can reach other external services
-        echo "🔍 Testing external connectivity..."
-        curl -I https://www.google.com || echo "⚠️ External services not accessible"
-        
-        # Check GitHub Actions IP address
-        echo "🔍 GitHub Actions runner IP:"
-        curl -s https://api.ipify.org || echo "Could not determine IP"
-        
-        echo ""
-        echo "🚨 NETWORK DIAGNOSTIC SUMMARY:"
-        echo "   - GitHub Actions can reach external services: ✅"
-        echo "   - GitHub Actions cannot reach your server: ❌"
-        echo "   - This indicates a firewall/network issue on your server"
-        echo ""
-        echo "🔧 SOLUTIONS TO TRY:"
-        echo "   1. Check Lightsail firewall rules - allow SSH (port 22) from 0.0.0.0/0"
-        echo "   2. Verify your server's public IP matches the GitHub secret"
-        echo "   3. Check if your server has a system firewall (ufw/iptables)"
-        echo "   4. Consider using GitHub's IP ranges for more restrictive firewall rules"
-        echo "   5. Test with a temporary broad firewall rule to confirm connectivity"
-
     - name: Setup SSH key
       run: |
         mkdir -p ~/.ssh
-        echo "🔍 Debugging SSH key setup..."
-        
-        # Check if the secret exists and has content
-        if [ -z "${{ secrets.SERVER_SSH_PRIVATE_KEY }}" ]; then
-          echo "❌ ERROR: SERVER_SSH_PRIVATE_KEY secret is empty or not set"
-          exit 1
-        fi
-        
-        echo "✅ SERVER_SSH_PRIVATE_KEY secret exists"
-        
-        # Write the SSH key with proper formatting
         echo "${{ secrets.SERVER_SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        
-        # Verify the key was written correctly
-        if [ ! -f ~/.ssh/id_rsa ] || [ ! -s ~/.ssh/id_rsa ]; then
-          echo "❌ ERROR: SSH key file is empty or missing"
-          exit 1
-        fi
-        
-        echo "✅ SSH key file created successfully"
-        echo "Key file size: $(wc -c < ~/.ssh/id_rsa) bytes"
-        echo "Key content (first 3 lines):"
-        head -3 ~/.ssh/id_rsa
-        
-        # Test if the key is valid
-        if ssh-keygen -y -f ~/.ssh/id_rsa > /dev/null 2>&1; then
-          echo "✅ SSH key is valid"
-        else
-          echo "❌ SSH key format is invalid"
-          echo "Expected format: -----BEGIN OPENSSH PRIVATE KEY-----"
-          echo "Your key format: $(head -1 ~/.ssh/id_rsa)"
-          exit 1
-        fi
-        
-        # Add known hosts (with error handling)
-        echo "📡 Adding known hosts..."
-        if ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts 2>/dev/null; then
-          echo "✅ Known hosts added successfully"
-        else
-          echo "⚠️ Failed to add known hosts, but continuing..."
-        fi
-        
-        echo "✅ SSH key setup completed successfully"
+        ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+        echo "StrictHostKeyChecking accept-new" >> ~/.ssh/config
+        echo "ConnectTimeout 30" >> ~/.ssh/config
 
     - name: Deploy to Ubuntu server
       env:
         SERVER_HOST: ${{ secrets.SERVER_HOST }}
         SERVER_USER: ${{ secrets.SERVER_USER }}
       run: |
-        # SSH config with timeout
-        echo "StrictHostKeyChecking accept-new" >> ~/.ssh/config
-        echo "ConnectTimeout 30" >> ~/.ssh/config
-        
-        # Test SSH connection before copying files
-        echo "🔍 Testing SSH connection..."
-        if ! ssh -o ConnectTimeout=30 ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} "echo 'SSH connection successful'" 2>/dev/null; then
-          echo "❌ SSH connection failed. Please check:"
-          echo "  - Server is reachable"
-          echo "  - SSH is enabled and listening on port 22"
-          echo "  - Firewall allows connections from GitHub Actions"
-          echo "  - SERVER_HOST and SERVER_USER secrets are correct"
-          exit 1
-        fi
-        echo "✅ SSH connection successful"
-        
-        # Copy project files to server
-        echo "📦 Copying project files to server..."
-        
-        # Create directory with proper permissions and ensure it's writable
-        ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} "sudo mkdir -p /home/${{ env.SERVER_USER }}/apps/andrei-portfolio && sudo chown ${{ env.SERVER_USER }}:${{ env.SERVER_USER }} /home/${{ env.SERVER_USER }}/apps/andrei-portfolio && sudo chmod 755 /home/${{ env.SERVER_USER }}/apps/andrei-portfolio"
-        
-        # Use rsync instead of scp for better permission handling
-        if ! rsync -avz --delete -e "ssh" . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:/home/${{ env.SERVER_USER }}/apps/andrei-portfolio/; then
-          echo "❌ Failed to copy files to server"
-          exit 1
-        fi
-        
-        # Deploy using dedicated docker-compose file
-        echo "🚀 Deploying to server..."
-        ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} << EOF
+        ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} \
+          "sudo mkdir -p /home/${{ env.SERVER_USER }}/apps/andrei-portfolio && \
+           sudo chown ${{ env.SERVER_USER }}:${{ env.SERVER_USER }} /home/${{ env.SERVER_USER }}/apps/andrei-portfolio && \
+           sudo chmod 755 /home/${{ env.SERVER_USER }}/apps/andrei-portfolio"
+
+        rsync -az --delete -e "ssh" . \
+          ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:/home/${{ env.SERVER_USER }}/apps/andrei-portfolio/
+
+        ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} <<EOF
           cd /home/${{ env.SERVER_USER }}/apps/andrei-portfolio
-          
-          # Ensure traefik-net network exists
-          echo "🔧 Checking traefik-net network..."
-          if ! docker network ls | grep -q traefik-net; then
-            echo "🌐 Creating traefik-net network..."
-            docker network create traefik-net
-          else
-            echo "✅ traefik-net network already exists"
-          fi
-          
-          # Pull the latest image
+          docker network ls | grep -q traefik-net || docker network create traefik-net
           docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          
-          # Deploy using dedicated docker-compose file
-          echo "🔄 Building and starting portfolio service..."
           docker-compose -f docker-compose.prod.yml up -d --build portfolio
-          
-          # Wait for service to be healthy
-          echo "⏳ Waiting for service to be healthy..."
-          sleep 10
-          
-          # Check service status
-          echo "✅ Checking service status..."
-          docker-compose -f docker-compose.prod.yml ps portfolio
-          
-          # Test health endpoint
-          echo "🏥 Testing health endpoint..."
-          curl -f http://localhost/health || echo "⚠️ Health check failed, but deployment may still be in progress"
-          
-          echo "🎉 Deployment completed successfully!"
         EOF
 
-  # Job 4: Health Check
   health-check:
     needs: deploy
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-    
+
     steps:
     - name: Wait for service to be ready
-      run: sleep 120
+      run: sleep 60
 
     - name: Health check
       run: |
-        # Wait a bit more for Traefik to update
-        sleep 60
-        
-        # Test health endpoint on your domain
-        echo "🔍 Testing health endpoint..."
-        curl -f https://andreirepo.com/health || echo "⚠️ Health check failed, but continuing..."
-        
-        # Test main site
-        echo "🔍 Testing main site..."
-        curl -f https://andreirepo.com || echo "⚠️ Main site check failed, but continuing..."
-        
-        # Test www redirect
-        echo "🔍 Testing www redirect..."
-        curl -f https://www.andreirepo.com || echo "⚠️ WWW redirect check failed, but continuing..."
-        
-        echo "✅ Deployment completed - please verify manually at https://andreirepo.com"
+        curl -f https://andreirepo.com/health || echo "Health check failed"
+        curl -f https://andreirepo.com || echo "Main site check failed"
+        curl -f https://www.andreirepo.com || echo "WWW redirect check failed"
