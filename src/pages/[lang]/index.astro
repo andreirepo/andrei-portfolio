@@ -23,7 +23,7 @@ const { t, locale } = useI18n<LocaleSchema>({
 });
 
 const nav = [
-  { path: `/`, text: t("nav.about") },
+  { path: `/${locale}/`, text: t("nav.about") },
   { path: `#${t("nav.experience")}`, text: t("nav.experience") },
   { path: `#${t("nav.projects")}`, text: t("nav.projects") },
   { path: `#${t("nav.contact")}`, text: t("nav.contact") },
