@@ -14,8 +14,17 @@ const { title, description, locale, alternateLinks } =
 ---
 
 <!doctype html>
-<html lang={locale} class="dark">
+<html lang={locale}>
 	<head>
+		<!-- Blocking theme script: must run before render to avoid flash -->
+		<script is:inline>
+			(function() {
+				var stored = localStorage.getItem('theme');
+				var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+				var isDark = stored === 'light' ? false : stored === 'dark' ? true : prefersDark !== undefined ? prefersDark : true;
+				if (isDark) document.documentElement.classList.add('dark');
+			})();
+		</script>
 		<PageMetadata
 			lang={locale}
 			title={title}

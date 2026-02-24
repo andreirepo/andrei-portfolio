@@ -7,14 +7,15 @@ type Locales = "es" | "en"
 interface Props {
     nav:{path:string;text:string}[];
     locales: Locales[];
-    currentLocale:string
+    currentLocale:string;
+    resumeLabel?: string;
 }
 
-const { nav, locales, currentLocale } = Astro.props as Props
-
+const { nav, locales, currentLocale, resumeLabel = "Resume" } = Astro.props as Props
 ---
 
 <header class="py-8 flex items-center justify-between flex-col md:flex-row fixed top-0 left-1/2 -translate-x-1/2 bg-background z-40 w-full max-w-2xl">
+    <!-- Nav links -->
     <div class="flex items-center gap-5 order-2 md:order-1 flex-1 justify-center md:justify-start">
         {
             nav.map((item) => (
@@ -29,15 +30,90 @@ const { nav, locales, currentLocale } = Astro.props as Props
             ))
         }
     </div>
-    <div class="order-1 md:order-2 mb-4 md:mb-0 space-x-2 md:space-x-0 flex-shrink-0" >
-        {
-            locales.map(item =>
-                <a href={`/${item.toLowerCase()}`} class={cls("uppercase text-[1.2rem] md:text-[0.9rem] hover:opacity-100 cursor-pointer opacity-70 transition-all duration-200", item === currentLocale.toLowerCase() && "opacity-100")}>
-                    {item}
-                </a>
-                <span class="last:hidden opacity-50 text-[1.2rem] md:text-[0.9rem]">/</span>
-            )
-        }
+
+    <!-- Right controls: Resume + Theme + Locale -->
+    <div class="order-1 md:order-2 mb-4 md:mb-0 flex items-center gap-3 flex-1 justify-center md:justify-end">
+
+        <!-- Resume download link -->
+        <a
+            href="https://andrei-portfolio-bucket.s3.us-east-1.amazonaws.com/Andrei%20Repo%20-%20Resume.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAYQNJSX75EH34LOKR%2F20260224%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260224T110758Z&X-Amz-Expires=300&X-Amz-Security-Token=IQoJb3JpZ2luX2VjECwaCXVzLWVhc3QtMSJGMEQCIDL6t9S3F35R2JaJX3bcrh5rbokDT3ksoS%2Bclc9xRcEPAiA1we1MiFvzJ3MY0Q12lUqleOnkA2ko9oTM5%2Byudjw12Sr6Agj0%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDU4NTAwODA3MDY1MCIMGvW6SehMjbkGQ5%2B4Ks4CYpdS65Pbs%2F78jaD9s0IDLRUhUYTbc7FnEAU%2F0li7ELELitF12cgtsn9hqpIJtrcpt0%2FU6seshrFnjTD1dK6ihB%2Fkpmstpmt5tRfi0ldQU0eGb11dgfD%2BqVDt8M7DFC1%2Bn5zCVVicZu9haUIR9K%2FAVxOkIvuX8%2FvKb5b48Q8bA%2FROXJ5r1ymhfALW1SJGum4rg70M42Wj8uHHk1Aj3nKvtNdiRsv%2FXECfds1VLIaAr0ErXd4%2B96OTwKhS9AcAa84CJ5p%2B9GLdwuBcS89iHxf3BuZRvoIxFD29O4Pz8k8PwoKze%2F95azq958NgHVj0etxq%2Bfi0hUcfcJ%2F3ErZRqApIG%2FadmMaYMgEW8ZvzmeTn4kcBoRRD%2FLJ9ym1G8DhLLDiMacT0o04%2F58FcQDl0xocDRMEM%2F8V%2BB8BDIOUmtPpPBw6PIa9JssVlptzWc64ibjDTvfXMBjquAiu5BRrqtOY%2BRXp7YfGVxpn97vZ3ik%2FbmX955VpDl7akvJn%2BZLa1vSWRvqQrM8rVMuTuPKpKVq%2BCQbqZ7f2SsxqpYbSPNrnX0I5WLyOMUz1NLdwOVDjuyP5oLUHLmvT5Bsn%2BC81iCmzstZZ1meKQJcseodn1EXPNCYf304vT3c5olhzEVD8r4g6Bho0RPtuMGoCmHtv4CQjSmJt9ujbR5BVrG%2BmJspPxKuiPoZ8nPFzMNDBJ6l3VwsQD7nP2HaFpGpE9n7hYGSvqtjKb%2FR4a9oHABiDibOklYZx6ilnTWyisrclKWhBi7%2B45jA7OPVPp0u2JCBkkODFBcJcmanSZqB8sOLhR6BEWu99xXH0cvBap%2BvQWe2TCSxoJ%2F8CZlNbFlV4aDV%2FTSa%2FNFudsT%2FHf&X-Amz-Signature=45e0e4c96ef707b7a3647142143ba202a9fe241386b3b5e61723a676db8e4efc&X-Amz-SignedHeaders=host&response-content-disposition=inline"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-[1rem] md:text-[0.85rem] transition-all duration-200 rounded px-2 py-0.5 leading-tight bg-green-600 hover:bg-green-500 text-white opacity-90 hover:opacity-100"
+        >
+            {resumeLabel}
+        </a>
+
+        <!-- Appearance toggle -->
+        <button
+            id="theme-toggle"
+            aria-label="Toggle appearance"
+            class="opacity-70 hover:opacity-100 transition-all duration-200 flex items-center justify-center w-6 h-6"
+        >
+            <!-- Sun icon (shown in dark mode) -->
+            <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden">
+                <circle cx="12" cy="12" r="4"/>
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+            </svg>
+            <!-- Moon icon (shown in light mode) -->
+            <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+        </button>
+
+        <!-- Locale switcher -->
+        <div class="flex items-center space-x-2 md:space-x-0">
+            {
+                locales.map(item =>
+                    <a href={`/${item.toLowerCase()}`} class={cls("uppercase text-[1.2rem] md:text-[0.9rem] hover:opacity-100 cursor-pointer opacity-70 transition-all duration-200", item === currentLocale.toLowerCase() && "opacity-100")}>
+                        {item}
+                    </a>
+                    <span class="last:hidden opacity-50 text-[1.2rem] md:text-[0.9rem]">/</span>
+                )
+            }
+        </div>
     </div>
+
     <div class="absolute -bottom-10 left-0 w-full h-18  pointer-events-none bg-linear-to-b from-background via-background/80 to-background/20 z-10"></div>
 </header>
+
+<script>
+    function initTheme() {
+        const html = document.documentElement;
+        const btn = document.getElementById('theme-toggle');
+        const sunIcon = document.getElementById('icon-sun');
+        const moonIcon = document.getElementById('icon-moon');
+
+        if (!btn || !sunIcon || !moonIcon) return;
+
+        // Determine initial theme: localStorage > system preference > default dark
+        const stored = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isDark = stored ? stored === 'dark' : (stored === null ? prefersDark ?? true : false);
+
+        function applyTheme(dark: boolean) {
+            if (dark) {
+                html.classList.add('dark');
+                sunIcon!.classList.remove('hidden');
+                moonIcon!.classList.add('hidden');
+            } else {
+                html.classList.remove('dark');
+                sunIcon!.classList.add('hidden');
+                moonIcon!.classList.remove('hidden');
+            }
+        }
+
+        applyTheme(isDark);
+
+        btn.addEventListener('click', () => {
+            const currentlyDark = html.classList.contains('dark');
+            const next = !currentlyDark;
+            localStorage.setItem('theme', next ? 'dark' : 'light');
+            applyTheme(next);
+        });
+    }
+
+    // Run on initial load and after Astro view transitions
+    initTheme();
+    document.addEventListener('astro:after-swap', initTheme);
+</script>
