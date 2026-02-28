@@ -12,6 +12,9 @@ interface Props {
 }
 
 const { nav, locales, currentLocale, resumeLabel = "Resume" } = Astro.props as Props
+
+// Cache busting: use git commit hash or timestamp
+const RESUME_VERSION = "1";
 ---
 
 <header class="py-8 px-5 md:px-0 flex items-center justify-between flex-col md:flex-row fixed top-0 left-1/2 -translate-x-1/2 bg-background z-40 w-full max-w-2xl">
@@ -36,7 +39,7 @@ const { nav, locales, currentLocale, resumeLabel = "Resume" } = Astro.props as P
 
         <!-- Resume download link -->
         <a
-            href="/assets/AndreiRepoResume.pdf"
+            href={`/assets/AndreiRepoResume.pdf?v=${RESUME_VERSION}`}
             target="_blank"
             rel="noopener noreferrer"
             class="text-[0.8rem] md:text-[0.85rem] transition-all duration-200 rounded px-2 py-0.5 leading-tight bg-green-600 hover:bg-green-500 text-white opacity-90 hover:opacity-100"
