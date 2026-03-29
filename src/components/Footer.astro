@@ -2,51 +2,71 @@
 type Option = { key:string; value:string }
 
 interface Props {
-    status: Option 
-    id:string;
-    email_label?: Option ;
-    email_url?: Option ;
-    github_label?: Option ;
-    github_url?: Option ;
-    x_label?: Option ;
-    x_url?: Option ;
-    linkedin_label?: Option ;
+    status: Option;
+    heading: Option;
+    description: Option;
+    id: string;
+    email_label?: Option;
+    email_url?: Option;
+    github_label?: Option;
+    github_url?: Option;
+    x_label?: Option;
+    x_url?: Option;
+    linkedin_label?: Option;
     linkedin_url?: Option;
 }
 
-const { status, email_label, email_url, github_label, github_url, x_label, x_url, linkedin_label, linkedin_url, id } = Astro.props as Props
+const { status, heading, description, email_label, email_url, github_label, github_url, x_label, x_url, linkedin_label, linkedin_url, id } = Astro.props as Props
 ---
 
 <footer
     id={id}
-    class="my-24 border-t pt-8 text-sm grid grid-cols-1 gap-3 place-items-center"
+    class="my-24 border-t pt-12 text-sm"
 >
-    <div>
-        <span
-            class="inline-block w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"
-        ></span>
-        <span class="opacity-70 uppercase">{status.value}</span>
-        <span
-            class="inline-block w-2 h-2 rounded-full bg-green-500 ml-2 animate-pulse"
-        ></span>
+    <div class="text-center mb-8">
+        <div class="mb-4">
+            <span class="inline-block w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span>
+            <span class="opacity-70 uppercase text-xs">{status.value}</span>
+            <span class="inline-block w-2 h-2 rounded-full bg-green-500 ml-2 animate-pulse"></span>
+        </div>
+        <h2 class="text-xl font-semibold mb-2">{heading.value}</h2>
+        <p class="opacity-50 max-w-md mx-auto">{description.value}</p>
     </div>
-    <div class="flex gap-4 [&_a]:opacity-70 [&_a]:hover:opacity-100 [&_a]:transition-colors [&_a]:duration-200">
+    
+    <div class="flex flex-wrap justify-center gap-3 mb-12">
         {email_url && email_label && (
-            <a href={email_url.value}>
+            <a 
+                href={email_url.value}
+                class="border rounded px-5 py-2 opacity-70 hover:opacity-100 hover:border-green-500 transition-all duration-200"
+            >
                 {email_label.value}
             </a>
         )}
         
         {github_url && github_label && (
-            <a href={github_url.value} target="_blank" rel="noopener noreferrer">
+            <a 
+                href={github_url.value}
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="border rounded px-5 py-2 opacity-70 hover:opacity-100 hover:border-green-500 transition-all duration-200"
+            >
                 {github_label.value}
             </a>
         )}
 
         {linkedin_url && linkedin_label && (
-            <a href={linkedin_url.value} target="_blank" rel="noopener noreferrer">
+            <a 
+                href={linkedin_url.value}
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="border rounded px-5 py-2 opacity-70 hover:opacity-100 hover:border-green-500 transition-all duration-200"
+            >
                 {linkedin_label.value}
             </a>
         )}
+    </div>
+
+    <div class="border-t pt-6 text-center opacity-50 text-xs">
+        <p>&copy; 2026 Andrei Repo</p>
     </div>
 </footer>

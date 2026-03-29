@@ -19,7 +19,7 @@ const RESUME_VERSION = "1";
 
 <header class="py-8 px-5 md:px-0 flex items-center justify-between flex-col md:flex-row fixed top-0 left-1/2 -translate-x-1/2 bg-background z-40 w-full max-w-2xl">
     <!-- Nav links -->
-    <div class="flex items-center gap-4 order-2 md:order-1 flex-1 justify-center md:justify-start w-full md:w-auto">
+    <nav class="flex items-center gap-4 order-2 md:order-1 flex-1 justify-center md:justify-start w-full md:w-auto" aria-label="Main navigation">
         {
             nav.map((item) => (
                 <I18NDebug key={item.text}>
@@ -32,7 +32,7 @@ const RESUME_VERSION = "1";
                 </I18NDebug>
             ))
         }
-    </div>
+    </nav>
 
     <!-- Right controls: Resume + Theme + Locale -->
     <div class="order-1 md:order-2 mb-4 md:mb-0 flex items-center gap-3 flex-1 justify-center md:justify-end w-full md:w-auto">

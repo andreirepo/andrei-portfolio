@@ -4,7 +4,8 @@
     "about": "info",
     "projects": "proyectos",
     "experience": "experiencia",
-    "contact": "contacto"
+    "contact": "contacto",
+    "resume": "CV"
   },
   "hero": {
     "title": "Ingeniero QA Senior",
@@ -88,8 +89,10 @@
   },
   "contact": {
     "status": "Abierto a nuevas oportunidades",
+    "heading": "Conectemos",
+    "description": "Siempre estoy interesado en nuevos desafíos y colaboraciones. No dudes en contactarme.",
     "email_label": "Email",
-    "email_url": "mailto:andrei.repo@gmail.com",
+    "email_url": "mailto:contact@andreirepo.com",
     "github_label": "GitHub",
     "github_url": "https://github.com/andreirepo",
     "linkedin_label": "LinkedIn",

@@ -14,7 +14,6 @@ import Hero from "@/src/components/Hero.astro";
 import Projects from "@/src/components/Projects.astro";
 import Experience from "@/src/components/Experience.astro";
 import Footer from "@/src/components/Footer.astro";
-import Skills from "@/src/components/Skills.astro";
 
 const { t, locale } = useI18n<LocaleSchema>({
   ssg: {
@@ -24,8 +23,8 @@ const { t, locale } = useI18n<LocaleSchema>({
 
 const nav = [
   { path: `/`, text: t("nav.about") },
-  { path: `#${t("nav.experience")}`, text: t("nav.experience") },
   { path: `#${t("nav.projects")}`, text: t("nav.projects") },
+  { path: `#${t("nav.experience")}`, text: t("nav.experience") },
   { path: `#${t("nav.contact")}`, text: t("nav.contact") },
 ];
 
@@ -126,6 +125,14 @@ const footerContent = {
     key: "contact.status",
     value: t("contact.status"),
   },
+  heading: {
+    key: "contact.heading",
+    value: t("contact.heading"),
+  },
+  description: {
+    key: "contact.description",
+    value: t("contact.description"),
+  },
   email_label: {
     key: "contact.email_label",
     value: t("contact.email_label"),
@@ -151,52 +158,6 @@ const footerContent = {
     value: t("contact.linkedin_url"),
   },
 };
-
-const skills = [
-  {
-    title: { key: "skills.playwright.title", value: t("skills.playwright.title") },
-    category: { key: "skills.playwright.category", value: t("skills.playwright.category") },
-    description: { key: "skills.playwright.description", value: t("skills.playwright.description") },
-    experience_years: { key: "skills.playwright.experience_years", value: t("skills.playwright.experience_years") },
-    experience_label: { key: "skills.playwright.experience_label", value: t("skills.playwright.experience_label") },
-  },
-  {
-    title: { key: "skills.cypress.title", value: t("skills.cypress.title") },
-    category: { key: "skills.cypress.category", value: t("skills.cypress.category") },
-    description: { key: "skills.cypress.description", value: t("skills.cypress.description") },
-    experience_years: { key: "skills.cypress.experience_years", value: t("skills.cypress.experience_years") },
-    experience_label: { key: "skills.cypress.experience_label", value: t("skills.cypress.experience_label") },
-  },
-  {
-    title: { key: "skills.webdriverio.title", value: t("skills.webdriverio.title") },
-    category: { key: "skills.webdriverio.category", value: t("skills.webdriverio.category") },
-    description: { key: "skills.webdriverio.description", value: t("skills.webdriverio.description") },
-    experience_years: { key: "skills.webdriverio.experience_years", value: t("skills.webdriverio.experience_years") },
-    experience_label: { key: "skills.webdriverio.experience_label", value: t("skills.webdriverio.experience_label") },
-  },
-  {
-    title: { key: "skills.aws.title", value: t("skills.aws.title") },
-    category: { key: "skills.aws.category", value: t("skills.aws.category") },
-    description: { key: "skills.aws.description", value: t("skills.aws.description") },
-    experience_years: { key: "skills.aws.experience_years", value: t("skills.aws.experience_years") },
-    experience_label: { key: "skills.aws.experience_label", value: t("skills.aws.experience_label") },
-  },
-  {
-    title: { key: "skills.github_actions.title", value: t("skills.github_actions.title") },
-    category: { key: "skills.github_actions.category", value: t("skills.github_actions.category") },
-    description: { key: "skills.github_actions.description", value: t("skills.github_actions.description") },
-    experience_years: { key: "skills.github_actions.experience_years", value: t("skills.github_actions.experience_years") },
-    experience_label: { key: "skills.github_actions.experience_label", value: t("skills.github_actions.experience_label") },
-  },
-  {
-    title: { key: "skills.typescript.title", value: t("skills.typescript.title") },
-    category: { key: "skills.typescript.category", value: t("skills.typescript.category") },
-    description: { key: "skills.typescript.description", value: t("skills.typescript.description") },
-    experience_years: { key: "skills.typescript.experience_years", value: t("skills.typescript.experience_years") },
-    experience_label: { key: "skills.typescript.experience_label", value: t("skills.typescript.experience_label") },
-  }
-];
-
 ---
 
 <Layout
@@ -205,13 +166,12 @@ const skills = [
   description={t("description")}
   alternateLinks={alternate}
 >
-  <Header nav={nav} locales={["en", "es"]} currentLocale={locale} />
+  <Header nav={nav} locales={["en", "es"]} currentLocale={locale} resumeLabel={t("nav.resume")} />
 
   <main id="main-content">
     <Hero {...heroProps} />
     <Projects {...projectsProps} />
     <Experience {...experienceData} />
-    <Skills heading={{key: "skills.heading", value: t("skills.heading")}} content={skills} />
   </main>
 
   <Footer {...footerContent} />
