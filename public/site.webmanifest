@@ -1,0 +1,21 @@
+{
+  "name": "Andrei Repo - Senior QA Engineer",
+  "short_name": "Andrei Repo",
+  "description": "Senior QA Engineer specializing in highly regulated iGaming, test automation, and cloud technologies.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#00d26a",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -32,11 +32,41 @@ const { title, description, locale, alternateLinks } =
 			image={OGImage}
 			enableClientRouter
 			ogType="website"
-			favicons={[  { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },]}
+			favicons={[
+				{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+				{ rel: "manifest", href: "/site.webmanifest" },
+			]}
 			alternateLinks={alternateLinks}
 		/>
+		<!-- Schema.org structured data -->
+		<script is:inline type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@type": "Person",
+				"name": "Andrei",
+				"url": "https://andreirepo.com",
+				"jobTitle": "Senior QA Engineer",
+				"description": "Senior QA Engineer specializing in highly regulated iGaming",
+				"sameAs": [
+					"https://github.com/andreirepo",
+					"https://linkedin.com/in/andreirepo"
+				],
+				"knowsAbout": [
+					"QA Engineering",
+					"Test Automation",
+					"Playwright",
+					"Cypress",
+					"iGaming",
+					"AWS",
+					"Docker"
+				]
+			}
+		</script>
 	</head>
 	<body class="*:max-w-2xl *:w-full flex flex-col items-center w-full font-mono px-5 md:px-0 leading-10" >
+		<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:bg-green-600 focus:text-white focus:px-4 focus:py-2 focus:rounded focus:z-50">
+			Skip to content
+		</a>
 		<slot />
 	</body>
 </html>
