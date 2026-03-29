@@ -7,10 +7,9 @@ A modern, responsive portfolio website for Andrei Repo, a Senior QA Engineer spe
 - 🚀 Built with [Astro](https://astro.build/)
 - 🎨 Styled with [Tailwind CSS](https://tailwindcss.com/)
 - 📱 Fully responsive design
-- 🌐 Internationalization support (EN/ES/PT)
+- 🌐 Internationalization support (EN/ES)
 - 📦 Docker containerization ready
-- 🚀 GitHub Actions CI/CD
-- ☁️ AWS Lightsail deployment ready
+- 🚀 GitHub Actions CI/CD with automatic rollback
 
 ## About
 
@@ -62,10 +61,9 @@ src/
 ## Content Sections
 
 - **About**: Professional summary and QA engineering expertise
-- **Experience**: Work history from Maple International to The Rank Group
-- **Projects**: Full-Stack Todo Application and Infrastructure Automation Platform
-- **Skills**: Technical skills in testing, automation, and cloud technologies
-- **Contact**: Professional contact information
+- **Experience**: Work history at Lottomart, Sketch, and Playtech
+- **Projects**: Task Management Platform showcase
+- **Contact**: Professional contact information with availability status
 
 ## Docker Setup
 
@@ -76,19 +74,19 @@ docker build -t andrei-portfolio .
 
 ### Run the container:
 ```bash
-docker run -p 3000:3000 andrei-portfolio
+docker run -p 80:80 andrei-portfolio
 ```
 
 ## Deployment
 
-This portfolio is optimized for deployment on AWS Lightsail with Docker support.
+This portfolio uses Docker with Traefik for reverse proxy and automatic HTTPS via Let's Encrypt.
 
 ### GitHub Actions
 
 The repository includes workflows for:
 - Automated builds and testing
-- Docker image building and pushing
-- Deployment to AWS Lightsail
+- Docker image building and pushing to GHCR
+- Deployment to production server with automatic rollback on health check failure
 
 ## License
 
