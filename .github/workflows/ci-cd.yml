@@ -141,7 +141,7 @@ jobs:
           cd /home/${{ env.SERVER_USER }}/apps/andrei-portfolio
           docker network ls | grep -q ${{ env.NETWORK_NAME }} || docker network create ${{ env.NETWORK_NAME }}
           docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          docker-compose -f docker-compose.prod.yml up -d --build portfolio
+          docker-compose -f docker-compose.prod.yml up -d portfolio
         EOF
 
   health-check:

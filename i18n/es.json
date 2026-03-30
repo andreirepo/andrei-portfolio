@@ -18,7 +18,8 @@
     "item_1": {
       "name": "Plataforma de Gestión de Tareas",
       "description": "Plataforma full-stack segura en AWS, containerizada con Docker y Traefik, usando GitHub Actions y Playwright para puertas de calidad automatizadas.",
-      "link": "https://github.com/andreirepo/todo-app"
+      "link": "https://github.com/andreirepo/todo-app",
+      "demo": "https://andreirepo.com/apps/todo"
     }
   },
   "experience": {

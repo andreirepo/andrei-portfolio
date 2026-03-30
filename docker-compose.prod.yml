@@ -2,9 +2,7 @@ version: '3.8'
 
 services:
   portfolio:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/andreirepo/andrei-portfolio:latest
     container_name: andrei-portfolio
     networks:
       - traefik-net
