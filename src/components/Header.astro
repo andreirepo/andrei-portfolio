@@ -42,6 +42,7 @@ const RESUME_VERSION = "1";
             href={`/assets/AndreiRepoResume.pdf?v=${RESUME_VERSION}`}
             target="_blank"
             rel="noopener noreferrer"
+            onclick="umami.track('Resume Download')"
             class="text-[0.8rem] md:text-[0.85rem] transition-all duration-200 rounded px-2 py-0.5 leading-tight bg-green-600 hover:bg-green-500 text-white opacity-90 hover:opacity-100"
         >
             {resumeLabel}
