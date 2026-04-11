@@ -117,16 +117,16 @@ jobs:
         run: |
           ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} "mkdir -p ${{ env.DEPLOY_PATH }}"
           rsync -az --delete --exclude='.git' --exclude='node_modules' \
-            . ${{ env.SERVER_USER }}@${هم ${{ env.SERVER_HOST }}:${{ env.DEPLOY_PATH }}/
+            . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:${{ env.DEPLOY_PATH }}/
 
       - name: Docker Compose Up
         env:
           SERVER_USER: ${{ secrets.SERVER_USER }}
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
         run: |
-          ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} <<EOF
+          ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} <<'EOF'
             cd ${{ env.DEPLOY_PATH }}
-            docker network ls | grep -q ${{ env.NETWORK_NAME }} || docker network create ${{ env.NETWORK_NAME }}
+            docker network ls | grep -q "${{ env.NETWORK_NAME }}" || docker network create "${{ env.NETWORK_NAME }}"
             docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
             docker compose -f docker-compose.yml up -d website
           EOF
