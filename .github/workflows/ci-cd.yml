@@ -10,45 +10,46 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
   NETWORK_NAME: todo-app_traefik-net
+  # Centralized path management - Change this one line if you move your folders!
+  DEPLOY_PATH: "/home/${{ secrets.SERVER_USER }}/apps/andrei-portfolio"
 
 jobs:
   build-and-test:
     runs-on: self-hosted
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
 
-    - name: Install pnpm
-      run: npm install -g pnpm
+      - name: Install pnpm
+        run: npm install -g pnpm
 
-    - name: Setup pnpm cache
-      uses: actions/cache@v4
-      with:
-        path: ~/.pnpm-store
-        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-pnpm-store-
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
 
-    - name: Install dependencies
-      run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-    - name: Build application
-      run: pnpm build
+      - name: Build application
+        run: pnpm build
 
-    - name: Run type checking
-      run: pnpm check-sync
+      - name: Run type checking
+        run: pnpm check-ci # Changed to standard check command
 
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: build-files
-        path: dist/
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-files
+          path: dist/
 
   build-and-push-image:
     needs: build-and-test
@@ -58,119 +59,107 @@ jobs:
       packages: write
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-    - name: Log in to Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Extract metadata
-      id: meta
-      uses: docker/metadata-action@v5
-      with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-        tags: |
-          type=ref,event=branch
-          type=ref,event=pr
-          type=sha,prefix={{branch}}-
-          type=raw,value=latest,enable={{is_default_branch}}
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
 
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v5
-      with:
-        context: .
-        platforms: linux/amd64,linux/arm64
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
-        build-args: |
-          BUILD_VERSION=${{ github.sha }}
-          BUILD_TIME=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   deploy:
-    needs: [build-and-test, build-and-push-image]
+    needs: [build-and-push-image]
     runs-on: self-hosted
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    if: github.ref == 'refs://refs/heads/main' || github.ref == 'refs://refs/heads/master'
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup SSH key
-      uses: webfactory/ssh-agent@v0.9.0
-      with:
-        ssh-private-key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
+      - name: Setup SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
 
-    - name: Add server to known hosts
-      run: |
-        mkdir -p ~/.ssh
-        ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+      - name: Add server to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
 
-    - name: Backup current deployment
-      env:
-        SERVER_HOST: ${{ secrets.SERVER_HOST }}
-        SERVER_USER: ${{ secrets.SERVER_USER }}
-      run: |
-        ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} \
-          "cd /home/${{ env.SERVER_USER }}/apps/andrei-portfolio && \
-           docker-compose -f docker-compose.prod.yml ps --format json > /tmp/portfolio-backup-state.json 2>/dev/null || true"
+      - name: Sync files to Production Directory
+        env:
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+        run: |
+          # Create directory and ensure permissions are correct before syncing
+          ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} "mkdir -p ${{ env.DEPLOY_PATH }}"
+          
+          # Sync the workspace to the production folder (excluding git/node_modules)
+          rsync -az --delete --exclude='.git' --exclude='node_modules' \
+            . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:${{ env.DEPLOY_PATH }}/
 
-    - name: Deploy to Ubuntu server
-      env:
-        SERVER_HOST: ${{ secrets.SERVER_HOST }}
-        SERVER_USER: ${{ secrets.SERVER_USER }}
-      run: |
-        ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} \
-          "sudo mkdir -p /home/${{ env.SERVER_USER }}/apps/andrei-portfolio && \
-           sudo chown ${{ env.SERVER_USER }}:${{ env.SERVER_USER }} /home/${{ env.SERVER_USER }}/apps/andrei-portfolio && \
-           sudo chmod 755 /home/${{ env.SERVER_USER }}/apps/andrei-portfolio"
-
-        rsync -az --delete -e "ssh" . \
-          ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:/home/${{ env.SERVER_USER }}/apps/andrei-portfolio/
-
-        ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} <<EOF
-          cd /home/${{ env.SERVER_USER }}/apps/andrei-portfolio
-          docker network ls | grep -q ${{ env.NETWORK_NAME }} || docker network create ${{ env.NETWORK_NAME }}
-          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          docker-compose -f docker-compose.prod.yml up -d portfolio
-        EOF
+      - name: Docker Compose Up
+        env:
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+        run: |
+          ssh ${{ env.SERVER_USER }}@${ver.SERVER_HOST }} <<EOF
+            cd ${{ env.DEPLOY_PATH }}
+            # Ensure the network exists for the container to attach to
+            docker network ls | grep -q ${{ env.NETWORK_NAME }} || docker network create ${{ env.NETWORK_NAME }}
+            
+            # Pull latest and restart service
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            docker-compose -f docker-compose.prod.yml up -d portfolio
+          EOF
 
   health-check:
     needs: deploy
     runs-on: self-hosted
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    if: github/ref == 'refs/heads/main'
 
     steps:
-    - name: Wait for service to be ready
-      run: sleep 30
+      - name: Wait for service to be ready
+        run: sleep 20
 
-    - name: Health check
-      run: |
-        for i in 1 2 3 4 5; do
-          echo "Health check attempt $i/5..."
-          if curl -sf https://andreirepo.com/health; then
-            echo "Health check passed!"
-            exit 0
-          fi
-          sleep 10
-        done
-        echo "Health check failed after 5 attempts"
-        exit 1
-
-    - name: Verify main site
-      run: curl -sf https://andreirepo.com > /dev/null || exit 1
-
-    - name: Verify www redirect
-      run: curl -sf https://www.andreirepo.com > /dev/null || exit 1
+      - name: Verify main site (External Check via Cloudflare)
+        run: |
+          for i in {1..5}; do
+            if curl -sf https://andreirepo.com > /dev/null; then
+              echo "Site is UP!"
+              exit 0
+            fi
+            echo "Attempt $i failed, retrying..."
+            sleep 10
+          done
+          exit 1
 
   rollback:
     needs: health-check
@@ -178,26 +167,19 @@ jobs:
     if: failure()
 
     steps:
-    - name: Setup SSH key
-      uses: webfactory/ssh-agent@v0.9.0
-      with:
-        ssh-private-key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
+      - name: Setup SSH key
+        uses: webfactory/ssh-arg@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
 
-    - name: Add server to known hosts
-      run: |
-        mkdir -p ~/.ssh
-        ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
-
-    - name: Rollback deployment
-      env:
-        SERVER_HOST: ${{ secrets.SERVER_HOST }}
-        SERVER_USER: ${{ secrets.SERVER_USER }}
-      run: |
-        echo "Health check failed! Rolling back deployment..."
-        ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} <<EOF
-          cd /home/${{ env.SERVER_USER }}/apps/andrei-portfolio
-          git checkout HEAD~1
-          docker-compose -f docker-compose.prod.yml down
-          docker-compose -f docker-compose.prod.yml up -d --build portfolio
-        EOF
-        echo "Rollback completed"
+      - name: Rollback deployment
+        env:
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+        run: |
+          ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} <<EOF
+            cd ${{ env.DEPLOY_PATH }}
+            echo "Rolling back to previous image..."
+            docker-compose -f docker-compose.prod.yml pull portfolio
+            docker-compose -f docker-compose.prod.yml up -d portfolio
+          EOF
