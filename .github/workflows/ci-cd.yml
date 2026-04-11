@@ -10,7 +10,6 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
   NETWORK_NAME: todo-app_traefik-net
-  # Centralized path management
   DEPLOY_PATH: "/home/${{ secrets.SERVER_USER }}/apps/andrei-portfolio"
 
 jobs:
@@ -105,7 +104,6 @@ jobs:
       - name: Setup SSH key
         uses: webfactory/ssh-agent@v0.9.0
         with:
-          # Make sure this secret name matches exactly what you added to GitHub!
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Add server to known hosts
@@ -127,18 +125,16 @@ jobs:
           SERVER_USER: ${{ secrets.SERVER_USER }}
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
         run: |
-          # FIXED: Changed ${ver.SERVER_HOST} to ${{ env.SERVER_HOST }}
           ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} <<EOF
               cd ${{ env.DEPLOY_PATH }}
               docker network ls | grep -q ${{ env.NETWORK_NAME }} || docker network create ${{ env.NETWORK_NAME }}
               docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-              docker compose -f docker-compose.yml up -d portfolio
+              docker compose -f docker-compose.yml up -d website
           EOF
-
+xxw
   health-check:
     needs: deploy
     runs-on: self-hosted
-    # FIXED: Corrected github.ref syntax
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Wait for service to be ready
@@ -175,6 +171,6 @@ jobs:
           ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} <<EOF
               cd ${{ env.DEPLOY_PATH }}
               echo "Rolling back to previous image..."
-              docker compose -f docker-compose.yml pull portfolio
+              docker compose -f docker-compose.yml pull website
               docker compose -f docker-compose.yml up -d portfolio
           EOF
