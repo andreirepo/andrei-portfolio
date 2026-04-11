@@ -5,8 +5,8 @@ type T = (key: keyof LocaleSchema | string) => string;
 export function buildNav(t: T, locale: string) {
   return [
     { path: `#${t("nav.projects")}`, text: t("nav.projects") },
-    { path: `#${t("nav.experience")}`, text: t("nav.experience") },
     { path: `blog`, text: t("nav.blog") },
+    { path: `#${t("nav.experience")}`, text: t("nav.experience") },
     { path: `#${t("nav.contact")}`, text: t("nav.contact") },
   ];
 }
