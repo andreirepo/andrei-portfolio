@@ -132,7 +132,7 @@ jobs:
               cd ${{ env.DEPLOY_PATH }}
               docker network ls | grep -q ${{ env.NETWORK_NAME }} || docker network create ${{ env.NETWORK_NAME }}
               docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-              docker-compose -f docker-compose.prod.yml up -d portfolio
+              docker compose -f docker-compose.yml up -d portfolio
           EOF
 
   health-check:
@@ -175,6 +175,6 @@ jobs:
           ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} <<EOF
               cd ${{ env.DEPLOY_PATH }}
               echo "Rolling back to previous image..."
-              docker-compose -f docker-compose.prod.yml pull portfolio
-              docker-compose -f docker-compose.prod.yml up -d portfolio
+              docker compose -f docker-compose.yml pull portfolio
+              docker compose -f docker-compose.yml up -d portfolio
           EOF
