@@ -43,7 +43,7 @@ jobs:
         run: pnpm build
 
       - name: Run type checking
-        run: pnpm check-ci
+        run: pnpm check-sync
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
