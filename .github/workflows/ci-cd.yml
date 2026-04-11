@@ -10,7 +10,7 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
   NETWORK_NAME: todo-app_traefik-net
-  # Centralized path management - Change this one line if you move your folders!
+  # Centralized path management
   DEPLOY_PATH: "/home/${{ secrets.SERVER_USER }}/apps/andrei-portfolio"
 
 jobs:
@@ -43,7 +43,7 @@ jobs:
         run: pnpm build
 
       - name: Run type checking
-        run: pnpm check-ci # Changed to standard check command
+        run: pnpm check-ci
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -57,7 +57,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -92,13 +91,13 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-to: type=gsub,mode=max
 
   deploy:
     needs: [build-and-push-image]
     runs-on: self-hosted
-    if: github.ref == 'refs://refs/heads/main' || github.ref == 'refs://refs/heads/master'
-
+    # FIXED: Corrected github.ref syntax and removed extra //refs/
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -106,7 +105,8 @@ jobs:
       - name: Setup SSH key
         uses: webfactory/ssh-agent@v0.9.0
         with:
-          ssh-private-key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
+          # Make sure this secret name matches exactly what you added to GitHub!
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Add server to known hosts
         run: |
@@ -118,10 +118,7 @@ jobs:
           SERVER_USER: ${{ secrets.SERVER_USER }}
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
         run: |
-          # Create directory and ensure permissions are correct before syncing
           ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} "mkdir -p ${{ env.DEPLOY_PATH }}"
-          
-          # Sync the workspace to the production folder (excluding git/node_modules)
           rsync -az --delete --exclude='.git' --exclude='node_modules' \
             . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:${{ env.DEPLOY_PATH }}/
 
@@ -130,21 +127,19 @@ jobs:
           SERVER_USER: ${{ secrets.SERVER_USER }}
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
         run: |
-          ssh ${{ env.SERVER_USER }}@${ver.SERVER_HOST }} <<EOF
-            cd ${{ env.DEPLOY_PATH }}
-            # Ensure the network exists for the container to attach to
-            docker network ls | grep -q ${{ env.NETWORK_NAME }} || docker network create ${{ env.NETWORK_NAME }}
-            
-            # Pull latest and restart service
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-            docker-compose -f docker-compose.prod.yml up -d portfolio
+          # FIXED: Changed ${ver.SERVER_HOST} to ${{ env.SERVER_HOST }}
+          ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} <<EOF
+              cd ${{ env.DEPLOY_PATH }}
+              docker network ls | grep -q ${{ env.NETWORK_NAME }} || docker network create ${{ env.NETWORK_NAME }}
+              docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+              docker-compose -f docker-compose.prod.yml up -d portfolio
           EOF
 
   health-check:
     needs: deploy
     runs-on: self-hosted
-    if: github/ref == 'refs/heads/main'
-
+    # FIXED: Corrected github.ref syntax
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Wait for service to be ready
         run: sleep 20
@@ -165,12 +160,12 @@ jobs:
     needs: health-check
     runs-on: self-hosted
     if: failure()
-
     steps:
       - name: Setup SSH key
-        uses: webfactory/ssh-arg@v0.9.0
+        # FIXED: Changed webfactory/ssh-arg to webfactory/ssh-agent
+        uses: webfactory/ssh-agent@v0.9.0
         with:
-          ssh-private-key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Rollback deployment
         env:
@@ -178,8 +173,8 @@ jobs:
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
         run: |
           ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} <<EOF
-            cd ${{ env.DEPLOY_PATH }}
-            echo "Rolling back to previous image..."
-            docker-compose -f docker-compose.prod.yml pull portfolio
-            docker-compose -f docker-compose.prod.yml up -d portfolio
+              cd ${{ env.DEPLOY_PATH }}
+              echo "Rolling back to previous image..."
+              docker-compose -f docker-compose.prod.yml pull portfolio
+              docker-compose -f docker-compose.prod.yml up -d portfolio
           EOF
