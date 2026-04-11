@@ -1,0 +1,72 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/src/layouts/Layout.astro";
+import Header from "@/src/components/Header.astro";
+import Footer from "@/src/components/Footer.astro";
+import { useI18n } from "@ariaskit/astro-i18n";
+import { type LocaleSchema } from "@/src/types";
+import { buildNav, buildFooter } from "@/src/lib/page-helpers";
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection("blog", ({ data }) => !data.draft);
+
+  return allPosts.map((post) => {
+    const [lang, ...rest] = post.id.split("/");
+    const slug = rest.join("/").replace(/\.md$/, "");
+    return { params: { lang, slug }, props: { post } };
+  });
+}
+
+const { post } = Astro.props;
+const { t, locale } = useI18n<LocaleSchema>({ ssg: { astro: Astro } });
+
+const { Content } = await post.render();
+
+const formattedDate = post.data.pubDate.toLocaleDateString(
+  locale === "es" ? "es-ES" : "en-US",
+  { year: "numeric", month: "long", day: "numeric" }
+);
+
+const nav = buildNav(t, locale);
+const footerContent = buildFooter(t);
+---
+
+<Layout
+  locale={locale}
+  title={`${post.data.title} – Andrei Repo`}
+  description={post.data.description}
+>
+  <Header nav={nav} locales={["en", "es"]} currentLocale={locale} resumeLabel={t("nav.resume")} name="Andrei Repo" />
+
+  <main id="main-content" class="mt-40 mb-24">
+    <a
+      href={`/${locale}/blog`}
+      class="text-xs opacity-50 hover:opacity-100 transition-opacity duration-200 mb-8 inline-block"
+    >
+      {t("blog.back")}
+    </a>
+
+    <header class="mb-10">
+      <div class="text-xs opacity-50 mb-3">
+        <time datetime={post.data.pubDate.toISOString()}>
+          {t("blog.published")} {formattedDate}
+        </time>
+      </div>
+      <h1 class="text-xl font-semibold mb-3 leading-snug">{post.data.title}</h1>
+      <p class="opacity-50 text-sm leading-6">{post.data.description}</p>
+      {post.data.tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 mt-4">
+          {post.data.tags.map((tag: string) => (
+            <span class="text-xs border rounded px-2 py-0.5 opacity-60">{tag}</span>
+          ))}
+        </div>
+      )}
+    </header>
+
+    <div class="prose prose-sm prose-invert max-w-none opacity-80 leading-7 [&_h1]:text-lg [&_h2]:text-base [&_h2]:font-semibold [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-2 [&_p]:mb-4 [&_ul]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:mb-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:mb-1 [&_pre]:bg-transparent [&_pre]:border [&_pre]:rounded [&_pre]:p-4 [&_pre]:mb-4 [&_pre]:overflow-x-auto [&_code]:text-green-400 [&_pre_code]:text-green-400 [&_a]:text-green-500 [&_a]:hover:text-green-400 [&_hr]:opacity-20 [&_hr]:my-8">
+      <Content />
+    </div>
+  </main>
+
+  <Footer {...footerContent} />
+</Layout>

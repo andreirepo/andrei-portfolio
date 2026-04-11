@@ -70,5 +70,25 @@ const { title, description, locale, alternateLinks } =
 			Skip to content
 		</a>
 		<slot />
+		<!-- Scroll to top button -->
+		<button
+			id="scroll-top"
+			aria-label="Scroll to top"
+			class="fixed bottom-4 right-4 opacity-0 pointer-events-none transition-all duration-300 hover:text-green-500 text-xs leading-none"
+		>
+			↑
+		</button>
+		<script>
+			const btn = document.getElementById('scroll-top');
+			if (btn) {
+				window.addEventListener('scroll', () => {
+					const show = window.scrollY > 300;
+					btn.classList.toggle('opacity-70', show);
+					btn.classList.toggle('opacity-0', !show);
+					btn.classList.toggle('pointer-events-none', !show);
+				});
+				btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+			}
+		</script>
 	</body>
 </html>

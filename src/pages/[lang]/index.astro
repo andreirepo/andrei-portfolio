@@ -13,7 +13,9 @@ import Header from "@/src/components/Header.astro";
 import Hero from "@/src/components/Hero.astro";
 import Projects from "@/src/components/Projects.astro";
 import Experience from "@/src/components/Experience.astro";
+import LatestPosts from "@/src/components/LatestPosts.astro";
 import Footer from "@/src/components/Footer.astro";
+import { buildNav, buildFooter } from "@/src/lib/page-helpers";
 
 const { t, locale } = useI18n<LocaleSchema>({
   ssg: {
@@ -21,12 +23,7 @@ const { t, locale } = useI18n<LocaleSchema>({
   },
 });
 
-const nav = [
-  { path: `/`, text: t("nav.about") },
-  { path: `#${t("nav.projects")}`, text: t("nav.projects") },
-  { path: `#${t("nav.experience")}`, text: t("nav.experience") },
-  { path: `#${t("nav.contact")}`, text: t("nav.contact") },
-];
+const nav = buildNav(t, locale);
 
 const heroProps = {
   name: "Andrei Repo",
@@ -120,45 +117,7 @@ const alternate = [
   { href: "/en", hreflang: "en" },
 ];
 
-const footerContent = {
-  id: t("nav.contact").toLowerCase(),
-  status: {
-    key: "contact.status",
-    value: t("contact.status"),
-  },
-  heading: {
-    key: "contact.heading",
-    value: t("contact.heading"),
-  },
-  description: {
-    key: "contact.description",
-    value: t("contact.description"),
-  },
-  email_label: {
-    key: "contact.email_label",
-    value: t("contact.email_label"),
-  },
-  email_url: {
-    key: "contact.email_url",
-    value: t("contact.email_url"),
-  },
-  github_label: {
-    key: "contact.github_label",
-    value: t("contact.github_label"),
-  },
-  github_url: {
-    key: "contact.github_url",
-    value: t("contact.github_url"),
-  },
-  linkedin_label: {
-    key: "contact.linkedin_label",
-    value: t("contact.linkedin_label"),
-  },
-  linkedin_url: {
-    key: "contact.linkedin_url",
-    value: t("contact.linkedin_url"),
-  },
-};
+const footerContent = buildFooter(t);
 ---
 
 <Layout
@@ -167,11 +126,18 @@ const footerContent = {
   description={t("description")}
   alternateLinks={alternate}
 >
-  <Header nav={nav} locales={["en", "es"]} currentLocale={locale} resumeLabel={t("nav.resume")} />
+  <Header nav={nav} locales={["en", "es"]} currentLocale={locale} resumeLabel={t("nav.resume")} name="Andrei Repo" />
 
   <main id="main-content">
     <Hero {...heroProps} />
     <Projects {...projectsProps} />
+    <LatestPosts
+      lang={locale}
+      title={t("blog.latest_title")}
+      seeAllLabel={t("blog.see_all")}
+      seeAllHref={`/${locale}/blog`}
+      publishedLabel={t("blog.published")}
+    />
     <Experience {...experienceData} />
   </main>
 

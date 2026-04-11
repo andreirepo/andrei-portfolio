@@ -5,7 +5,8 @@
     "projects": "projects",
     "experience": "experience",
     "contact": "contact",
-    "resume": "Resume"
+    "resume": "Resume",
+    "blog": "blog"
   },
   "hero": {
     "title": "Senior QA Engineer",
@@ -98,5 +99,14 @@
     "github_url": "https://github.com/andreirepo",
     "linkedin_label": "LinkedIn",
     "linkedin_url": "https://linkedin.com/in/andreirepo"
+  },
+  "blog": {
+    "title": "Blog",
+    "empty": "No posts yet. Check back soon.",
+    "back": "← Back to blog",
+    "read_more": "Read more",
+    "published": "Published",
+    "latest_title": "Latest posts",
+    "see_all": "See all posts"
   }
 }

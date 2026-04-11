@@ -17,8 +17,8 @@ interface Props {
 const { heading, content } = Astro.props as Props;
 ---
 
-<section id="skills" class="mt-20 scroll-mt-50">
-    <h2 class="opacity-50 uppercase mb-6">{heading.value}</h2>
+<section id="skills" class="scroll-mt-50">
+    <h2 class="opacity-50 uppercase mb-6 mt-15">{heading.value}</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {
             content.map((skill) => (

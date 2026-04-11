@@ -5,7 +5,8 @@
     "projects": "proyectos",
     "experience": "experiencia",
     "contact": "contacto",
-    "resume": "CV"
+    "resume": "CV",
+    "blog": "blog"
   },
   "hero": {
     "title": "Ingeniero QA Senior",
@@ -98,5 +99,14 @@
     "github_url": "https://github.com/andreirepo",
     "linkedin_label": "LinkedIn",
     "linkedin_url": "https://linkedin.com/in/andreirepo"
+  },
+  "blog": {
+    "title": "Blog",
+    "empty": "Aún no hay artículos. Vuelve pronto.",
+    "back": "← Volver al blog",
+    "read_more": "Leer más",
+    "published": "Publicado",
+    "latest_title": "Últimas entradas",
+    "see_all": "Ver todos los artículos"
   }
 }
