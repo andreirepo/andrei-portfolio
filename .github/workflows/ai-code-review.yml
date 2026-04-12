@@ -47,7 +47,7 @@ jobs:
           PAYLOAD=$(jq -n \
             --arg diff "$DIFF" \
             '{
-              model: "google/gemma-4-26b-a4b",
+              model: "qwen/qwen2.5-coder-14b",
               messages: [
                 {
                   role: "system",
@@ -89,7 +89,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: `## 🤖 AI Code Review\n\n${review}\n\n---\n*Reviewed by [Gemma 4 26B](https://lmstudio.ai) running locally*`
+              body: `## 🤖 AI Code Review\n\n${review}\n\n---\n*Reviewed by [Qwen2.5 Coder 14B](https://lmstudio.ai) running locally*`
             });
 
       - name: Post skip notice
