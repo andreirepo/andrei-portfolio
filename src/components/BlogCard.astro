@@ -28,7 +28,7 @@ const formattedDate = pubDate.toLocaleDateString(lang === 'es' ? 'es-ES' : 'en-U
     </a>
   </div>
   <p class="opacity-50 text-[0.88rem] mb-1">{description}</p>
-  <div class="flex items-center gap-3 text-[0.8rem] opacity-50">
+  <div class="flex flex-wrap items-center gap-2 text-[0.8rem] opacity-50">
     <time datetime={pubDate.toISOString()}>{formattedDate}</time>
     {tags.length > 0 && tags.map((tag) => (
       <span>#{tag}</span>
