@@ -10,9 +10,9 @@
   },
   "hero": {
     "title": "Senior QA Engineer",
-    "p1": "building reliable test automation for SaaS and regulated iGaming platforms. Currently at Lottomart, where I introduced AI-augmented development workflows to help teams write cleaner, more consistent test code.",
-    "p2": "Previously shipped quality tooling at Sketch and Playtech. I care about stable tests, secure pipelines, and making automation easy for the whole team to use.",
-    "p3": "When not testing, you'll find me managing home infrastructure, building full-stack apps, or exploring cloud technologies and open source tools."
+    "p1": "specialising in test automation for SaaS and regulated iGaming. At Lottomart I'm developing AI-augmented workflows to help teams write cleaner, more consistent test code — while keeping the platform stable.",
+    "p2": "Previously at Sketch and Playtech. I believe good automation should be easy for the whole team to use, not just the person who wrote it.",
+    "p3": "When I'm not testing, I play and learn by running a self-hosted home lab."
   },
   "projects": {
     "title": "Projects",

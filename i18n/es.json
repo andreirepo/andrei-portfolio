@@ -10,9 +10,9 @@
   },
   "hero": {
     "title": "Ingeniero QA Senior",
-    "p1": "construyendo automatización de pruebas confiable para plataformas SaaS y de iGaming reguladas. Actualmente en Lottomart, donde introduje flujos de desarrollo asistidos por IA para ayudar a los equipos a escribir código de pruebas más limpio y consistente.",
-    "p2": "Anteriormente entregué herramientas de calidad en Sketch y Playtech. Me importan las pruebas estables, los pipelines seguros y hacer que la automatización sea fácil para todo el equipo.",
-    "p3": "Cuando no estoy probando, me encontrarás gestionando infraestructura en casa, construyendo aplicaciones full-stack o explorando tecnologías cloud y herramientas open source."
+    "p1": "especializado en automatización de pruebas para plataformas SaaS e iGaming regulado. En Lottomart desarrollo flujos de trabajo asistidos por IA para ayudar a los equipos a escribir código de pruebas más limpio y consistente — mientras mantengo la estabilidad de la plataforma.",
+    "p2": "Anteriormente en Sketch y Playtech. Creo que una buena automatización debe ser fácil de usar para todo el equipo, no solo para quien la escribió.",
+    "p3": "Cuando no estoy probando, aprendo y experimento gestionando un home lab propio."
   },
   "projects": {
     "title": "Proyectos",
