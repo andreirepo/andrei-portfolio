@@ -30,12 +30,20 @@ const formattedDate = post.data.pubDate.toLocaleDateString(
 const nav = buildNav(t, locale);
 const footerContent = buildFooter(t);
 
-const alternate = [
-  { href: `/en/blog/${post.id.replace(/^(en|es)\//, "").replace(/\.md$/, "")}`, hreflang: "en" },
-  { href: `/es/blog/${post.id.replace(/^(en|es)\//, "").replace(/\.md$/, "")}`, hreflang: "es" },
-];
+const slug = post.id.replace(/^(en|es)\//, "").replace(/\.md$/, "");
+const postUrl = `https://andreirepo.com/${locale}/blog/${slug}`;
+const enUrl = `/en/blog/${slug}`;
+const esUrl = `/es/blog/${slug}`;
 
-const postUrl = `https://andreirepo.com/${locale}/blog/${post.id.replace(/^(en|es)\//, "").replace(/\.md$/, "")}`;
+// Only include es alternate if a Spanish version of this post exists
+const allPosts = await getCollection("blog", ({ data }) => !data.draft);
+const hasEsVersion = allPosts.some((p) => p.id === `es/${slug}.md`);
+
+const alternate = [
+  { href: enUrl, hreflang: "en" },
+  { href: enUrl, hreflang: "x-default" },
+  ...(hasEsVersion ? [{ href: esUrl, hreflang: "es" }] : []),
+];
 
 const blogPostingSchema = {
   "@context": "https://schema.org",
@@ -55,8 +63,7 @@ const blogPostingSchema = {
     "name": "Andrei Repo",
     "url": "https://andreirepo.com"
   }
-};
----
+};---
 
 <Layout
   locale={locale}
