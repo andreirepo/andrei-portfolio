@@ -1,6 +1,7 @@
 {
   "description": "Senior QA Engineer specializing in highly regulated iGaming, with expertise in test automation, cloud technologies, and quality assurance. Building secure, compliant software solutions.",
   "nav": {
+    "home": "home",
     "about": "about",
     "projects": "projects",
     "experience": "experience",

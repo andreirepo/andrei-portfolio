@@ -8,8 +8,8 @@ A modern, responsive portfolio website for Andrei Repo, a Senior QA Engineer spe
 - 🎨 Styled with [Tailwind CSS](https://tailwindcss.com/)
 - 📱 Fully responsive design
 - 🌐 Internationalization support (EN/ES)
-- 📦 Docker containerization ready
-- 🚀 GitHub Actions CI/CD with automatic rollback
+- 🐳 Docker containerization
+- ⚡ Self-hosted CI/CD via GitHub Actions + SSH
 
 ## About
 
@@ -52,10 +52,11 @@ pnpm dev
 ```
 src/
 ├── components/          # Astro components
-├── layouts/            # Layout templates
-├── pages/              # Page routes
-├── styles/             # Global styles
-└── types/              # TypeScript definitions
+├── layouts/             # Layout templates
+├── pages/               # Page routes
+├── content/             # Blog posts (EN/ES)
+├── styles/              # Global styles
+└── types/               # TypeScript definitions
 ```
 
 ## Content Sections
@@ -63,7 +64,7 @@ src/
 - **About**: Professional summary and QA engineering expertise
 - **Experience**: Work history at Lottomart, Sketch, and Playtech
 - **Projects**: Task Management Platform showcase
-- **Contact**: Professional contact information with availability status
+- **Blog**: Technical articles in English and Spanish
 
 ## Docker Setup
 
@@ -79,14 +80,28 @@ docker run -p 80:80 andrei-portfolio
 
 ## Deployment
 
-This portfolio uses Docker with Traefik for reverse proxy and automatic HTTPS via Let's Encrypt.
+The site is self-hosted behind [Traefik](https://traefik.io/) as a reverse proxy, with HTTPS handled via Let's Encrypt and DNS managed through Cloudflare.
 
-### GitHub Actions
+### CI/CD Pipeline (GitHub Actions)
 
-The repository includes workflows for:
-- Automated builds and testing
-- Docker image building and pushing to GHCR
-- Deployment to production server with automatic rollback on health check failure
+On every push to `main`, the pipeline:
+
+1. Builds and type-checks the app
+2. Builds and pushes a Docker image to GHCR
+3. SSHs into the production server and runs `docker compose up`
+4. Verifies the site is live via an external health check
+5. Purges the Cloudflare cache
+6. Rolls back automatically if the health check fails
+
+### Required GitHub Secrets
+
+| Secret | Description |
+|---|---|
+| `SSH_PRIVATE_KEY` | Private key for SSH access to the server |
+| `SERVER_USER` | SSH username |
+| `SERVER_HOST` | Server hostname or IP |
+| `CLOUDFLARE_ZONE_ID` | Cloudflare zone ID for cache purging |
+| `CLOUDFLARE_API_TOKEN` | Cloudflare API token |
 
 ## License
 
