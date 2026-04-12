@@ -7,9 +7,11 @@ interface Props {
 	description: string;
 	locale: string;
 	alternateLinks?: { href: string; hreflang: string }[];
+	ogType?: 'website' | 'article';
+	schema?: Record<string, unknown>;
 }
 
-const { title, description, locale, alternateLinks } =
+const { title, description, locale, alternateLinks, ogType = 'website', schema } =
 	Astro.props as Props;
 ---
 
@@ -31,7 +33,7 @@ const { title, description, locale, alternateLinks } =
 			description={description}
 			image={OGImage}
 			enableClientRouter
-			ogType="website"
+			ogType={ogType}
 			favicons={[
 				{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
 				{ rel: "manifest", href: "/site.webmanifest" },
@@ -62,6 +64,7 @@ const { title, description, locale, alternateLinks } =
 				]
 			}
 		</script>
+		{schema && <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />}
 		<!-- Umami Analytics -->
 		<script defer src="https://analytics.andreirepo.com/script.js" data-website-id="6f047764-b516-4fa2-a909-fe4fa0ac5d48"></script>
 	</head>

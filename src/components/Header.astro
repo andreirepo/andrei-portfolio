@@ -34,7 +34,7 @@ const RESUME_VERSION = "1";
                 <I18NDebug key={item.text}>
                     <a
                         class="opacity-50 transition-all duration-200 hover:opacity-100 text-[0.8rem] md:text-[0.85rem]"
-                        href={`/${currentLocale}/${item.path}`}
+                        href={item.path.startsWith('/') ? item.path : `/${currentLocale}/${item.path}`}
                     >
                         {item.text}
                     </a>

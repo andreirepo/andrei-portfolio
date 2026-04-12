@@ -29,12 +29,42 @@ const formattedDate = post.data.pubDate.toLocaleDateString(
 
 const nav = buildNav(t, locale);
 const footerContent = buildFooter(t);
+
+const alternate = [
+  { href: `/en/blog/${post.id.replace(/^(en|es)\//, "").replace(/\.md$/, "")}`, hreflang: "en" },
+  { href: `/es/blog/${post.id.replace(/^(en|es)\//, "").replace(/\.md$/, "")}`, hreflang: "es" },
+];
+
+const postUrl = `https://andreirepo.com/${locale}/blog/${post.id.replace(/^(en|es)\//, "").replace(/\.md$/, "")}`;
+
+const blogPostingSchema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": post.data.title,
+  "description": post.data.description,
+  "datePublished": post.data.pubDate.toISOString(),
+  "url": postUrl,
+  "keywords": post.data.tags.join(", "),
+  "author": {
+    "@type": "Person",
+    "name": "Andrei Repo",
+    "url": "https://andreirepo.com"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Andrei Repo",
+    "url": "https://andreirepo.com"
+  }
+};
 ---
 
 <Layout
   locale={locale}
   title={`${post.data.title} – Andrei Repo`}
   description={post.data.description}
+  ogType="article"
+  alternateLinks={alternate}
+  schema={blogPostingSchema}
 >
   <Header nav={nav} locales={["en", "es"]} currentLocale={locale} resumeLabel={t("nav.resume")} name="Andrei Repo" />
 

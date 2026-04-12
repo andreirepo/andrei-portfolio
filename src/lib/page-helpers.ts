@@ -2,10 +2,10 @@ import type { LocaleSchema } from "@/src/types";
 
 type T = (key: keyof LocaleSchema | string) => string;
 
-export function buildNav(t: T, locale: string) {
+export function buildNav(t: T, locale: string, isHome = false) {
   return [
     { path: `#${t("nav.projects")}`, text: t("nav.projects") },
-    { path: `blog`, text: t("nav.blog") },
+    { path: isHome ? `#blog` : `/${locale}/#blog`, text: t("nav.blog") },
     { path: `#${t("nav.experience")}`, text: t("nav.experience") },
     { path: `#${t("nav.contact")}`, text: t("nav.contact") },
   ];
