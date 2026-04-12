@@ -1,0 +1,105 @@
+name: AI Code Review
+
+on:
+  pull_request:
+    branches: [main, master]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  ai-review:
+    runs-on: self-hosted
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check LM Studio availability
+        id: lmstudio-check
+        run: |
+          if curl -sf --max-time 5 http://100.115.80.116:1234/v1/models > /dev/null 2>&1; then
+            echo "available=true" >> $GITHUB_OUTPUT
+            echo "LM Studio is available"
+          else
+            echo "available=false" >> $GITHUB_OUTPUT
+            echo "LM Studio is not available, skipping review"
+          fi
+
+      - name: Get PR diff
+        id: diff
+        if: steps.lmstudio-check.outputs.available == 'true'
+        run: |
+          git diff origin/${{ github.base_ref }}...HEAD \
+            -- '*.ts' '*.tsx' '*.astro' '*.js' '*.mjs' '*.css' '*.json' \
+            | head -c 12000 > /tmp/pr_diff.txt
+          echo "diff_size=$(wc -c < /tmp/pr_diff.txt)" >> $GITHUB_OUTPUT
+
+      - name: Run AI code review
+        id: ai-review
+        if: steps.lmstudio-check.outputs.available == 'true' && steps.diff.outputs.diff_size != '0'
+        run: |
+          DIFF=$(cat /tmp/pr_diff.txt)
+
+          PAYLOAD=$(jq -n \
+            --arg diff "$DIFF" \
+            '{
+              model: "google/gemma-4-26b-a4b",
+              messages: [
+                {
+                  role: "system",
+                  content: "You are a senior software engineer doing a code review. Be concise and practical. Focus on: bugs, security issues, performance problems, and code quality. Skip minor style issues. Format your response in markdown with clear sections. If the code looks good, say so briefly."
+                },
+                {
+                  role: "user",
+                  content: ("Please review this pull request diff:\n\n```diff\n" + $diff + "\n```")
+                }
+              ],
+              temperature: 0.3,
+              max_tokens: 1500,
+              stream: false
+            }')
+
+          RESPONSE=$(curl -sf --max-time 120 \
+            -X POST http://100.115.80.116:1234/v1/chat/completions \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD")
+
+          if [ $? -ne 0 ]; then
+            echo "review_failed=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          REVIEW=$(echo "$RESPONSE" | jq -r '.choices[0].message.content // "No review generated"')
+          echo "$REVIEW" > /tmp/review.txt
+          echo "review_failed=false" >> $GITHUB_OUTPUT
+
+      - name: Post review comment
+        if: steps.lmstudio-check.outputs.available == 'true' && steps.ai-review.outputs.review_failed == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const review = fs.readFileSync('/tmp/review.txt', 'utf8');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `## 🤖 AI Code Review\n\n${review}\n\n---\n*Reviewed by [Gemma 4 26B](https://lmstudio.ai) running locally*`
+            });
+
+      - name: Post skip notice
+        if: steps.lmstudio-check.outputs.available == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `## 🤖 AI Code Review\n\n⚠️ LM Studio is currently offline — skipping automated review.`
+            });
