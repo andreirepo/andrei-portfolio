@@ -21,7 +21,7 @@ jobs:
       - name: Check LM Studio availability
         id: lmstudio-check
         run: |
-          if curl -sf --max-time 5 http://100.115.80.116:1234/v1/models > /dev/null 2>&1; then
+          if curl -sf --max-time 5 ${{ secrets.LMSTUDIO_URL }}/v1/models > /dev/null 2>&1; then
             echo "available=true" >> $GITHUB_OUTPUT
             echo "LM Studio is available"
           else
@@ -35,7 +35,7 @@ jobs:
         run: |
           git diff origin/${{ github.base_ref }}...HEAD \
             -- '*.ts' '*.tsx' '*.astro' '*.js' '*.mjs' '*.css' '*.json' \
-            | head -c 12000 > /tmp/pr_diff.txt
+            | head -c 8000 > /tmp/pr_diff.txt
           echo "diff_size=$(wc -c < /tmp/pr_diff.txt)" >> $GITHUB_OUTPUT
 
       - name: Run AI code review
@@ -59,19 +59,14 @@ jobs:
                 }
               ],
               temperature: 0.3,
-              max_tokens: 1500,
+              max_tokens: 1000,
               stream: false
             }')
 
-          RESPONSE=$(curl -sf --max-time 120 \
-            -X POST http://100.115.80.116:1234/v1/chat/completions \
+          RESPONSE=$(curl -sf --max-time 180 \
+            -X POST ${{ secrets.LMSTUDIO_URL }}/v1/chat/completions \
             -H "Content-Type: application/json" \
-            -d "$PAYLOAD")
-
-          if [ $? -ne 0 ]; then
-            echo "review_failed=true" >> $GITHUB_OUTPUT
-            exit 0
-          fi
+            -d "$PAYLOAD") || { echo "review_failed=true" >> $GITHUB_OUTPUT; exit 0; }
 
           REVIEW=$(echo "$RESPONSE" | jq -r '.choices[0].message.content // "No review generated"')
           echo "$REVIEW" > /tmp/review.txt

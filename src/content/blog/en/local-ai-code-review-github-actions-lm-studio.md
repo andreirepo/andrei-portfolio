@@ -83,8 +83,8 @@ PAYLOAD=$(jq -n --arg diff "$DIFF" '{
   stream: false
 }')
 
-curl -sf --max-time 120 \
-  -X POST http://100.115.80.116:1234/v1/chat/completions \
+curl -sf --max-time 180 \
+  -X POST ${{ secrets.LMSTUDIO_URL }}/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d "$PAYLOAD"
 ```
