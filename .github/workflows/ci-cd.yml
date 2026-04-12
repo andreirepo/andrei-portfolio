@@ -10,7 +10,7 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
   NETWORK_NAME: todo-app_traefik-net
-  DEPLOY_PATH: "/home/${{ secrets.SERVER_USER }}/apps/andrei-portfolio"
+  DEPLOY_PATH: "/home/${{ secrets.SERVER_USER }}/apps/github/andrei-portfolio"
 
 jobs:
   build-and-test:
@@ -151,6 +151,13 @@ jobs:
           done
           exit 1
 
+      - name: Purge Cloudflare cache
+        run: |
+          curl -s -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/purge_cache" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}'
+
   rollback:
     needs: health-check
     runs-on: self-hosted
@@ -172,3 +179,18 @@ jobs:
             docker compose -f docker-compose.yml pull website
             docker compose -f docker-compose.yml up -d website
           EOF
+
+  cleanup-old-packages:
+    needs: health-check
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && success()
+    permissions:
+      packages: write
+    steps:
+      - name: Delete old package versions
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: ${{ github.event.repository.name }}
+          package-type: container
+          min-versions-to-keep: 3
+          delete-only-untagged-versions: false
