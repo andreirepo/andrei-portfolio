@@ -127,8 +127,8 @@ jobs:
           ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} <<'EOF'
             cd ${{ env.DEPLOY_PATH }}
             docker network ls | grep -q "${{ env.NETWORK_NAME }}" || docker network create "${{ env.NETWORK_NAME }}"
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-            docker compose -f docker-compose.yml up -d website
+            docker compose -f docker-compose.yml pull website
+            docker compose -f docker-compose.yml up -d --force-recreate website
           EOF
 
   health-check:
