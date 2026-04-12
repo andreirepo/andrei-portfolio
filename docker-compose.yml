@@ -4,16 +4,12 @@ services:
     container_name: andrei-portfolio-site
     restart: always
     networks:
-      # We MUST use the same network as Traefik
       - todo-app_traefik-net
-    volumes:
-      - /home/anre/apps/github/andrei-portfolio/nginx-config/default.conf:/etc/nginx/conf.d/default.conf:ro
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.andrei-portfolio.rule=Host(`andreirepo.com`) || Host(`www.andreirepo.com`)'
       - 'traefik.http.routers.andrei-portfolio.entrypoints=web'
 
 networks:
-  # Connecting to the existing Traefik network
   todo-app_traefik-net:
     external: true
