@@ -10,9 +10,10 @@ interface Props {
     currentLocale:string;
     resumeLabel?: string;
     name?: string;
+    homeLabel?: string;
 }
 
-const { nav, locales, currentLocale, resumeLabel = "Resume", name } = Astro.props as Props
+const { nav, locales, currentLocale, resumeLabel = "Resume", name, homeLabel = "home" } = Astro.props as Props
 
 // Cache busting: use git commit hash or timestamp
 const RESUME_VERSION = "1";
@@ -26,7 +27,7 @@ const RESUME_VERSION = "1";
                 href={`/${currentLocale}`}
                 class="opacity-50 transition-all duration-200 hover:opacity-100 text-[0.8rem] md:text-[0.85rem] py-0.5"
             >
-                home
+                {homeLabel}
             </a>
         )}
         {

@@ -1,6 +1,7 @@
 {
   "description": "Ingeniero QA Senior especializado en iGaming altamente regulado, con experiencia en automatización de pruebas, tecnologías en la nube y aseguramiento de calidad. Construyendo soluciones seguras y compatibles.",
   "nav": {
+    "home": "inicio",
     "about": "info",
     "projects": "proyectos",
     "experience": "experiencia",
