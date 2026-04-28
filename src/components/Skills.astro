@@ -17,12 +17,12 @@ interface Props {
 const { heading, content } = Astro.props as Props;
 ---
 
-<section id="skills" class="scroll-mt-50">
+<section data-testid="skills-section" id="skills" class="scroll-mt-50">
     <h2 class="text-muted-foreground uppercase mb-6 mt-15">{heading.value}</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {
             content.map((skill) => (
-                <article class="border p-4">
+                <article data-testid="skill-card" class="border p-4">
                     <p class="text-green-accent font-semibold mb-1">
                         {">"}{skill.title.value}
                     </p>

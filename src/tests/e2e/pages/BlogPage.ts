@@ -2,7 +2,7 @@ import type { Page } from 'playwright';
 import { BasePage } from './BasePage.js';
 
 /**
- * BlogPage — page object for /[lang]/blog (blog index).
+ * BlogPage — page object for /[lang]/blog using data-testid selectors.
  */
 export class BlogPage extends BasePage {
   constructor(page: Page, baseUrl?: string) {
@@ -16,42 +16,33 @@ export class BlogPage extends BasePage {
   // ── Page elements ─────────────────────────────────────────────────────────
 
   get heading() {
-    return this.page.locator('main h1');
+    return this.page.locator('[data-testid="blog-index-heading"]');
   }
 
   get postList() {
-    return this.page.locator('main ul');
+    return this.page.locator('[data-testid="blog-post-list"]');
   }
 
   get postItems() {
-    return this.page.locator('main li');
+    return this.page.locator('[data-testid="blog-post-list"] li');
   }
 
   get postLinks() {
-    return this.page.locator('main li a[href*="/blog/"]').filter({ hasNot: this.page.locator('[href*="/tag/"]') });
+    // Card links — the outer <a> wrapping each card (not tag links)
+    return this.page.locator('[data-testid="blog-post-list"] li > a');
   }
 
   get tagLinks() {
-    return this.page.locator('main a[href*="/blog/tag/"]');
-  }
-
-  get emptyState() {
-    return this.page.locator('main p');
+    return this.page.locator('[data-testid="blog-post-list"] a[href*="/blog/tag/"]');
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────
 
   async getPostTitles(): Promise<string[]> {
-    return this.postLinks.allTextContents();
-  }
-
-  async clickFirstPost() {
-    await this.postLinks.first().click();
-    await this.page.waitForLoadState('networkidle');
-  }
-
-  async clickTag(tagText: string) {
-    await this.page.locator(`main a[href*="/blog/tag/"]`, { hasText: tagText }).first().click();
-    await this.page.waitForLoadState('networkidle');
+    // Get the title text from each card's <p> heading inside the post link
+    const titles = await this.page
+      .locator('[data-testid="blog-post-list"] li > a p:first-child')
+      .allTextContents();
+    return titles;
   }
 }

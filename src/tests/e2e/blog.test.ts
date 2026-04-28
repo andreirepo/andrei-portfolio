@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
 import { chromium } from 'playwright';
 import type { Browser, Page } from 'playwright';
 import { BlogPage } from './pages/BlogPage.js';
@@ -196,7 +196,7 @@ describe('Blog — Post Page', () => {
   });
 
   it('should render the blog nav item as active', async () => {
-    const blogNavLink = page.locator('header nav a[href="/en/blog"]');
+    const blogNavLink = page.locator('[data-testid="nav-blog"]');
     const classes = await blogNavLink.getAttribute('class');
     expect(classes).toContain('text-foreground');
     expect(classes).not.toContain('text-muted-foreground');
@@ -266,7 +266,7 @@ describe('Blog — Tag Page', () => {
   });
 
   it('should render the blog nav item as active on tag page', async () => {
-    const blogNavLink = page.locator('header nav a[href="/en/blog"]');
+    const blogNavLink = page.locator('[data-testid="nav-blog"]');
     const classes = await blogNavLink.getAttribute('class');
     expect(classes).toContain('text-foreground');
   });

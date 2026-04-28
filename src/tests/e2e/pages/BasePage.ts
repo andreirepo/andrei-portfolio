@@ -1,7 +1,7 @@
 import type { Page } from 'playwright';
 
 /**
- * BasePage — shared methods and selectors used across all page objects.
+ * BasePage — shared methods and selectors using data-testid attributes.
  */
 export class BasePage {
   readonly page: Page;
@@ -25,24 +25,23 @@ export class BasePage {
   // ── Header ────────────────────────────────────────────────────────────────
 
   get header() {
-    return this.page.locator('header');
+    return this.page.locator('[data-testid="site-header"]');
   }
 
   get navLinks() {
-    return this.page.locator('header nav a');
+    return this.page.locator('[data-testid="main-nav"] a');
   }
 
   get themeToggle() {
-    return this.page.locator('#theme-toggle');
+    return this.page.locator('[data-testid="theme-toggle"]');
   }
 
   get resumeButton() {
-    return this.page.locator('a[href*="Resume.pdf"]');
+    return this.page.locator('[data-testid="resume-button"]');
   }
 
   localeLink(locale: 'en' | 'es') {
-    // Scope to the locale switcher div to avoid matching the home nav link
-    return this.page.locator(`header div a[href="/${locale}"].uppercase`);
+    return this.page.locator(`[data-testid="locale-${locale}"]`);
   }
 
   // ── Theme ─────────────────────────────────────────────────────────────────
@@ -72,10 +71,10 @@ export class BasePage {
   // ── Footer ────────────────────────────────────────────────────────────────
 
   get footer() {
-    return this.page.locator('footer');
+    return this.page.locator('[data-testid="site-footer"]');
   }
 
   get footerLinks() {
-    return this.page.locator('footer a');
+    return this.page.locator('[data-testid="site-footer"] a');
   }
 }

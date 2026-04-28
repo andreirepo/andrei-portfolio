@@ -2,7 +2,7 @@ import type { Page } from 'playwright';
 import { BasePage } from './BasePage.js';
 
 /**
- * TagPage — page object for /[lang]/blog/tag/[tag].
+ * TagPage — page object for /[lang]/blog/tag/[tag] using data-testid selectors.
  */
 export class TagPage extends BasePage {
   constructor(page: Page, baseUrl?: string) {
@@ -16,27 +16,20 @@ export class TagPage extends BasePage {
   // ── Page elements ─────────────────────────────────────────────────────────
 
   get tagHeading() {
-    return this.page.locator('main h1');
-  }
-
-  get postCount() {
-    return this.page.locator('main span.text-muted-foreground');
+    return this.page.locator('[data-testid="tag-heading"]');
   }
 
   get backLink() {
-    return this.page.locator('main a[href$="/blog"]');
+    return this.page.locator('[data-testid="back-link"]');
   }
 
   get postItems() {
-    return this.page.locator('main li');
+    return this.page.locator('[data-testid="tag-post-list"] li');
   }
 
   get postLinks() {
-    return this.page.locator('main li a[href*="/blog/"]').filter({ hasNot: this.page.locator('[href*="/tag/"]') });
-  }
-
-  get activeTagLinks() {
-    return this.page.locator('main a[href*="/blog/tag/"].border-green-accent');
+    // Card links — the outer <a> wrapping each card (not tag links)
+    return this.page.locator('[data-testid="tag-post-list"] li > a');
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────

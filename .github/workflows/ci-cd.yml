@@ -70,17 +70,12 @@ jobs:
 
       - name: Install Playwright browsers and system dependencies if missing
         run: |
-          # Check if Chromium executable is already installed
-          CHROMIUM_PATH=$(pnpm exec playwright install --dry-run chromium 2>/dev/null | grep -oP '(?<=Chromium )[\d.]+' | head -1 || true)
           if pnpm exec playwright install --dry-run chromium 2>&1 | grep -q "already installed"; then
             echo "Chromium already installed, skipping browser install"
           else
             echo "Chromium not found, installing..."
             pnpm exec playwright install chromium
           fi
-
-          # Check and install system dependencies (apt packages) if missing
-          # playwright install --with-deps is idempotent but slow; only run if deps are absent
           if ! dpkg -l libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 \
             libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2 \
             > /dev/null 2>&1; then
@@ -100,9 +95,7 @@ jobs:
         run: |
           pnpm preview --port 4321 &
           SERVER_PID=$!
-          echo "Preview server PID: $SERVER_PID"
 
-          # Wait for server to be ready
           for i in {1..15}; do
             if curl -sf http://localhost:4321/en > /dev/null 2>&1; then
               echo "Server is ready"
@@ -112,30 +105,91 @@ jobs:
             sleep 2
           done
 
-          # Run accessibility tests
-          pnpm exec vitest --run src/tests/accessibility-contrast-bug-condition.test.ts src/tests/accessibility-full-audit.test.ts
-          A11Y_EXIT=$?
-
-          # Run e2e tests
-          pnpm exec vitest --run src/tests/e2e
-          E2E_EXIT=$?
+          pnpm exec vitest --run \
+            src/tests/accessibility-contrast-bug-condition.test.ts \
+            src/tests/accessibility-full-audit.test.ts
+          TEST_EXIT=$?
 
           kill $SERVER_PID 2>/dev/null || true
+          exit $TEST_EXIT
 
-          # Fail if either test suite failed
-          [ $A11Y_EXIT -eq 0 ] && [ $E2E_EXIT -eq 0 ]
-
-      - name: Upload test results on failure
+      - name: Upload accessibility test results on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: accessibility-test-results
-          path: |
-            test-results/
-            .kiro/specs/accessibility-contrast-fix/TEST_FINDINGS.md
+          path: .kiro/specs/accessibility-contrast-fix/TEST_FINDINGS.md
+
+  e2e-tests:
+    needs: build-and-test
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers and system dependencies if missing
+        run: |
+          if pnpm exec playwright install --dry-run chromium 2>&1 | grep -q "already installed"; then
+            echo "Chromium already installed, skipping browser install"
+          else
+            echo "Chromium not found, installing..."
+            pnpm exec playwright install chromium
+          fi
+          if ! dpkg -l libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 \
+            libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2 \
+            > /dev/null 2>&1; then
+            echo "System dependencies missing, installing..."
+            pnpm exec playwright install-deps chromium
+          else
+            echo "System dependencies already present, skipping"
+          fi
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-files
+          path: dist/
+
+      - name: Start preview server and run e2e tests
+        run: |
+          pnpm preview --port 4321 &
+          SERVER_PID=$!
+
+          for i in {1..15}; do
+            if curl -sf http://localhost:4321/en > /dev/null 2>&1; then
+              echo "Server is ready"
+              break
+            fi
+            echo "Waiting for server... attempt $i"
+            sleep 2
+          done
+
+          pnpm exec vitest --run src/tests/e2e
+          TEST_EXIT=$?
+
+          kill $SERVER_PID 2>/dev/null || true
+          exit $TEST_EXIT
+
+      - name: Upload e2e test results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-test-results
+          path: test-results/
 
   build-and-push-image:
-    needs: [build-and-test, accessibility-audit]
+    needs: [build-and-test, accessibility-audit, e2e-tests]
     runs-on: self-hosted
     permissions:
       contents: read

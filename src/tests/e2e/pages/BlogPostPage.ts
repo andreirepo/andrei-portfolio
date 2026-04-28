@@ -2,7 +2,7 @@ import type { Page } from 'playwright';
 import { BasePage } from './BasePage.js';
 
 /**
- * BlogPostPage — page object for /[lang]/blog/[slug] (individual post).
+ * BlogPostPage — page object for /[lang]/blog/[slug] using data-testid selectors.
  */
 export class BlogPostPage extends BasePage {
   constructor(page: Page, baseUrl?: string) {
@@ -16,27 +16,27 @@ export class BlogPostPage extends BasePage {
   // ── Page elements ─────────────────────────────────────────────────────────
 
   get backLink() {
-    return this.page.locator('#back-link');
+    return this.page.locator('[data-testid="back-link"]');
   }
 
   get postHeading() {
-    return this.page.locator('main header h1');
+    return this.page.locator('[data-testid="post-heading"]');
   }
 
   get postDescription() {
-    return this.page.locator('main header p');
+    return this.page.locator('[data-testid="post-description"]');
   }
 
   get publishedDate() {
-    return this.page.locator('main header time');
+    return this.page.locator('[data-testid="post-date"]');
   }
 
   get tagLinks() {
-    return this.page.locator('main header a[href*="/blog/tag/"]');
+    return this.page.locator('[data-testid="post-header"] a[href*="/blog/tag/"]');
   }
 
   get postContent() {
-    return this.page.locator('main .prose');
+    return this.page.locator('[data-testid="post-content"]');
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────
@@ -47,11 +47,6 @@ export class BlogPostPage extends BasePage {
 
   async clickBackLink() {
     await this.backLink.click();
-    await this.page.waitForLoadState('networkidle');
-  }
-
-  async clickTag(tagText: string) {
-    await this.page.locator('main header a[href*="/blog/tag/"]', { hasText: tagText }).click();
     await this.page.waitForLoadState('networkidle');
   }
 }
