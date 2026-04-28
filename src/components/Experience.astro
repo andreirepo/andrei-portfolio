@@ -18,7 +18,7 @@ interface Props {
 const { title, jobs } = Astro.props as Props;
 ---
 
-<section id={title.value.toLowerCase()} class="scroll-mt-50">
+<section data-testid="experience-section" id={title.value.toLowerCase()} class="scroll-mt-50">
     <h2 class="text-muted-foreground uppercase mb-6 mt-15">
         <I18NDebug key={title.key}>
             {title.value}
@@ -27,7 +27,7 @@ const { title, jobs } = Astro.props as Props;
     {
         jobs.map((job) => (
             <ul>
-                <li class="mb-4 grid grid-cols-1 md:grid-cols-10">
+                <li data-testid="experience-item" class="mb-4 grid grid-cols-1 md:grid-cols-10">
                     <span class="text-muted-foreground text-sm col-span-2">
                         <I18NDebug key={job.period.key}>
                             {job.period.value}

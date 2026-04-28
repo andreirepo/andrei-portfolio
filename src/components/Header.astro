@@ -33,11 +33,12 @@ function isActive(path: string): boolean {
 }
 ---
 
-<header class="py-4 md:py-8 px-5 md:px-0 flex items-center justify-between flex-col md:flex-row fixed top-0 left-1/2 -translate-x-1/2 bg-background z-40 w-full max-w-2xl" style="box-sizing: border-box;">
+<header data-testid="site-header" class="py-4 md:py-8 px-5 md:px-0 flex items-center justify-between flex-col md:flex-row fixed top-0 left-1/2 -translate-x-1/2 bg-background z-40 w-full max-w-2xl" style="box-sizing: border-box;">
     <!-- Nav links -->
-    <nav class="flex items-center flex-wrap gap-x-3 gap-y-1 order-2 md:order-1 flex-1 justify-center md:justify-start w-full md:w-auto pb-1 md:pb-0" aria-label="Main navigation">
+    <nav data-testid="main-nav" class="flex items-center flex-wrap gap-x-3 gap-y-1 order-2 md:order-1 flex-1 justify-center md:justify-start w-full md:w-auto pb-1 md:pb-0" aria-label="Main navigation">
         {name && (
             <a
+                data-testid="nav-home"
                 href={`/${currentLocale}`}
                 class="text-muted-foreground transition-all duration-200 hover:text-foreground text-[0.8rem] md:text-[0.85rem] py-0.5"
             >
@@ -48,6 +49,7 @@ function isActive(path: string): boolean {
             nav.map((item) => (
                 <I18NDebug key={item.text}>
                     <a
+                        data-testid={`nav-${item.text.toLowerCase()}`}
                         class={cls(
                             "transition-all duration-200 text-[0.8rem] md:text-[0.85rem] whitespace-nowrap py-0.5",
                             isActive(item.path) ? "text-foreground" : "text-muted-foreground hover:text-foreground"
@@ -67,6 +69,7 @@ function isActive(path: string): boolean {
 
         <!-- Resume download link -->
         <a
+            data-testid="resume-button"
             href={`/assets/AndreiRepoResume.pdf?v=${RESUME_VERSION}`}
             target="_blank"
             rel="noopener noreferrer"
@@ -79,6 +82,7 @@ function isActive(path: string): boolean {
         <!-- Appearance toggle -->
         <button
             id="theme-toggle"
+            data-testid="theme-toggle"
             aria-label="Toggle appearance"
             class="text-muted-foreground hover:text-foreground transition-all duration-200 flex items-center justify-center w-6 h-6"
         >
@@ -94,10 +98,10 @@ function isActive(path: string): boolean {
         </button>
 
         <!-- Locale switcher -->
-        <div class="flex items-center gap-1">
+        <div data-testid="locale-switcher" class="flex items-center gap-1">
             {
                 locales.map(item =>
-                    <a href={`/${item.toLowerCase()}`} class={cls("uppercase text-[0.8rem] md:text-[0.9rem] hover:text-foreground cursor-pointer text-muted-foreground transition-all duration-200", item === currentLocale.toLowerCase() && "text-foreground")}>
+                    <a data-testid={`locale-${item.toLowerCase()}`} href={`/${item.toLowerCase()}`} class={cls("uppercase text-[0.8rem] md:text-[0.9rem] hover:text-foreground cursor-pointer text-muted-foreground transition-all duration-200", item === currentLocale.toLowerCase() && "text-foreground")}>
                         {item}
                     </a>
                     <span class="last:hidden text-muted-foreground text-[0.8rem] md:text-[0.9rem]">/</span>

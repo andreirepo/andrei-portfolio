@@ -60,14 +60,15 @@ const alternate = [
 
   <main id="main-content" class="mt-40 mb-24">
     <a
+      data-testid="back-link"
       href={`/${locale}/blog`}
       class="text-xs text-muted-foreground hover:text-foreground transition-colors duration-200 mb-8 inline-block"
     >
       {t("blog.back")}
     </a>
 
-    <div class="flex items-center gap-3 mb-8">
-      <h1 class="text-xl font-semibold">#{tag}</h1>
+    <div data-testid="tag-page-header" class="flex items-center gap-3 mb-8">
+      <h1 data-testid="tag-heading" class="text-xl font-semibold">#{tag}</h1>
       <span class="text-sm text-muted-foreground">
         {posts.length} {posts.length === 1 ? t("blog.tag_post_singular") : t("blog.tag_post_plural")}
       </span>
@@ -76,7 +77,7 @@ const alternate = [
     {posts.length === 0 ? (
       <p class="text-muted-foreground">{t("blog.empty")}</p>
     ) : (
-      <ul class="space-y-1">
+      <ul data-testid="tag-post-list" class="space-y-1">
         {posts.map((post) => {
           const slug = post.id.replace(/^(en|es)\//, "").replace(/\.md$/, "");
           return (
