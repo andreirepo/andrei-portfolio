@@ -10,7 +10,9 @@
     "check-sync": "astro-i18n-check --base en",
     "test": "vitest --run",
     "test:watch": "vitest",
-    "test:ui": "vitest --ui"
+    "test:ui": "vitest --ui",
+    "test:e2e": "vitest --run src/tests/e2e",
+    "test:a11y": "vitest --run src/tests/accessibility-contrast-bug-condition.test.ts src/tests/accessibility-full-audit.test.ts"
   },
   "dependencies": {
     "@ariaskit/astro-i18n": "^0.0.8",

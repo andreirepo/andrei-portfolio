@@ -114,10 +114,16 @@ jobs:
 
           # Run accessibility tests
           pnpm exec vitest --run src/tests/accessibility-contrast-bug-condition.test.ts src/tests/accessibility-full-audit.test.ts
-          TEST_EXIT=$?
+          A11Y_EXIT=$?
+
+          # Run e2e tests
+          pnpm exec vitest --run src/tests/e2e
+          E2E_EXIT=$?
 
           kill $SERVER_PID 2>/dev/null || true
-          exit $TEST_EXIT
+
+          # Fail if either test suite failed
+          [ $A11Y_EXIT -eq 0 ] && [ $E2E_EXIT -eq 0 ]
 
       - name: Upload test results on failure
         if: failure()
