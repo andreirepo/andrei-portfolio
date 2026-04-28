@@ -2,7 +2,6 @@ import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import { chromium } from 'playwright';
 import type { Browser, Page } from 'playwright';
 import { HomePage } from './pages/HomePage.js';
-import { BasePage } from './pages/BasePage.js';
 
 /**
  * Navigation E2E Tests
@@ -13,6 +12,10 @@ import { BasePage } from './pages/BasePage.js';
  * - Locale switcher between /en and /es
  * - Section anchors are present in the DOM
  * - Footer contact links
+ *
+ * Note: Uses Playwright locator queries with vitest assertions.
+ * Playwright's expect matchers (toBeVisible, toBeAttached) are not available
+ * when using vitest as the runner — we use .count() > 0 and .isVisible() instead.
  */
 
 describe('Navigation — Header', () => {
@@ -39,14 +42,14 @@ describe('Navigation — Header', () => {
   });
 
   it('should render the header with nav links', async () => {
-    await expect(homePage.header).toBeVisible();
+    expect(await homePage.header.isVisible()).toBe(true);
     const count = await homePage.navLinks.count();
     expect(count).toBeGreaterThan(0);
   });
 
   it('should render the resume button with correct attributes', async () => {
     const btn = homePage.resumeButton;
-    await expect(btn).toBeVisible();
+    expect(await btn.isVisible()).toBe(true);
     const href = await btn.getAttribute('href');
     expect(href).toContain('Resume.pdf');
     const target = await btn.getAttribute('target');
@@ -56,10 +59,8 @@ describe('Navigation — Header', () => {
   });
 
   it('should render locale switcher links for en and es', async () => {
-    const enLink = homePage.localeLink('en');
-    const esLink = homePage.localeLink('es');
-    await expect(enLink).toBeVisible();
-    await expect(esLink).toBeVisible();
+    expect(await homePage.localeLink('en').isVisible()).toBe(true);
+    expect(await homePage.localeLink('es').isVisible()).toBe(true);
   });
 });
 
@@ -103,15 +104,13 @@ describe('Navigation — Theme Toggle', () => {
   it('should restore dark mode after page reload', async () => {
     await homePage.setTheme('dark');
     await page.reload({ waitUntil: 'networkidle' });
-    const isDark = await homePage.isDarkMode();
-    expect(isDark).toBe(true);
+    expect(await homePage.isDarkMode()).toBe(true);
   });
 
   it('should restore light mode after page reload', async () => {
     await homePage.setTheme('light');
     await page.reload({ waitUntil: 'networkidle' });
-    const isDark = await homePage.isDarkMode();
-    expect(isDark).toBe(false);
+    expect(await homePage.isDarkMode()).toBe(false);
   });
 });
 
@@ -139,25 +138,26 @@ describe('Navigation — Locale Switcher', () => {
 
   it('should navigate to /es when Spanish locale is clicked', async () => {
     await homePage.goto('en');
-    await homePage.localeLink('es').click();
-    await page.waitForLoadState('networkidle');
-    const path = await homePage.currentPath;
-    expect(path).toMatch(/^\/es/);
+    await Promise.all([
+      page.waitForURL(/\/es/),
+      homePage.localeLink('es').click(),
+    ]);
+    expect(await homePage.currentPath).toMatch(/^\/es/);
   });
 
   it('should navigate to /en when English locale is clicked', async () => {
     await homePage.goto('es');
-    await homePage.localeLink('en').click();
-    await page.waitForLoadState('networkidle');
-    const path = await homePage.currentPath;
-    expect(path).toMatch(/^\/en/);
+    await Promise.all([
+      page.waitForURL(/\/en/),
+      homePage.localeLink('en').click(),
+    ]);
+    expect(await homePage.currentPath).toMatch(/^\/en/);
   });
 
   it('should render content in Spanish on /es', async () => {
     await homePage.goto('es');
     const heading = await homePage.heroHeading.textContent();
-    expect(heading).toBeTruthy();
-    // Page should have lang attribute set
+    expect(heading?.trim().length).toBeGreaterThan(0);
     const lang = await page.evaluate(() => document.documentElement.getAttribute('lang'));
     expect(lang).toBeTruthy();
   });
@@ -187,47 +187,48 @@ describe('Navigation — Home Page Sections', () => {
   });
 
   it('should render the hero section with a heading', async () => {
-    await expect(homePage.heroHeading).toBeVisible();
+    expect(await homePage.heroHeading.isVisible()).toBe(true);
     const text = await homePage.heroHeading.textContent();
     expect(text?.trim().length).toBeGreaterThan(0);
   });
 
   it('should render the skills section with at least one card', async () => {
-    await expect(homePage.skillsSection).toBeVisible();
+    expect(await homePage.skillsSection.isVisible()).toBe(true);
     const count = await homePage.skillCards.count();
     expect(count).toBeGreaterThan(0);
   });
 
   it('should render the experience section with at least one entry', async () => {
-    await expect(homePage.experienceSection).toBeVisible();
+    expect(await homePage.experienceSection.isVisible()).toBe(true);
     const count = await homePage.experienceItems.count();
     expect(count).toBeGreaterThan(0);
   });
 
   it('should render the latest posts section with post links', async () => {
-    await expect(homePage.blogSection).toBeVisible();
+    expect(await homePage.blogSection.isVisible()).toBe(true);
     const count = await homePage.latestPostLinks.count();
     expect(count).toBeGreaterThan(0);
   });
 
   it('should render the see all posts link pointing to /en/blog', async () => {
-    const link = homePage.seeAllPostsLink;
-    await expect(link).toBeVisible();
-    const href = await link.getAttribute('href');
+    expect(await homePage.seeAllPostsLink.isVisible()).toBe(true);
+    const href = await homePage.seeAllPostsLink.getAttribute('href');
     expect(href).toContain('/blog');
   });
 
   it('should render the footer with contact links', async () => {
-    await expect(homePage.footer).toBeVisible();
+    expect(await homePage.footer.isVisible()).toBe(true);
     const count = await homePage.footerLinks.count();
     expect(count).toBeGreaterThan(0);
   });
 
-  it('should render the skip to content link that targets #main-content', async () => {
-    const skipLink = page.locator('a[href="#main-content"]');
-    const href = await skipLink.getAttribute('href');
-    expect(href).toBe('#main-content');
-    const mainContent = page.locator('#main-content');
-    await expect(mainContent).toBeAttached();
+  it('should have a #main-content element in the DOM', async () => {
+    const mainContent = await page.$('#main-content');
+    expect(mainContent).not.toBeNull();
+  });
+
+  it('should have a skip-to-content link targeting #main-content', async () => {
+    const skipLink = await page.$('a[href="#main-content"]');
+    expect(skipLink).not.toBeNull();
   });
 });
