@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
 import { chromium } from 'playwright';
 import type { Browser, Page } from 'playwright';
 import { HomePage } from './pages/HomePage.js';
@@ -193,30 +193,35 @@ describe('Navigation — Home Page Sections', () => {
   });
 
   it('should render the skills section with at least one card', async () => {
+    await homePage.skillsSection.scrollIntoViewIfNeeded();
     expect(await homePage.skillsSection.isVisible()).toBe(true);
     const count = await homePage.skillCards.count();
     expect(count).toBeGreaterThan(0);
   });
 
   it('should render the experience section with at least one entry', async () => {
+    await homePage.experienceSection.scrollIntoViewIfNeeded();
     expect(await homePage.experienceSection.isVisible()).toBe(true);
     const count = await homePage.experienceItems.count();
     expect(count).toBeGreaterThan(0);
   });
 
   it('should render the latest posts section with post links', async () => {
+    await homePage.blogSection.scrollIntoViewIfNeeded();
     expect(await homePage.blogSection.isVisible()).toBe(true);
     const count = await homePage.latestPostLinks.count();
     expect(count).toBeGreaterThan(0);
   });
 
   it('should render the see all posts link pointing to /en/blog', async () => {
+    await homePage.seeAllPostsLink.scrollIntoViewIfNeeded();
     expect(await homePage.seeAllPostsLink.isVisible()).toBe(true);
     const href = await homePage.seeAllPostsLink.getAttribute('href');
     expect(href).toContain('/blog');
   });
 
   it('should render the footer with contact links', async () => {
+    await homePage.footer.scrollIntoViewIfNeeded();
     expect(await homePage.footer.isVisible()).toBe(true);
     const count = await homePage.footerLinks.count();
     expect(count).toBeGreaterThan(0);

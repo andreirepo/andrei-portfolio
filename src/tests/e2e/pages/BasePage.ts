@@ -41,7 +41,8 @@ export class BasePage {
   }
 
   localeLink(locale: 'en' | 'es') {
-    return this.page.locator(`header a[href="/${locale}"]`);
+    // Scope to the locale switcher div to avoid matching the home nav link
+    return this.page.locator(`header div a[href="/${locale}"].uppercase`);
   }
 
   // ── Theme ─────────────────────────────────────────────────────────────────
