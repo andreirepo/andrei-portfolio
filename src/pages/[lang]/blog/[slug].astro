@@ -73,34 +73,58 @@ const blogPostingSchema = {
   alternateLinks={alternate}
   schema={blogPostingSchema}
 >
-  <Header nav={nav} locales={["en", "es"]} currentLocale={locale} resumeLabel={t("nav.resume")} name="Andrei Repo" />
+  <Header nav={nav} locales={["en", "es"]} currentLocale={locale} resumeLabel={t("nav.resume")} name="Andrei Repo" currentPath={Astro.url.pathname} />
 
   <main id="main-content" class="mt-40 mb-24">
     <a
+      id="back-link"
       href={`/${locale}/blog`}
-      class="text-xs opacity-50 hover:opacity-100 transition-opacity duration-200 mb-8 inline-block"
+      class="text-xs text-muted-foreground hover:text-foreground transition-colors duration-200 mb-8 inline-block"
     >
       {t("blog.back")}
     </a>
 
+    <script define:vars={{ locale, backHomeLabel: t("blog.back_home") }}>
+      (function () {
+        const link = document.getElementById('back-link');
+        if (!link) return;
+        const ref = document.referrer;
+        if (!ref) return;
+        try {
+          const refUrl = new URL(ref);
+          // If the referrer is the home page for this locale, point back there
+          const homePaths = [`/${locale}`, `/${locale}/`];
+          if (refUrl.hostname === location.hostname && homePaths.includes(refUrl.pathname)) {
+            link.href = `/${locale}`;
+            link.textContent = backHomeLabel;
+          }
+        } catch (_) {}
+      })();
+    </script>
+
     <header class="mb-10">
-      <div class="text-xs opacity-50 mb-3">
+      <div class="text-xs text-muted-foreground mb-3">
         <time datetime={post.data.pubDate.toISOString()}>
           {t("blog.published")} {formattedDate}
         </time>
       </div>
       <h1 class="text-xl font-semibold mb-3 leading-snug">{post.data.title}</h1>
-      <p class="opacity-50 text-sm leading-6">{post.data.description}</p>
+      <p class="text-muted-foreground text-sm leading-6">{post.data.description}</p>
       {post.data.tags.length > 0 && (
         <div class="flex flex-wrap gap-2 mt-4">
           {post.data.tags.map((tag: string) => (
-            <span class="text-xs border rounded px-2 py-0.5 opacity-60">{tag}</span>
+            <a
+              href={`/${locale}/blog/tag/${tag}`}
+              class="text-xs border border-border rounded px-2 py-0.5 text-muted-foreground hover:border-green-accent hover:text-green-accent transition-colors duration-200"
+            >
+              #{tag}
+            </a>
           ))}
         </div>
       )}
     </header>
 
-    <div class="prose prose-sm prose-invert max-w-none overflow-x-hidden opacity-80 leading-7 [&_h1]:text-lg [&_h2]:text-base [&_h2]:font-semibold [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-2 [&_p]:mb-4 [&_ul]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:mb-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:mb-1 [&_pre]:bg-transparent [&_pre]:border [&_pre]:rounded [&_pre]:p-4 [&_pre]:mb-4 [&_pre]:overflow-x-auto [&_code]:text-green-400 [&_pre_code]:text-green-400 [&_a]:text-green-500 [&_a]:hover:text-green-400 [&_hr]:opacity-20 [&_hr]:my-8">
+    <div class="prose prose-sm prose-invert max-w-none overflow-x-hidden opacity-80 leading-7 [&_h1]:text-lg [&_h2]:text-base [&_h2]:font-semibold [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-2 [&_p]:mb-4 [&_ul]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:mb-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:mb-1 [&_pre]:bg-transparent [&_pre]:border [&_pre]:rounded [&_pre]:p-4 [&_pre]:mb-4 [&_pre]:overflow-x-auto [&_code]:text-green-accent [&_pre_code]:text-green-accent [&_a]:text-green-accent [&_a]:hover:underline [&_hr]:opacity-20 [&_hr]:my-8">
       <Content />
     </div>
   </main>

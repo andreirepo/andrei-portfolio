@@ -105,9 +105,13 @@
     "title": "Blog",
     "empty": "No posts yet. Check back soon.",
     "back": "← Back to blog",
+    "back_home": "← Back to home",
     "read_more": "Read more",
     "published": "Published",
     "latest_title": "Latest posts",
-    "see_all": "See all posts"
+    "see_all": "See all posts",
+    "tag_description_prefix": "Posts tagged",
+    "tag_post_singular": "post",
+    "tag_post_plural": "posts"
   }
 }

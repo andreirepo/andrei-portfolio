@@ -7,7 +7,6 @@ interface Props {
   title: string;
   seeAllLabel: string;
   seeAllHref: string;
-  publishedLabel: string;
   limit?: number;
 }
 
@@ -16,7 +15,6 @@ const {
   title,
   seeAllLabel,
   seeAllHref,
-  publishedLabel,
   limit = 2,
 } = Astro.props as Props;
 
@@ -37,16 +35,16 @@ const latest = posts.slice(0, limit);
 {latest.length > 0 && (
   <section id="blog" class="scroll-mt-50">
     <div class="flex items-center justify-between mb-6 mt-15">
-      <h2 class="opacity-50 uppercase">{title}</h2>
+      <h2 class="text-muted-foreground uppercase">{title}</h2>
       <a
         href={seeAllHref}
-        class="text-xs opacity-50 hover:opacity-100 hover:text-green-500 transition-all duration-200"
+        class="text-xs text-muted-foreground hover:text-foreground transition-all duration-200"
       >
         {seeAllLabel} →
       </a>
     </div>
 
-    <ul class="space-y-3">
+    <ul class="space-y-1">
       {latest.map((post) => {
         const slug = post.id.replace(/^(en|es)\//, "").replace(/\.md$/, "");
         return (
@@ -57,7 +55,6 @@ const latest = posts.slice(0, limit);
             tags={post.data.tags}
             slug={slug}
             lang={lang}
-            publishedLabel={publishedLabel}
           />
         );
       })}

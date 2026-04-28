@@ -11,12 +11,26 @@ interface Props {
     resumeLabel?: string;
     name?: string;
     homeLabel?: string;
+    currentPath?: string;
 }
 
-const { nav, locales, currentLocale, resumeLabel = "Resume", name, homeLabel = "home" } = Astro.props as Props
+const { nav, locales, currentLocale, resumeLabel = "Resume", name, homeLabel = "home", currentPath = "" } = Astro.props as Props
 
 // Cache busting: use git commit hash or timestamp
 const RESUME_VERSION = "1";
+
+// Resolve the full href for a nav item (same logic as the template)
+function resolveHref(path: string): string {
+    return path.startsWith('/') ? path : `/${currentLocale}/${path}`;
+}
+
+// A nav item is active if the current path starts with its resolved href,
+// but only for real page routes (not hash anchors on the same page)
+function isActive(path: string): boolean {
+    const href = resolveHref(path);
+    if (href.includes('#')) return false; // anchor links on home page — never mark active
+    return currentPath.startsWith(href);
+}
 ---
 
 <header class="py-4 md:py-8 px-5 md:px-0 flex items-center justify-between flex-col md:flex-row fixed top-0 left-1/2 -translate-x-1/2 bg-background z-40 w-full max-w-2xl" style="box-sizing: border-box;">
@@ -25,7 +39,7 @@ const RESUME_VERSION = "1";
         {name && (
             <a
                 href={`/${currentLocale}`}
-                class="opacity-50 transition-all duration-200 hover:opacity-100 text-[0.8rem] md:text-[0.85rem] py-0.5"
+                class="text-muted-foreground transition-all duration-200 hover:text-foreground text-[0.8rem] md:text-[0.85rem] py-0.5"
             >
                 {homeLabel}
             </a>
@@ -34,8 +48,12 @@ const RESUME_VERSION = "1";
             nav.map((item) => (
                 <I18NDebug key={item.text}>
                     <a
-                        class="opacity-50 transition-all duration-200 hover:opacity-100 text-[0.8rem] md:text-[0.85rem] whitespace-nowrap py-0.5"
-                        href={item.path.startsWith('/') ? item.path : `/${currentLocale}/${item.path}`}
+                        class={cls(
+                            "transition-all duration-200 text-[0.8rem] md:text-[0.85rem] whitespace-nowrap py-0.5",
+                            isActive(item.path) ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                        )}
+                        href={resolveHref(item.path)}
+                        aria-current={isActive(item.path) ? "page" : undefined}
                     >
                         {item.text}
                     </a>
@@ -53,7 +71,7 @@ const RESUME_VERSION = "1";
             target="_blank"
             rel="noopener noreferrer"
             onclick="umami.track('Resume Download')"
-            class="text-[0.8rem] md:text-[0.85rem] transition-all duration-200 rounded px-2 py-0.5 leading-tight bg-green-600 hover:bg-green-500 text-white opacity-90 hover:opacity-100"
+            class="text-[0.8rem] md:text-[0.85rem] transition-all duration-200 rounded px-2 py-0.5 leading-tight bg-green-accent-bg hover:bg-green-accent-bg-hover text-white"
         >
             {resumeLabel}
         </a>
@@ -62,7 +80,7 @@ const RESUME_VERSION = "1";
         <button
             id="theme-toggle"
             aria-label="Toggle appearance"
-            class="opacity-70 hover:opacity-100 transition-all duration-200 flex items-center justify-center w-6 h-6"
+            class="text-muted-foreground hover:text-foreground transition-all duration-200 flex items-center justify-center w-6 h-6"
         >
             <!-- Sun icon (shown in dark mode) -->
             <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden">
@@ -79,10 +97,10 @@ const RESUME_VERSION = "1";
         <div class="flex items-center gap-1">
             {
                 locales.map(item =>
-                    <a href={`/${item.toLowerCase()}`} class={cls("uppercase text-[0.8rem] md:text-[0.9rem] hover:opacity-100 cursor-pointer opacity-70 transition-all duration-200", item === currentLocale.toLowerCase() && "opacity-100")}>
+                    <a href={`/${item.toLowerCase()}`} class={cls("uppercase text-[0.8rem] md:text-[0.9rem] hover:text-foreground cursor-pointer text-muted-foreground transition-all duration-200", item === currentLocale.toLowerCase() && "text-foreground")}>
                         {item}
                     </a>
-                    <span class="last:hidden opacity-50 text-[0.8rem] md:text-[0.9rem]">/</span>
+                    <span class="last:hidden text-muted-foreground text-[0.8rem] md:text-[0.9rem]">/</span>
                 )
             }
         </div>

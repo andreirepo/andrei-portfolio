@@ -126,7 +126,7 @@ const footerContent = buildFooter(t);
   description={t("description")}
   alternateLinks={alternate}
 >
-  <Header nav={nav} locales={["en", "es"]} currentLocale={locale} resumeLabel={t("nav.resume")} name="Andrei Repo" homeLabel={t("nav.home")} />
+  <Header nav={nav} locales={["en", "es"]} currentLocale={locale} resumeLabel={t("nav.resume")} name="Andrei Repo" homeLabel={t("nav.home")} currentPath={Astro.url.pathname} />
 
   <main id="main-content">
     <Hero {...heroProps} />
@@ -136,7 +136,6 @@ const footerContent = buildFooter(t);
       title={t("blog.latest_title")}
       seeAllLabel={t("blog.see_all")}
       seeAllHref={`/${locale}/blog`}
-      publishedLabel={t("blog.published")}
     />
     <Experience {...experienceData} />
   </main>

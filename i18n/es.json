@@ -105,9 +105,13 @@
     "title": "Blog",
     "empty": "Aún no hay artículos. Vuelve pronto.",
     "back": "← Volver al blog",
+    "back_home": "← Volver al inicio",
     "read_more": "Leer más",
     "published": "Publicado",
     "latest_title": "Últimas entradas",
-    "see_all": "Ver todos los artículos"
+    "see_all": "Ver todos los artículos",
+    "tag_description_prefix": "Artículos etiquetados con",
+    "tag_post_singular": "artículo",
+    "tag_post_plural": "artículos"
   }
 }

@@ -6,32 +6,48 @@ interface Props {
   tags: string[];
   slug: string;
   lang: string;
-  publishedLabel: string;
+  activeTag?: string;
 }
 
-const { title, description, pubDate, tags, slug, lang, publishedLabel } = Astro.props as Props;
+const { title, description, pubDate, tags, slug, lang, activeTag } = Astro.props as Props;
 
 const formattedDate = pubDate.toLocaleDateString(lang === 'es' ? 'es-ES' : 'en-US', {
   year: 'numeric',
   month: 'long',
   day: 'numeric',
 });
+
+const href = `/${lang}/blog/${slug}`;
 ---
 
-<li class="mb-4">
-  <div class="flex gap-3 mb-1 text-[0.8rem]">
-    <a
-      href={`/${lang}/blog/${slug}`}
-      class="font-semibold hover:text-green-500 transition-colors duration-200"
-    >
+<li>
+  <a
+    href={href}
+    class="group block border-l-2 border-transparent hover:border-green-accent pl-4 py-3 -ml-4 rounded-r transition-all duration-200 hover:bg-muted/40"
+  >
+    <p class="font-semibold text-foreground mb-1 group-hover:text-green-accent transition-colors duration-200">
       {title}
-    </a>
-  </div>
-  <p class="opacity-50 text-[0.88rem] mb-1">{description}</p>
-  <div class="flex flex-wrap items-center gap-2 text-[0.8rem] opacity-50">
-    <time datetime={pubDate.toISOString()}>{formattedDate}</time>
-    {tags.length > 0 && tags.map((tag) => (
-      <span>#{tag}</span>
-    ))}
-  </div>
+    </p>
+    <p class="text-muted-foreground text-sm mb-2">{description}</p>
+    <div class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+      <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+      {tags.length > 0 && (
+        <span class="text-muted-foreground/40">·</span>
+      )}
+      {tags.map((tag) => (
+        <a
+          href={`/${lang}/blog/tag/${tag}`}
+          onclick="event.stopPropagation()"
+          class:list={[
+            "border rounded px-1.5 py-0.5 transition-colors duration-200",
+            tag === activeTag
+              ? "border-green-accent text-green-accent"
+              : "border-border hover:border-green-accent hover:text-green-accent"
+          ]}
+        >
+          #{tag}
+        </a>
+      ))}
+    </div>
+  </a>
 </li>
