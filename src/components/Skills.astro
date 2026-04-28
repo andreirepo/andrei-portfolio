@@ -18,19 +18,19 @@ const { heading, content } = Astro.props as Props;
 ---
 
 <section id="skills" class="scroll-mt-50">
-    <h2 class="opacity-50 uppercase mb-6 mt-15">{heading.value}</h2>
+    <h2 class="text-muted-foreground uppercase mb-6 mt-15">{heading.value}</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {
             content.map((skill) => (
                 <article class="border p-4">
-                    <p class="text-green-500 font-semibold mb-1">
+                    <p class="text-green-accent font-semibold mb-1">
                         {">"}{skill.title.value}
                     </p>
-                    <p class="text-[0.7rem] opacity-50 uppercase mb-3">{skill.category.value}</p>
-                    <p class="text-[0.88rem] opacity-50 pb-3 border-b mb-3">{skill.description.value}</p>
+                    <p class="text-xs text-muted-foreground uppercase mb-3">{skill.category.value}</p>
+                    <p class="text-sm text-muted-foreground pb-3 border-b mb-3">{skill.description.value}</p>
                     <div class="flex gap-2 items-center">
                         <span class="text-3xl font-semibold">{skill.experience_years.value}</span>
-                        <span class="text-[0.88rem] opacity-50">{skill.experience_label.value}</span>
+                        <span class="text-sm text-muted-foreground">{skill.experience_label.value}</span>
                     </div>
                 </article>
             ))

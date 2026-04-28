@@ -18,17 +18,17 @@ const { name, title, p1, p2, p3 } = Astro.props as Props;
     <div class="[&_p]:mb-6 leading-7">
         <p>
             <I18NDebug key={title.key}>
-                <span class="text-green-500">{title.value} </span>
+                <span class="text-green-accent">{title.value} </span>
             </I18NDebug>
             <I18NDebug key={p1.key}>
-                <span class="opacity-50">{p1.value}</span>
+                <span class="text-muted-foreground">{p1.value}</span>
             </I18NDebug>
         </p>
         <I18NDebug key={p2.key}>
-            <p class="opacity-50">{p2.value}</p>
+            <p class="text-muted-foreground">{p2.value}</p>
         </I18NDebug>
         <I18NDebug key={p3.key}>
-            <p class="opacity-50">{p3.value}</p>
+            <p class="text-muted-foreground">{p3.value}</p>
         </I18NDebug>
     </div>
 </section>

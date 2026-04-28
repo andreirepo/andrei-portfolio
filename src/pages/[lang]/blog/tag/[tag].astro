@@ -1,0 +1,99 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/src/layouts/Layout.astro";
+import Header from "@/src/components/Header.astro";
+import Footer from "@/src/components/Footer.astro";
+import BlogCard from "@/src/components/BlogCard.astro";
+import { useI18n } from "@ariaskit/astro-i18n";
+import { type LocaleSchema } from "@/src/types";
+import { buildNav, buildFooter } from "@/src/lib/page-helpers";
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection("blog", ({ data }) => !data.draft);
+  const locales = ["en", "es"];
+
+  // Collect all unique tags across all posts
+  const allTags = [...new Set(allPosts.flatMap((post) => post.data.tags))];
+
+  // Generate a page for every tag × locale combination
+  return locales.flatMap((lang) =>
+    allTags.map((tag) => ({
+      params: { lang, tag },
+    }))
+  );
+}
+
+const { lang, tag } = Astro.params;
+const { t, locale } = useI18n<LocaleSchema>({ ssg: { astro: Astro } });
+
+// Fetch posts for this locale that have this tag; fall back to English
+let posts = await getCollection(
+  "blog",
+  ({ id, data }) => id.startsWith(`${lang}/`) && !data.draft && data.tags.includes(tag)
+);
+
+if (posts.length === 0 && lang !== "en") {
+  posts = await getCollection(
+    "blog",
+    ({ id, data }) => id.startsWith("en/") && !data.draft && data.tags.includes(tag)
+  );
+}
+
+posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const nav = buildNav(t, locale);
+const footerContent = buildFooter(t);
+
+const alternate = [
+  { href: `/en/blog/tag/${tag}`, hreflang: "en" },
+  { href: `/es/blog/tag/${tag}`, hreflang: "es" },
+];
+---
+
+<Layout
+  locale={locale}
+  title={`#${tag} – ${t("blog.title")} – Andrei Repo`}
+  description={`${t("blog.tag_description_prefix")} #${tag}`}
+  alternateLinks={alternate}
+>
+  <Header nav={nav} locales={["en", "es"]} currentLocale={locale} resumeLabel={t("nav.resume")} name="Andrei Repo" currentPath={Astro.url.pathname} />
+
+  <main id="main-content" class="mt-40 mb-24">
+    <a
+      href={`/${locale}/blog`}
+      class="text-xs text-muted-foreground hover:text-foreground transition-colors duration-200 mb-8 inline-block"
+    >
+      {t("blog.back")}
+    </a>
+
+    <div class="flex items-center gap-3 mb-8">
+      <h1 class="text-xl font-semibold">#{tag}</h1>
+      <span class="text-sm text-muted-foreground">
+        {posts.length} {posts.length === 1 ? t("blog.tag_post_singular") : t("blog.tag_post_plural")}
+      </span>
+    </div>
+
+    {posts.length === 0 ? (
+      <p class="text-muted-foreground">{t("blog.empty")}</p>
+    ) : (
+      <ul class="space-y-1">
+        {posts.map((post) => {
+          const slug = post.id.replace(/^(en|es)\//, "").replace(/\.md$/, "");
+          return (
+            <BlogCard
+              title={post.data.title}
+              description={post.data.description}
+              pubDate={post.data.pubDate}
+              tags={post.data.tags}
+              slug={slug}
+              lang={locale}
+              activeTag={tag}
+            />
+          );
+        })}
+      </ul>
+    )}
+  </main>
+
+  <Footer {...footerContent} />
+</Layout>

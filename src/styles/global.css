@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-
-
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -28,6 +26,11 @@
 
   --destructive: oklch(58% 0.21 25);
   --destructive-foreground: oklch(98% 0.004 25);
+
+  /* Green accent — dark enough for 4.5:1 on light background */
+  --green-accent: oklch(48% 0.17 155);
+  --green-accent-bg: oklch(48% 0.17 155);
+  --green-accent-bg-hover: oklch(44% 0.16 155);
 }
 
 .dark {
@@ -52,6 +55,11 @@
 
   --destructive: oklch(48% 0.19 25);
   --destructive-foreground: oklch(96% 0.008 25);
+
+  /* Green accent — bright enough for 4.5:1 on dark background */
+  --green-accent: oklch(72% 0.18 155);
+  --green-accent-bg: oklch(52% 0.17 155);
+  --green-accent-bg-hover: oklch(58% 0.17 155);
 }
 
 
@@ -82,6 +90,10 @@
 
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-green-accent: var(--green-accent);
+  --color-green-accent-bg: var(--green-accent-bg);
+  --color-green-accent-bg-hover: var(--green-accent-bg-hover);
 }
 
 @layer base {
