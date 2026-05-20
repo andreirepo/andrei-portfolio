@@ -36,7 +36,7 @@ const href = `/${lang}/blog/${slug}`;
       )}
       {tags.map((tag) => (
         <a
-          href={`/${lang}/blog/tag/${tag}`}
+          href={tag === activeTag ? `/${lang}/blog` : `/${lang}/blog/tag/${tag}`}
           onclick="event.stopPropagation()"
           class:list={[
             "border rounded px-1.5 py-0.5 transition-colors duration-200",
@@ -44,6 +44,7 @@ const href = `/${lang}/blog/${slug}`;
               ? "border-green-accent text-green-accent"
               : "border-border hover:border-green-accent hover:text-green-accent"
           ]}
+          aria-label={tag === activeTag ? `Clear filter: ${tag}` : `Filter by ${tag}`}
         >
           #{tag}
         </a>
