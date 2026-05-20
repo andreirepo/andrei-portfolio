@@ -37,6 +37,8 @@ Antes de entrar en la estructura, ayuda entender qué hace cada pieza. Cline tie
 
 **[Archivos de memoria](https://docs.cline.bot/best-practices/memory-bank)** (el "brain") — archivos markdown que almacenan el conocimiento de dominio que el agente debe mantener entre sesiones. A diferencia de las rules (que son instrucciones), los archivos de memoria son hechos: qué hace esta funcionalidad, qué helpers existen, qué causó ese test flaky el mes pasado. Tú los escribes y mantienes — no se generan automáticamente. El agente los lee al inicio de una tarea para ponerse al día instantáneamente.
 
+---
+
 Juntas, estas tres piezas convierten una herramienta de IA de propósito general en un agente consciente del equipo que conoce tu codebase, sigue tus estándares y no repite los mismos errores.
 
 ## La Estructura
@@ -76,6 +78,8 @@ El directorio `memory/` es donde vive el conocimiento del equipo. Captura tres c
 
 **Gotchas** — lo que causa flakiness. Cada entrada tiene un síntoma, una causa raíz y una solución concreta. No solo una descripción del problema.
 
+Así se ve una entrada de gotcha:
+
 ```markdown
 ## Condición de Carrera en Sincronización de Toast
 
@@ -86,6 +90,8 @@ El directorio `memory/` es donde vive el conocimiento del equipo. Captura tres c
 ```
 
 La memoria crece con el tiempo. Cuando encuentras un nuevo gotcha, lo añades. Cuando descubres un patrón, lo documentas.
+
+Una forma de que esto funcione en la práctica: tratar la actualización de `gotchas.md` como el último paso de cualquier resolución de defecto. Si un test falló en CI y un desarrollador pasó dos horas rastreándolo, la corrección no está completa hasta que el síntoma y la solución estén en la capa de contexto. Eso reencuadra el banco de memoria de una tarea de mantenimiento a un subproducto natural del trabajo que ya estás haciendo.
 
 **Por dónde empezar:** `gotchas.md` es el punto de entrada más fácil. Ábrelo, escribe las últimas tres cosas que causaron un test flaky y añade una solución concreta para cada una. Eso solo ya le ahorrará horas a la siguiente persona — o a la siguiente sesión de IA.
 
@@ -146,10 +152,12 @@ Presenta un plan técnico:
 No generes ningún código hasta que el usuario apruebe el plan.
 
 ## Paso 4 — Generación
-...
+- Escribe el archivo de spec siguiendo estrictamente `.clinerules` y `.cline/memory/shared/gotchas.md`
+- Ejecuta el comando de ejecución de tests local para verificar que pasa
+- Si el test falla, transiciona automáticamente al skill `/debug-test` y vuelve a ejecutar hasta que pase
 ```
 
-El `PARAR — esperar aprobación humana` en el paso 3 es la válvula de seguridad clave. Sin ella, el agente generará felizmente 10 archivos, la mitad de los cuales duplican cosas que ya existen.
+El `PARAR — esperar aprobación humana` en el paso 3 es la válvula de seguridad clave. Sin ella, el agente generará felizmente 10 archivos, la mitad de los cuales duplican cosas que ya existen. Y el traspaso automático al skill `/debug-test` en caso de fallo en el paso 4 es lo que hace que todo se sienta verdaderamente agéntico — un skill encadena con otro sin que tengas que intervenir.
 
 **Debug Test** (`/debug-test`) sigue el mismo patrón — un skill con un pipeline de 4 pasos en su SKILL.md:
 
@@ -176,7 +184,7 @@ El prompt se convierte en `/generate-test TICKET-123 intent:flow:checkout` y el 
 
 Esto importa porque la mayor fuente de desviación en los tests es cuando el ticket dice una cosa y el test verifica algo ligeramente diferente. Cuando el agente lee los criterios de aceptación directamente, esa brecha se cierra.
 
-El mismo patrón funciona con Linear, GitHub Issues, o cualquier herramienta que tenga un [servidor MCP](https://docs.cline.bot/mcp/mcp-overview). Los archivos de memoria manejan el *cómo* (patrones, gotchas, rutas de archivos), y la conexión MCP maneja el *qué* (qué requiere este ticket específico). Se complementan limpiamente.
+El mismo patrón funciona con Linear, GitHub Issues, o cualquier herramienta que tenga un [servidor MCP](https://docs.cline.bot/mcp/mcp-overview). Los archivos de memoria manejan el *cómo* — patrones, gotchas, rutas de archivos. La conexión MCP maneja el *qué* — qué requiere este ticket específico. Se complementan limpiamente.
 
 ## Consistencia Multi-Herramienta
 
@@ -187,7 +195,7 @@ La fuente de verdad es `.clinerules`. Los otros formatos son simplemente copias 
 | Herramienta | Ubicación del archivo de reglas |
 |---|---|
 | Cline | `.clinerules` |
-| Cursor | `.cursor/rules/coding-rules.mdc` |
+| Cursor | `.cursor/rules/` (archivos `.mdc` individuales con frontmatter `globs` / `alwaysApply`) |
 | Windsurf | `.windsurfrules` |
 | GitHub Copilot | `.github/copilot-instructions.md` |
 
