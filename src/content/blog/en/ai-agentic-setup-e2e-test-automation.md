@@ -93,7 +93,7 @@ The memory grows over time. When you hit a new gotcha, you add it. When you disc
 
 One way to make this stick: treat updating `gotchas.md` as the last step of any defect resolution. If a test flaked in CI and a developer spent two hours tracking it down, the fix isn't complete until the symptom and resolution are in the context layer. That reframes the memory bank from a maintenance chore into a natural byproduct of the work you're already doing.
 
-**Where to start:** `gotchas.md` is the easiest entry point. Open it, write down the last three things that caused a flaky test, and add a concrete fix for each. That alone will save the next person (or the next AI session) hours.
+Better yet, automate it. Since Cline has terminal and file-writing access, you can add a `/log-gotcha` skill that runs after a fix is merged. The agent reads the git diff, extracts the symptom, root cause, and solution, and appends a formatted entry to `gotchas.md` automatically. Documentation becomes a side effect of fixing the bug, not a separate task that gets skipped.
 
 ## The Feature Registry: Intent to Code
 
@@ -130,11 +130,15 @@ description: Generate an E2E test for a feature. Use when asked to write, create
 # Generate E2E Test
 
 ## Step 1 — Context Load
-Read the following files before doing anything else:
-- `.cline/memory/{team}/flows.md`
-- `.cline/memory/{team}/patterns.md`
-- `.cline/memory/shared/gotchas.md`
+Read only the feature registry first to resolve the intent key:
 - `.cline/knowledge/feature-registry.md`
+
+Once the intent key is resolved, load only the memory files for that specific domain:
+- `.cline/memory/{resolved-domain}/flows.md`
+- `.cline/memory/{resolved-domain}/patterns.md`
+- `.cline/memory/shared/gotchas.md`
+
+This keeps context lean — load what the task needs, not the entire memory bank.
 
 ## Step 2 — Discovery
 - Resolve the intent key from the feature registry to get file paths

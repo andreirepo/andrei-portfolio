@@ -93,6 +93,8 @@ La memoria crece con el tiempo. Cuando encuentras un nuevo gotcha, lo añades. C
 
 Una forma de que esto funcione en la práctica: tratar la actualización de `gotchas.md` como el último paso de cualquier resolución de defecto. Si un test falló en CI y un desarrollador pasó dos horas rastreándolo, la corrección no está completa hasta que el síntoma y la solución estén en la capa de contexto. Eso reencuadra el banco de memoria de una tarea de mantenimiento a un subproducto natural del trabajo que ya estás haciendo.
 
+Mejor aún, automatízalo. Como Cline tiene acceso al terminal y puede escribir archivos, puedes añadir un skill `/log-gotcha` que se ejecute después de que se fusione una corrección. El agente lee el git diff, extrae el síntoma, la causa raíz y la solución, y añade una entrada formateada a `gotchas.md` automáticamente. La documentación se convierte en un efecto secundario de corregir el bug, no en una tarea separada que se omite.
+
 **Por dónde empezar:** `gotchas.md` es el punto de entrada más fácil. Ábrelo, escribe las últimas tres cosas que causaron un test flaky y añade una solución concreta para cada una. Eso solo ya le ahorrará horas a la siguiente persona — o a la siguiente sesión de IA.
 
 ## El Feature Registry: De Intención a Código
@@ -130,11 +132,15 @@ description: Genera un test E2E para una funcionalidad. Usar cuando se pida escr
 # Generar Test E2E
 
 ## Paso 1 — Carga de Contexto
-Lee los siguientes archivos antes de hacer cualquier cosa:
-- `.cline/memory/{equipo}/flows.md`
-- `.cline/memory/{equipo}/patterns.md`
-- `.cline/memory/shared/gotchas.md`
+Lee primero solo el feature registry para resolver la clave de intención:
 - `.cline/knowledge/feature-registry.md`
+
+Una vez resuelta la clave de intención, carga solo los archivos de memoria del dominio específico:
+- `.cline/memory/{dominio-resuelto}/flows.md`
+- `.cline/memory/{dominio-resuelto}/patterns.md`
+- `.cline/memory/shared/gotchas.md`
+
+Esto mantiene el contexto ligero — carga lo que la tarea necesita, no todo el banco de memoria.
 
 ## Paso 2 — Descubrimiento
 - Resuelve la clave de intención del feature registry para obtener las rutas de archivos
