@@ -37,6 +37,8 @@ Before getting into the structure, it helps to understand what each piece actual
 
 **[Memory files](https://docs.cline.bot/best-practices/memory-bank)** (the "brain") — markdown files that store domain knowledge the agent should carry between sessions. Unlike rules (which are instructions), memory files are facts: what this feature does, which helpers exist, what caused that flaky test last month. You write and maintain these files — they're not auto-generated. The agent reads them at the start of a task to get up to speed instantly.
 
+---
+
 Together, these three pieces turn a general-purpose AI tool into a team-aware agent that knows your codebase, follows your standards, and doesn't repeat the same mistakes.
 
 ## The Structure
@@ -76,6 +78,8 @@ The `memory/` directory is where team knowledge lives. It captures three things 
 
 **Gotchas** — the stuff that causes flakiness. Each entry has a symptom, a root cause, and a concrete fix. Not just a description of the problem.
 
+Here's what a gotcha entry looks like:
+
 ```markdown
 ## Toast Synchronization Race Condition
 
@@ -86,6 +90,8 @@ The `memory/` directory is where team knowledge lives. It captures three things 
 ```
 
 The memory grows over time. When you hit a new gotcha, you add it. When you discover a pattern, you document it.
+
+One way to make this stick: treat updating `gotchas.md` as the last step of any defect resolution. If a test flaked in CI and a developer spent two hours tracking it down, the fix isn't complete until the symptom and resolution are in the context layer. That reframes the memory bank from a maintenance chore into a natural byproduct of the work you're already doing.
 
 **Where to start:** `gotchas.md` is the easiest entry point. Open it, write down the last three things that caused a flaky test, and add a concrete fix for each. That alone will save the next person (or the next AI session) hours.
 
@@ -146,10 +152,12 @@ Present a technical plan:
 Do not generate any code until the user approves the plan.
 
 ## Step 4 — Generation
-...
+- Write the spec file adhering strictly to `.clinerules` and `.cline/memory/shared/gotchas.md`
+- Run the local test execution command to verify passing status
+- If the test fails, transition automatically to the `/debug-test` skill and rerun until passing
 ```
 
-The `STOP — wait for human approval` in step 3 is the key safety valve. Without it, the agent will happily generate 10 files, half of which duplicate things that already exist.
+The `STOP — wait for human approval` in step 3 is the key safety valve. Without it, the agent will happily generate 10 files, half of which duplicate things that already exist. And step 4's automatic handoff to `/debug-test` on failure is what makes the whole thing feel agentic — one skill chains into another without you having to intervene.
 
 **Debug Test** (`/debug-test`) follows the same pattern — a skill with a 4-step pipeline in its SKILL.md:
 
@@ -176,7 +184,7 @@ The prompt becomes `/generate-test TICKET-123 intent:flow:checkout` and the agen
 
 This matters because the biggest source of test drift is when the ticket says one thing and the test verifies something slightly different. When the agent reads the acceptance criteria directly, that gap closes.
 
-The same pattern works with Linear, GitHub Issues, or any tool that has an [MCP server](https://docs.cline.bot/mcp/mcp-overview). The memory files handle the *how* (patterns, gotchas, file paths), and the MCP connection handles the *what* (what this specific ticket requires). They complement each other cleanly.
+The same pattern works with Linear, GitHub Issues, or any tool that has an [MCP server](https://docs.cline.bot/mcp/mcp-overview). The memory files handle the *how* — patterns, gotchas, file paths. The MCP connection handles the *what* — what this specific ticket requires. They complement each other cleanly.
 
 ## Multi-Tool Consistency
 
@@ -187,7 +195,7 @@ The source of truth is `.clinerules`. The other formats are just copies with dif
 | Tool | Rule file location |
 |---|---|
 | Cline | `.clinerules` |
-| Cursor | `.cursor/rules/coding-rules.mdc` |
+| Cursor | `.cursor/rules/` (individual `.mdc` files with `globs` / `alwaysApply` frontmatter) |
 | Windsurf | `.windsurfrules` |
 | GitHub Copilot | `.github/copilot-instructions.md` |
 

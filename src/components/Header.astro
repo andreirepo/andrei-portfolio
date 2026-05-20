@@ -65,7 +65,7 @@ function isActive(path: string): boolean {
     </nav>
 
     <!-- Right controls: Resume + Theme + Locale -->
-    <div class="order-1 md:order-2 mb-2 md:mb-0 flex items-center gap-3 flex-1 justify-center md:justify-end w-full md:w-auto">
+    <div class="order-1 md:order-2 mb-2 md:mb-0 flex items-center gap-3 flex-1 justify-between md:justify-end w-full md:w-auto">
 
         <!-- Resume download link -->
         <a
@@ -78,6 +78,9 @@ function isActive(path: string): boolean {
         >
             {resumeLabel}
         </a>
+
+        <!-- Theme + Locale grouped right on mobile -->
+        <div class="flex items-center gap-3">
 
         <!-- Appearance toggle -->
         <button
@@ -107,6 +110,8 @@ function isActive(path: string): boolean {
                     <span class="last:hidden text-muted-foreground text-[0.8rem] md:text-[0.9rem]">/</span>
                 )
             }
+        </div>
+
         </div>
     </div>
 
