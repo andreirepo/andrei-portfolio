@@ -28,7 +28,7 @@ const { title, jobs } = Astro.props as Props;
         {
             jobs.map((job) => (
                 <li data-testid="experience-item" class="mb-4 flex items-baseline gap-x-6">
-                                    <span class="text-muted-foreground text-muted min-w-[120px]">
+                                    <span class="text-muted-foreground min-w-30">
                         <I18NDebug key={job.period.key}>
                             {job.period.value}
                         </I18NDebug>
