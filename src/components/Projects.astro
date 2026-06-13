@@ -22,31 +22,31 @@ const { title, projects } = Astro.props as Props;
             projects.map((project) => (
                 <li class="group">
                     <span class="font-semibold">{project.name}</span>
-                    <div class="flex gap-3 mb-2 text-[0.8rem]">
+                     <div class="flex gap-3 mb-2 text-xs">
                         {project.link && (
                             <a
                                 href={project.link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                class="text-green-accent hover:underline"
+                                 class="text-amber-accent hover:bg-amber-accent-bg hover:text-background transition-colors"
                             >
                                 GitHub
                             </a>
                         )}
-                        {project.demo && (
-                            <a
-                                href={project.demo}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="text-green-accent hover:underline"
-                            >
-                                Live Demo
-                            </a>
-                        )}
+                                {project.demo && (
+                                    <a
+                                        href={project.demo}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="text-amber-accent hover:bg-amber-accent-bg hover:text-background transition-colors"
+                                    >
+                                        Live Demo
+                                    </a>
+                                )}
                     </div>
-                    <p class="text-muted-foreground text-sm">
-                        {project.description}
-                    </p>
+                         <p class="text-muted-foreground text-sm leading-relaxed">
+                             {project.description}
+                         </p>
                 </li>
             ))
         }

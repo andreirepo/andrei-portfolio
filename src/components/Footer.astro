@@ -24,9 +24,9 @@ const { status, heading, description, email_label, email_url, github_label, gith
 >
     <div class="text-center mb-8">
         <div class="mb-4">
-            <span class="inline-block w-2 h-2 rounded-full bg-green-accent-bg mr-2 animate-pulse"></span>
-            <span class="text-muted-foreground uppercase text-xs">{status.value}</span>
-            <span class="inline-block w-2 h-2 rounded-full bg-green-accent-bg ml-2 animate-pulse"></span>
+                <span class="inline-block w-2 h-2 rounded-full bg-amber-accent-bg mr-2 animate-pulse"></span>
+                <span class="text-muted-foreground uppercase text-xs">{status.value}</span>
+                <span class="inline-block w-2 h-2 rounded-full bg-amber-accent-bg ml-2 animate-pulse"></span>
         </div>
         <h2 class="text-xl font-semibold mb-2">{heading.value}</h2>
         <p class="text-muted-foreground max-w-md mx-auto">{description.value}</p>
@@ -36,7 +36,7 @@ const { status, heading, description, email_label, email_url, github_label, gith
         {email_url && email_label && (
             <a 
                 href={email_url.value}
-                class="border rounded px-5 py-2 text-muted-foreground hover:text-foreground hover:border-green-accent transition-all duration-200"
+                                 class="border rounded px-5 py-2 text-muted-foreground hover:bg-amber-accent-bg hover:text-background transition-colors"
             >
                 {email_label.value}
             </a>
@@ -47,7 +47,7 @@ const { status, heading, description, email_label, email_url, github_label, gith
                 href={github_url.value}
                 target="_blank" 
                 rel="noopener noreferrer"
-                class="border rounded px-5 py-2 text-muted-foreground hover:text-foreground hover:border-green-accent transition-all duration-200"
+                                 class="border rounded px-5 py-2 text-muted-foreground hover:bg-amber-accent-bg hover:text-background transition-colors"
             >
                 {github_label.value}
             </a>
@@ -58,7 +58,7 @@ const { status, heading, description, email_label, email_url, github_label, gith
                 href={linkedin_url.value}
                 target="_blank" 
                 rel="noopener noreferrer"
-                class="border rounded px-5 py-2 text-muted-foreground hover:text-foreground hover:border-green-accent transition-all duration-200"
+                                 class="border rounded px-5 py-2 text-muted-foreground hover:bg-amber-accent-bg hover:text-background transition-colors"
             >
                 {linkedin_label.value}
             </a>

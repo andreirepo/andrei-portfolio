@@ -27,10 +27,10 @@
   --destructive: oklch(58% 0.21 25);
   --destructive-foreground: oklch(98% 0.004 25);
 
-  /* Green accent — dark enough for 4.5:1 on light background */
-  --green-accent: oklch(48% 0.17 155);
-  --green-accent-bg: oklch(48% 0.17 155);
-  --green-accent-bg-hover: oklch(44% 0.16 155);
+   /* Amber accent — warm and premium, high contrast for accessibility */
+   --amber-accent: oklch(75% 0.14 80);
+   --amber-accent-bg: oklch(75% 0.14 80);
+   --amber-accent-bg-hover: oklch(68% 0.13 80);
 }
 
 .dark {
@@ -56,10 +56,10 @@
   --destructive: oklch(48% 0.19 25);
   --destructive-foreground: oklch(96% 0.008 25);
 
-  /* Green accent — bright enough for 4.5:1 on dark background */
-  --green-accent: oklch(72% 0.18 155);
-  --green-accent-bg: oklch(52% 0.17 155);
-  --green-accent-bg-hover: oklch(58% 0.17 155);
+   /* Amber accent — bright enough for 4.5:1 on dark background */
+   --amber-accent: oklch(82% 0.16 80);
+   --amber-accent-bg: oklch(75% 0.14 80);
+   --amber-accent-bg-hover: oklch(88% 0.16 80);
 }
 
 
@@ -91,9 +91,9 @@
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
 
-  --color-green-accent: var(--green-accent);
-  --color-green-accent-bg: var(--green-accent-bg);
-  --color-green-accent-bg-hover: var(--green-accent-bg-hover);
+   --color-amber-accent: var(--amber-accent);
+   --color-amber-accent-bg: var(--amber-accent-bg);
+   --color-amber-accent-bg-hover: var(--amber-accent-bg-hover);
 }
 
 @layer base {
@@ -108,4 +108,53 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Hero entrance animations */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-animate {
+  opacity: 0;
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+.hero-animate-delay-1 {
+  opacity: 0;
+  animation: fade-in-up 0.6s ease-out 0.15s forwards;
+}
+
+.hero-animate-delay-2 {
+  opacity: 0;
+  animation: fade-in-up 0.6s ease-out 0.3s forwards;
+}
+
+.hero-animate-delay-3 {
+  opacity: 0;
+  animation: fade-in-up 0.6s ease-out 0.45s forwards;
+}
+
+.hero-animate-delay-4 {
+  opacity: 0;
+  animation: fade-in-up 0.6s ease-out 0.6s forwards;
+}
+
+/* Reduced motion: skip animations */
+@media (prefers-reduced-motion: reduce) {
+  .hero-animate,
+  .hero-animate-delay-1,
+  .hero-animate-delay-2,
+  .hero-animate-delay-3,
+  .hero-animate-delay-4 {
+    opacity: 1;
+    animation: none;
+  }
 }

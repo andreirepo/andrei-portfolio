@@ -35,12 +35,12 @@ function isActive(path: string): boolean {
 
 <header data-testid="site-header" class="py-4 md:py-8 px-5 md:px-0 flex items-center justify-between flex-col md:flex-row fixed top-0 left-1/2 -translate-x-1/2 bg-background z-40 w-full max-w-2xl" style="box-sizing: border-box;">
     <!-- Nav links -->
-    <nav data-testid="main-nav" class="flex items-center flex-wrap gap-x-3 gap-y-1 order-2 md:order-1 flex-1 justify-center md:justify-start w-full md:w-auto pb-1 md:pb-0" aria-label="Main navigation">
+    <nav data-testid="main-nav" class="flex items-center gap-x-2 md:gap-x-3 gap-y-1 order-2 md:order-1 flex-1 justify-center md:justify-start w-full md:w-auto pb-1 md:pb-0 overflow-x-auto" aria-label="Main navigation">
         {name && (
             <a
                 data-testid="nav-home"
                 href={`/${currentLocale}`}
-                class="text-muted-foreground transition-all duration-200 hover:text-foreground text-[0.8rem] md:text-[0.85rem] py-0.5"
+                class="text-sm text-muted-foreground transition-all duration-200 hover:bg-amber-accent-bg hover:text-background py-0.5"
             >
                 {homeLabel}
             </a>
@@ -51,8 +51,8 @@ function isActive(path: string): boolean {
                     <a
                         data-testid={`nav-${item.text.toLowerCase()}`}
                         class={cls(
-                            "transition-all duration-200 text-[0.8rem] md:text-[0.85rem] whitespace-nowrap py-0.5",
-                            isActive(item.path) ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                            "transition-all duration-200 text-sm whitespace-nowrap py-0.5",
+                            isActive(item.path) ? "text-foreground" : "text-muted-foreground hover:bg-amber-accent-bg hover:text-background"
                         )}
                         href={resolveHref(item.path)}
                         aria-current={isActive(item.path) ? "page" : undefined}
@@ -65,7 +65,7 @@ function isActive(path: string): boolean {
     </nav>
 
     <!-- Right controls: Resume + Theme + Locale -->
-    <div class="order-1 md:order-2 mb-2 md:mb-0 flex items-center gap-3 flex-1 justify-between md:justify-end w-full md:w-auto">
+    <div class="order-1 md:order-2 mb-2 md:mb-0 flex items-center gap-3 flex-none justify-between md:justify-end w-full md:w-auto">
 
         <!-- Resume download link -->
         <a
@@ -74,7 +74,7 @@ function isActive(path: string): boolean {
             target="_blank"
             rel="noopener noreferrer"
             onclick="umami.track('Resume Download')"
-            class="text-[0.8rem] md:text-[0.85rem] transition-all duration-200 rounded px-2 py-0.5 leading-tight bg-green-accent-bg hover:bg-green-accent-bg-hover text-white"
+            class="text-sm transition-all duration-200 rounded px-2 py-0.5 leading-tight bg-amber-accent-bg hover:bg-amber-accent-bg-hover text-white"
         >
             {resumeLabel}
         </a>
@@ -104,10 +104,10 @@ function isActive(path: string): boolean {
         <div data-testid="locale-switcher" class="flex items-center gap-1">
             {
                 locales.map(item =>
-                    <a data-testid={`locale-${item.toLowerCase()}`} href={`/${item.toLowerCase()}`} class={cls("uppercase text-[0.8rem] md:text-[0.9rem] hover:text-foreground cursor-pointer text-muted-foreground transition-all duration-200", item === currentLocale.toLowerCase() && "text-foreground")}>
+                    <a data-testid={`locale-${item.toLowerCase()}`} href={`/${item.toLowerCase()}`} class={cls("uppercase text-sm hover:text-foreground cursor-pointer text-muted-foreground transition-all duration-200", item === currentLocale.toLowerCase() && "text-foreground")}>
                         {item}
                     </a>
-                    <span class="last:hidden text-muted-foreground text-[0.8rem] md:text-[0.9rem]">/</span>
+                    <span class="last:hidden text-muted-foreground text-sm">/</span>
                 )
             }
         </div>

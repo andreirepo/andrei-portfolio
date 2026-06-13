@@ -1,3 +1,4 @@
+
 ---
 import I18NDebug from "@ariaskit/astro-i18n/I18NDebug.astro";
 export type KT = { key: string; value: string };
@@ -14,21 +15,21 @@ const { name, title, p1, p2, p3 } = Astro.props as Props;
 ---
 
 <section data-testid="hero-section" id={name} class="mb-10 mt-50">
-    <h1 data-testid="hero-heading" class="mb-4 font-semibold text-xl">{name}</h1>
+    <h1 data-testid="hero-heading" class="mb-6 font-bold text-5xl md:text-6xl tracking-tight hero-animate">{name}</h1>
     <div class="[&_p]:mb-6 leading-7">
-        <p>
+        <p class="hero-animate-delay-1">
             <I18NDebug key={title.key}>
-                <span class="text-green-accent">{title.value} </span>
+                <span class="text-amber-accent">{title.value} </span>
             </I18NDebug>
             <I18NDebug key={p1.key}>
                 <span class="text-muted-foreground">{p1.value}</span>
             </I18NDebug>
         </p>
         <I18NDebug key={p2.key}>
-            <p class="text-muted-foreground">{p2.value}</p>
+            <p class="text-muted-foreground hero-animate-delay-2">{p2.value}</p>
         </I18NDebug>
         <I18NDebug key={p3.key}>
-            <p class="text-muted-foreground">{p3.value}</p>
+            <p class="text-muted-foreground hero-animate-delay-3">{p3.value}</p>
         </I18NDebug>
     </div>
 </section>

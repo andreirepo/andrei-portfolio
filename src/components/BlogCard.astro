@@ -21,34 +21,34 @@ const href = `/${lang}/blog/${slug}`;
 ---
 
 <li>
-  <a
-    href={href}
-    class="group block border-l-2 border-transparent hover:border-green-accent pl-4 py-3 -ml-4 rounded-r transition-all duration-200 hover:bg-muted/40"
-  >
-    <p class="font-semibold text-foreground mb-1 group-hover:text-green-accent transition-colors duration-200">
-      {title}
-    </p>
-    <p class="text-muted-foreground text-sm mb-2">{description}</p>
-    <div class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-      <time datetime={pubDate.toISOString()}>{formattedDate}</time>
-      {tags.length > 0 && (
-        <span class="text-muted-foreground/40">·</span>
-      )}
-      {tags.map((tag) => (
-        <a
-          href={tag === activeTag ? `/${lang}/blog` : `/${lang}/blog/tag/${tag}`}
-          onclick="event.stopPropagation()"
-          class:list={[
-            "border rounded px-1.5 py-0.5 transition-colors duration-200",
-            tag === activeTag
-              ? "border-green-accent text-green-accent"
-              : "border-border hover:border-green-accent hover:text-green-accent"
-          ]}
-          aria-label={tag === activeTag ? `Clear filter: ${tag}` : `Filter by ${tag}`}
-        >
-          #{tag}
-        </a>
-      ))}
-    </div>
-  </a>
+    <a
+      href={href}
+      class="group block border-l-2 border-transparent hover:border-amber-accent pl-4 py-3 -ml-4 rounded-r transition-all duration-200 hover:bg-muted/20"
+    >
+      <p class="font-semibold text-foreground mb-1 group-hover:text-amber-accent transition-colors duration-200">
+        {title}
+      </p>
+      <p class="text-muted-foreground text-sm mb-2">{description}</p>
+      <div class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+        <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+        {tags.length > 0 && (
+          <span class="text-muted-foreground/40">·</span>
+        )}
+        {tags.map((tag) => (
+          <a
+            href={tag === activeTag ? `/${lang}/blog` : `/${lang}/blog/tag/${tag}`}
+            onclick="event.stopPropagation()"
+            class:list={[
+              "border rounded px-1.5 py-0.5 transition-colors duration-200",
+              tag === activeTag
+                ? "border-amber-accent text-amber-accent"
+                : "border-border hover:border-amber-accent hover:text-amber-accent"
+            ]}
+            aria-label={tag === activeTag ? `Clear filter: ${tag}` : `Filter by ${tag}`}
+          >
+            #{tag}
+          </a>
+        ))}
+      </div>
+    </a>
 </li>

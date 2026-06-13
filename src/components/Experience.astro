@@ -24,19 +24,19 @@ const { title, jobs } = Astro.props as Props;
             {title.value}
         </I18NDebug>
     </h2>
-    {
-        jobs.map((job) => (
-            <ul>
-                <li data-testid="experience-item" class="mb-4 grid grid-cols-1 md:grid-cols-10">
-                    <span class="text-muted-foreground text-sm col-span-2">
+    <ul>
+        {
+            jobs.map((job) => (
+                <li data-testid="experience-item" class="mb-4 flex items-baseline gap-x-6">
+                                    <span class="text-muted-foreground text-sm min-w-[120px]">
                         <I18NDebug key={job.period.key}>
                             {job.period.value}
                         </I18NDebug>
                     </span>
-                    <div class="col-span-8">
-                        <div>
+                    <div class="flex-1">
+                        <div class="mb-1">
                             <I18NDebug key={job.role.key}>
-                                <span>{job.role.value}</span>
+                                <span class="font-medium">{job.role.value}</span>
                             </I18NDebug>
                             <span class="text-muted-foreground">|</span>
                             <I18NDebug key={job.company.key}>
@@ -50,7 +50,7 @@ const { title, jobs } = Astro.props as Props;
                         </I18NDebug>
                     </div>
                 </li>
-            </ul>
-        ))
-    }
+            ))
+        }
+    </ul>
 </section>
