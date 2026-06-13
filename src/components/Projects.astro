@@ -15,14 +15,14 @@ const { title, projects } = Astro.props as Props;
 ---
 
 <section id={title.value.toLowerCase()} class="scroll-mt-50">
-    <h2 class="text-muted-foreground uppercase mb-6">{title.value}</h2>
+    <h2 class="text-muted-foreground uppercase mb-6 text-heading-m">{title.value}</h2>
 
     <ul class="space-y-3">
         {
             projects.map((project) => (
                 <li class="group">
                     <span class="font-semibold">{project.name}</span>
-                     <div class="flex gap-3 mb-2 text-xs">
+                     <div class="flex gap-3 mb-2 text-muted-foreground">
                         {project.link && (
                             <a
                                 href={project.link}
@@ -44,7 +44,7 @@ const { title, projects } = Astro.props as Props;
                                     </a>
                                 )}
                     </div>
-                         <p class="text-muted-foreground text-sm leading-relaxed">
+                         <p class="text-muted-foreground text-body leading-relaxed">
                              {project.description}
                          </p>
                 </li>

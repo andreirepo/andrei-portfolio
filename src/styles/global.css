@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
-
 :root {
   --background: oklch(98.8% 0.006 290);
   --foreground: oklch(17% 0.018 285);
@@ -31,6 +29,26 @@
    --amber-accent: oklch(75% 0.14 80);
    --amber-accent-bg: oklch(75% 0.14 80);
    --amber-accent-bg-hover: oklch(68% 0.13 80);
+
+  /* Typography Tokens - Base Scale */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;      /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;   /* 36px */
+  --font-size-5xl: 3rem;      /* 48px */
+
+  /* Semantic Roles */
+  --text-body: var(--font-size-base);
+  --text-muted: var(--font-size-sm);
+  --text-heading-s: var(--font-size-lg);
+  --text-heading-m: var(--font-size-xl);
+  --text-heading-l: var(--font-size-2xl);
+  --text-heading-xl: var(--font-size-3xl);
+  --text-heading-xxl: var(--font-size-4xl);
 }
 
 .dark {
@@ -63,7 +81,7 @@
 }
 
 
-@theme inline {
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
@@ -91,9 +109,29 @@
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
 
-   --color-amber-accent: var(--amber-accent);
-   --color-amber-accent-bg: var(--amber-accent-bg);
-   --color-amber-accent-bg-hover: var(--amber-accent-bg-hover);
+    --color-amber-accent: var(--amber-accent);
+    --color-amber-accent-bg: var(--amber-accent-bg);
+    --color-amber-accent-bg-hover: var(--amber-accent-bg-hover);
+
+  /* Typography Utilities */
+  --font-size-xs: var(--font-size-xs);
+  --font-size-sm: var(--font-size-sm);
+  --font-size-base: var(--font-size-base);
+  --font-size-lg: var(--font-size-lg);
+  --font-size-xl: var(--font-size-xl);
+  --font-size-2xl: var(--font-size-2xl);
+  --font-size-3xl: var(--font-size-3xl);
+  --font-size-4xl: var(--font-size-4xl);
+  --font-size-5xl: var(--font-size-5xl);
+
+  /* Semantic Typography */
+  --text-body: var(--text-body);
+  --text-muted: var(--text-muted);
+  --text-heading-s: var(--text-heading-s);
+  --text-heading-m: var(--text-heading-m);
+  --text-heading-l: var(--text-heading-l);
+  --text-heading-xl: var(--text-heading-xl);
+  --text-heading-xxl: var(--text-heading-xxl);
 }
 
 @layer base {

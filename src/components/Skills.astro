@@ -18,7 +18,7 @@ const { heading, content } = Astro.props as Props;
 ---
 
 <section data-testid="skills-section" id="skills" class="scroll-mt-50">
-    <h2 class="text-muted-foreground uppercase mb-6 mt-15">{heading.value}</h2>
+    <h2 class="text-muted-foreground uppercase mb-6 mt-15 text-heading-m">{heading.value}</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {
             content.map((skill) => (
@@ -26,11 +26,11 @@ const { heading, content } = Astro.props as Props;
                     <p class="text-green-accent font-semibold mb-1">
                         {">"}{skill.title.value}
                     </p>
-                    <p class="text-xs text-muted-foreground uppercase mb-3">{skill.category.value}</p>
-                    <p class="text-sm text-muted-foreground pb-3 border-b mb-3">{skill.description.value}</p>
+                    <p class="text-muted-foreground uppercase mb-3 text-muted">{skill.category.value}</p>
+                    <p class="text-body text-muted-foreground pb-3 border-b mb-3">{skill.description.value}</p>
                     <div class="flex gap-2 items-center">
-                        <span class="text-3xl font-semibold">{skill.experience_years.value}</span>
-                        <span class="text-sm text-muted-foreground">{skill.experience_label.value}</span>
+                        <span class="font-semibold text-heading-l">{skill.experience_years.value}</span>
+                        <span class="text-muted-foreground text-heading-m">{skill.experience_label.value}</span>
                     </div>
                 </article>
             ))

@@ -19,7 +19,7 @@ const { title, jobs } = Astro.props as Props;
 ---
 
 <section data-testid="experience-section" id={title.value.toLowerCase()} class="scroll-mt-50">
-    <h2 class="text-muted-foreground uppercase mb-6 mt-15">
+    <h2 class="text-muted-foreground uppercase mb-6 mt-15 text-heading-m">
         <I18NDebug key={title.key}>
             {title.value}
         </I18NDebug>
@@ -28,7 +28,7 @@ const { title, jobs } = Astro.props as Props;
         {
             jobs.map((job) => (
                 <li data-testid="experience-item" class="mb-4 flex items-baseline gap-x-6">
-                                    <span class="text-muted-foreground text-sm min-w-[120px]">
+                                    <span class="text-muted-foreground text-muted min-w-[120px]">
                         <I18NDebug key={job.period.key}>
                             {job.period.value}
                         </I18NDebug>
@@ -44,7 +44,7 @@ const { title, jobs } = Astro.props as Props;
                             </I18NDebug>
                         </div>
                         <I18NDebug key={job.description.key}>
-                            <p class="text-sm text-muted-foreground">
+                            <p class="text-body text-muted-foreground">
                                 {job.description.value}
                             </p>
                         </I18NDebug>

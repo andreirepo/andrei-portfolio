@@ -10,19 +10,6 @@ const BASE_URL = 'http://localhost:4321';
 
 /**
  * Blog E2E Tests
- *
- * Covers critical blog user journeys:
- * - Blog index renders posts with titles, descriptions, dates, and tags
- * - Clicking a post navigates to the correct post page
- * - Blog post page renders heading, date, tags, and content
- * - Back link navigates to blog index
- * - Back link navigates to home when referred from home (via actual link click)
- * - Tag links navigate to the correct tag page
- * - Tag page shows correct posts and highlights the active tag
- *
- * Note: Uses Playwright locator queries with vitest assertions.
- * Playwright's expect matchers (toBeVisible) are not available when using
- * vitest as the runner — we use .isVisible() instead.
  */
 
 describe('Blog — Index Page', () => {
@@ -45,7 +32,7 @@ describe('Blog — Index Page', () => {
   });
 
   afterEach(async () => {
-    await page.close();
+    if (page) await page.close();
   });
 
   it('should render the blog heading', async () => {
@@ -115,7 +102,7 @@ describe('Blog — Post Page', () => {
   });
 
   afterEach(async () => {
-    await page.close();
+    if (page) await page.close();
   });
 
   it('should render the post heading', async () => {
@@ -160,11 +147,9 @@ describe('Blog — Post Page', () => {
   });
 
   it('should update back link to point to home when navigated from home via link click', async () => {
-    // Navigate from home by clicking a post link (sets document.referrer correctly)
     const homePage = new HomePage(page);
     await homePage.goto('en');
 
-    // Click a post link from the latest posts section on home
     const postLink = page.locator(`#blog a[href*="/blog/${TEST_SLUG}"]`).first();
     const postLinkExists = await postLink.count();
 
@@ -173,14 +158,13 @@ describe('Blog — Post Page', () => {
         page.waitForURL(/\/en\/blog\/.+/),
         postLink.click(),
       ]);
-      await page.waitForTimeout(300); // allow referrer script to run
+      await page.waitForTimeout(300);
 
       const href = await postPage.backLink.getAttribute('href');
       const text = await postPage.backLink.textContent();
       expect(href).toBe('/en');
       expect(text?.toLowerCase()).toContain('home');
     } else {
-      // Post not on home page latest posts — skip referrer check, verify default
       await postPage.goto('en', TEST_SLUG);
       const href = await postPage.backLink.getAttribute('href');
       expect(href).toContain('/blog');
@@ -225,7 +209,7 @@ describe('Blog — Tag Page', () => {
   });
 
   afterEach(async () => {
-    await page.close();
+    if (page) await page.close();
   });
 
   it('should render the tag heading with the tag name', async () => {

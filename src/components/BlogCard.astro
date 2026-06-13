@@ -28,8 +28,8 @@ const href = `/${lang}/blog/${slug}`;
       <p class="font-semibold text-foreground mb-1 group-hover:text-amber-accent transition-colors duration-200">
         {title}
       </p>
-      <p class="text-muted-foreground text-sm mb-2">{description}</p>
-      <div class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+      <p class="text-muted-foreground text-body mb-2">{description}</p>
+      <div class="flex flex-wrap items-center gap-2 text-muted-foreground">
         <time datetime={pubDate.toISOString()}>{formattedDate}</time>
         {tags.length > 0 && (
           <span class="text-muted-foreground/40">·</span>

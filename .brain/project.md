@@ -1,85 +1,51 @@
-# Andrei Portfolio — Project Brain (Agent Context)
+# Project Overview: Andrei Portfolio
 
-This file provides comprehensive context about the project for AI agents working on the codebase.
+## Tech Stack
+- **Framework:** Astro 5 (SSG) — all pages are `.astro` files, no React/Vue/Svelte
+- **Styling:** Tailwind CSS v4 via `@tailwindcss/vite` plugin. Design tokens use oklch CSS variables in `src/styles/global.css`
+- **Language:** TypeScript (strict). Path aliases: `@/` maps to project root, `@src/` maps to `src/`
+- **Package Manager:** pnpm (lockfile: `pnpm-lock.yaml`)
+- **Node:** 18+
 
----
-
-## 1. Project Purpose
-
-Personal portfolio website for Andrei Repo, a Senior QA Engineer specializing in highly regulated iGaming. The site is live at **https://andreirepo.com**. It showcases professional experience, skills, projects, and a bilingual technical blog.
-
----
-
-## 2. Technology Stack
-
-| Layer | Technology | Version |
-|---|---|---|
-| Framework | Astro (SSG) | v5.17 |
-| Styling | Tailwind CSS | v4.1 |
-| Styling Plugin | @tailwindcss/vite | v4.1 |
-| i18n | @ariaskit/astro-i18n | ^0.0.8 |
-| Icons | @lucide/astro | ^0.563.0 |
-| Utilities | clsx + tailwind-merge | latest |
-| Package Manager | pnpm | - |
-| Node.js | 18+ | - |
-| Build/Deploy | Docker (Node 18 alpine → nginx:alpine) | - |
-| Reverse Proxy | Traefik | behind Cloudflare |
-| Analytics | Umami (self-hosted) | - |
-| Sitemap | @astrojs/sitemap | ^3.7.0 |
-
-### Dev Dependencies
-- **Test Runner:** Vitest v4.1 (NOT Playwright Test)
-- **Browser Automation:** Playwright v1.59
-- **Accessibility:** @axe-core/playwright v4.11, axe-playwright v2.2
-- **Property-Based Testing:** fast-check v4.7
-- **Test UI:** @vitest/ui v4.1
-
----
-
-## 3. Architecture
-
-### Routing
-File-based routing with `[lang]` dynamic segment for i18n:
-
+## File Organization
 ```
-src/pages/
-├── 404.astro                              # Custom 404
-├── index.astro                            # Root page
-└── [lang]/
-    ├── index.astro                        # Home (hero, projects, posts, experience)
-    └── blog/
-        ├── index.astro                    # Blog listing
-        ├── [slug].astro                   # Single blog post
-        └── tag/
-            └── [tag].astro                # Posts filtered by tag
+src/
+├── pages/[lang]/          # Route pages. [lang] = en | es
+├── components/            # Astro-only components (.astro). No JS frameworks
+├── layouts/Layout.astro   # Single layout with <head> metadata, theme script, schema.org
+├── content/blog/{en,es}/  # Blog posts as Markdown (.md)
+├── content.config.ts      # Astro content collection schema (Zod)
+├── lib/                   # Shared TS helpers (page-helpers.ts, utils.ts)
+├── styles/global.css      # Tailwind import and CSS variable design tokens
+├── types.ts               # LocaleSchema type (derived from i18n/en.json)
+├── assets/                # Static assets imported by components (background.png)
+└── tests/                 # Vitest unit + accessibility + E2E (Playwright)
+i18n/
+├── en.json                # English translations (BASE locale — source of truth)
+└── es.json                # Spanish translations (must stay in sync with en.json)
 ```
 
-All pages must implement `getStaticPaths()` returning both `{ lang: "en" }` and `{ lang: "es" }`.
+## Code Style & Conventions
+- **Components are pure Astro** — no client-side JS frameworks. Use `<script>` tags for vanilla JS interactivity only
+- **i18n is mandatory** — all user-facing text must go through `useI18n()` / `t()` from `@ariaskit/astro-i18n`
+- **i18n key-value pattern** — when passing i18n data to components, always pass both the key and translated value: `{ key: "hero.title", value: t("hero.title") }`
+- **EN is the base locale** — `i18n/en.json` is the source of truth. The `LocaleSchema` type is derived from it
+- **Design tokens** — use Tailwind classes mapped to CSS variables (e.g., `bg-background`, `text-foreground`, `border-border`). Define new tokens in `global.css` under `:root` and `.dark`
+- **Class merging** — use `clsx` + `tailwind-merge` via the `cn()` utility in `src/lib/utils.ts`
+- **Dark mode** — uses `.dark` class on `<html>` (not `prefers-color-scheme`). Theme persists in localStorage. The blocking theme script in `Layout.astro` prevents FOUC
 
-### Components (Pure Astro — NO JS Frameworks)
-```
-src/components/
-├── Header.astro         # Nav bar, locale switcher, theme toggle, resume button
-├── Hero.astro           # Name, title, bio paragraphs
-├── Projects.astro       # Project showcase cards
-├── Experience.astro     # Work history timeline
-├── LatestPosts.astro    # Latest blog posts grid on home page
-├── BlogCard.astro       # Individual blog post card
-├── Footer.astro         # Contact section with social links
-├── Skills.astro         # Skills matrix (not currently on home page)
-└── hybrid-astro-ui/
-    └── page-metadata/   # <head> meta tags (OG, favicons, hreflang, client router)
-```
+## Internationalization (i18n)
+- Locales: `en` and `es`
+- **Always keep `i18n/en.json` and `i18n/es.json` in sync** — same keys, same structure
+- Run `pnpm check-sync` (or `astro-i18n-check --base en`) to validate locale parity
+- Routes: `/{lang}/...` (e.g., `/en/blog`, `/es/blog`)
+- `getStaticPaths()` must return both `{ lang: "en" }` and `{ lang: "es" }`
+- Alternate hreflang links must be included for SEO on every page
 
-### Layout
-Single layout: `src/layouts/Layout.astro`
-- Contains: blocking theme script (prevents FOUC), PageMetadata component, Schema.org structured data (Person type), Umami analytics, skip-to-content link, scroll-to-top button
-- Props: title, description, locale, alternateLinks, ogType, schema
-
-### Content (Blog)
-- Markdown files in `src/content/blog/{en,es}/`
+## Content (Blog)
+- Blog posts live in `src/content/blog/{en,es}/` as Markdown files
 - Same filename in both language directories for corresponding translations
-- Content collection defined in `src/content.config.ts` with Zod schema:
+- Frontmatter schema (defined in `src/content.config.ts`):
   ```yaml
   title: string
   description: string
@@ -87,183 +53,33 @@ Single layout: `src/layouts/Layout.astro`
   tags: string[] (optional, defaults to [])
   draft: boolean (optional, defaults to false)
   ```
-- Tag pages generated at `/{lang}/blog/tag/{tag}`
+- Posts support tags — tag pages are generated at `/{lang}/blog/tag/{tag}`
 
-### Current Blog Posts (6 articles)
-1. `ai-agentic-setup-e2e-test-automation` — AI-agentic E2E test automation
-2. `email-forwarding-aws-ses-s3-lambda` — Email forwarding with AWS SES/S3/Lambda
-3. `fixing-wcag-contrast-with-axe-core-and-property-based-testing` — WCAG contrast testing
-4. `local-ai-code-review-github-actions-lm-studio` — Local AI code review
-5. `self-hosted-cicd-github-actions-ssh-cloudflare` — Self-hosted CI/CD
-6. `self-hosted-cloudflare-tunnel-traefik` — Cloudflare Tunnel with Traefik
+## Testing
+- **Runner:** Vitest (NOT Playwright Test) with `globals: true`, 60s timeout
+- **E2E:** Playwright browser automation run through Vitest. Uses **Page Object Model** in `src/tests/e2e/pages/`
+- **Accessibility:** axe-core via `@axe-core/playwright` and `axe-playwright`. Property-based testing with `fast-check`
+- **Commands:**
+  - `pnpm test` — all unit/accessibility tests
+  - `pnpm test:e2e` — E2E tests only (requires dev server running)
+  - `pnpm test:a11y` — accessibility tests only
+- E2E tests use `.count()` and `.isVisible()` (NOT Playwright's `expect` matchers) since the runner is Vitest
 
-### Lib Helpers
-- `src/lib/page-helpers.ts` — `buildNav(t, locale, isHome)`, `buildFooter(t)` — constructs nav/footer data from i18n translations
-- `src/lib/utils.ts` — `cn()` utility (clsx + tailwind-merge for class merging)
+## Build & Deploy
+- **Build command:** `pnpm build` (runs `astro-i18n-check --base en && astro build`)
+- **Docker:** Multi-stage — Node 18 alpine builder → nginx:alpine production. Static output in `dist/`
+- **nginx:** Serves from `/usr/share/nginx/html`, root `/` → `/en/index.html`, security headers, gzip, caching
+- **CI/CD:** GitHub Actions on push to `main` → build → Docker push to GHCR → SSH deploy → health check → Cloudflare cache purge → auto-rollback on failure
 
-### Types
-- `src/types.ts` — `LocaleSchema` derived from `i18n/en.json` (the base locale)
+## Critical Warnings
+1. **Never skip the i18n check** — `astro-i18n-check --base en` runs before every build. If `es.json` keys drift from `en.json`, the build fails
+2. **WCAG contrast compliance** — all color combinations must meet 4.5:1 contrast ratio. The `--green-accent` tokens are carefully tuned for both light and dark themes (Note: Currently using Amber accent as primary theme color)
+3. **No client-side framework imports** — do not add React, Vue, or Svelte components. Keep everything as `.astro` files with vanilla `<script>` tags
+4. **Theme FOUC prevention** — the inline blocking script in `Layout.astro` must remain in the `<head>` before any rendering
+5. **Content must be bilingual** — when adding a new blog post, create it in BOTH `src/content/blog/en/` and `src/content/blog/es/`
 
----
-
-## 4. Design System
-
-### Color Tokens (src/styles/global.css)
-Uses oklch color space for perceptually uniform colors. Tokens defined under `:root` (light) and `.dark` (dark).
-
-**Light theme:** warm white background, dark foreground, blue-purple primary
-**Dark theme:** very dark background, light foreground, brighter primary
-
-Key tokens:
-- `--background` / `--foreground` — page colors
-- `--primary` / `--primary-foreground` — primary action colors
-- `--secondary` / `--secondary-foreground` — secondary elements
-- `--muted` / `--muted-foreground` — subtle/de-emphasized content
-- `--accent` / `--accent-foreground` — accent highlights
-- `--border` / `--input` / `--ring` — borders and form elements
-- `--destructive` / `--destructive-foreground` — error/danger states
-- `--green-accent` / `--green-accent-bg` / `--green-accent-bg-hover` — brand green, carefully tuned for WCAG 4.5:1 contrast
-
-### Tailwind Integration
-`@theme inline` block maps CSS variables to Tailwind utility classes. Use classes like `bg-background`, `text-foreground`, `border-border`, `text-green-accent`.
-
-### Dark Mode
-- `.dark` class on `<html>` (not `prefers-color-scheme`)
-- Custom variant: `@custom-variant dark (&:is(.dark *));`
-- Theme persisted in `localStorage`
-- Inline blocking script in `Layout.astro` `<head>` prevents FOUC
-
-### Typography
-- Monospace font: `font-mono` on body
-- Smooth scrolling: `scroll-behavior: smooth` on `<html>`
-
----
-
-## 5. Internationalization
-
-### Structure
-- `i18n/en.json` — English (BASE locale, source of truth)
-- `i18n/es.json` — Spanish (must stay in sync)
-- `src/types.ts` — `LocaleSchema = typeof en.json` for type safety
-
-### i18n Pattern
-```typescript
-const { t, locale } = useI18n<LocaleSchema>({ ssg: { astro: Astro } });
-// Usage: t("hero.title") returns translated string
-// For components, pass both key and value:
-{ key: "hero.title", value: t("hero.title") }
-```
-
-### i18n Key Structure
-- `nav.*` — navigation labels
-- `hero.*` — hero section content
-- `projects.*` — project descriptions
-- `experience.*` — work history
-- `skills.*` — skill cards
-- `contact.*` — contact/footer section
-- `blog.*` — blog UI labels
-- `description` — meta description
-
-### Validation
-Run `pnpm check-sync` or `astro-i18n-check --base en` to ensure locale parity. This runs automatically before `pnpm build`.
-
----
-
-## 6. Testing
-
-### Configuration
-- Vitest config: `vitest.config.ts` — globals: true, environment: node, 60s timeout
-- Tests run under Vitest (NOT Playwright Test)
-
-### E2E Tests (src/tests/e2e/)
-Uses **Page Object Model** pattern:
-- `pages/BasePage.ts` — base page object
-- `pages/HomePage.ts` — home page interactions
-- `pages/BlogPage.ts` — blog listing
-- `pages/BlogPostPage.ts` — single blog post
-- `pages/TagPage.ts` — tag filter page
-
-Test files:
-- `navigation.test.ts` — header, theme toggle, locale switching, sections, footer
-- `blog.test.ts` — blog listing, post rendering, tag filtering
-
-**Important:** Since Vitest is the runner (not Playwright Test), use `.count()` and `.isVisible()` instead of Playwright's `expect` matchers like `toBeVisible()`.
-
-### Accessibility Tests (src/tests/)
-- `accessibility-contrast-bug-condition.test.ts` — specific contrast bug conditions
-- `accessibility-contrast-preservation.test.ts` — contrast ratio preservation
-- `accessibility-full-audit.test.ts` — full axe-core WCAG audit
-- Uses `fast-check` for property-based testing
-
-### Commands
-```bash
-pnpm test          # all tests
-pnpm test:e2e      # E2E only (requires dev server)
-pnpm test:a11y     # accessibility only
-```
-
----
-
-## 7. Build & Deployment
-
-### Build Pipeline
-```bash
-pnpm build  # runs: astro-i18n-check --base en && astro build
-```
-
-### Docker
-Multi-stage Dockerfile:
-1. **Builder stage:** Node 18 alpine, installs pnpm, runs `pnpm build`
-2. **Production stage:** nginx:alpine, copies built files to `/usr/share/nginx/html`
-- Health check: `curl -f http://localhost/`
-- Runs as `nginx` user
-
-### nginx Configuration
-- Root `/` → `/en/index.html` (English default)
-- Security headers: CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy
-- Gzip compression enabled
-- Static assets cached for 1 year (immutable)
-- HTML cached for 1 hour
-- `/health` endpoint returns 200 "healthy"
-- Hidden files denied
-
-### CI/CD (GitHub Actions)
-On push to `main`:
-1. Build and type-check
-2. Build Docker image, push to GHCR
-3. SSH to production server, run `docker compose up`
-4. Health check via external endpoint
-5. Cloudflare cache purge
-6. Auto-rollback on health check failure
-
-### Required Secrets
-- `SSH_PRIVATE_KEY`, `SERVER_USER`, `SERVER_HOST`
-- `CLOUDFLARE_ZONE_ID`, `CLOUDFLARE_API_TOKEN`
-
----
-
-## 8. SEO & Structured Data
-
-- `@astrojs/sitemap` integration for automatic sitemap
-- Schema.org Person structured data in Layout.astro
-- Open Graph meta tags via PageMetadata component
-- Alternate hreflang links for EN/ES on every page
-- `robots.txt` in public/
-- `site.webmanifest` for PWA hints
-
----
-
-## 9. Critical Warnings
-
-1. **Never skip i18n check** — build will fail if `es.json` drifts from `en.json`
-2. **WCAG contrast compliance** — all color combos must meet 4.5:1 ratio; green-accent tokens are carefully tuned
-3. **No client-side frameworks** — no React, Vue, Svelte. Only `.astro` files with vanilla `<script>` tags
-4. **Theme FOUC prevention** — blocking script in `Layout.astro` `<head>` must stay before any rendering
-5. **Bilingual content** — new blog posts must be created in both `en/` and `es/` directories
-
----
-
-## 10. Git Remote
-
-- **Remote:** `origin: https://github.com/andreirepo/andrei-portfolio.git`
-- **Latest commit:** `da18a745b591efa81d4efce69aaac5094f52a871`
+## Recent UI Refinements (Amber Theme)
+- Unified hover effects for primary links (GitHub, Live Demo, Navigation) using Amber accent background shift.
+- Subtle hover effects for content cards (BlogCards) using muted backgrounds with Amber accents for borders and text highlights.
+- Consistent tag styling in BlogCard using Amber accents.
+- Balanced visual hierarchy in Experience section by moving dates to `text-muted-foreground`.
