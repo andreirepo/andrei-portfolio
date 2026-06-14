@@ -20,35 +20,32 @@ const formattedDate = pubDate.toLocaleDateString(lang === 'es' ? 'es-ES' : 'en-U
 const href = `/${lang}/blog/${slug}`;
 ---
 
-<li>
-    <a
-      href={href}
-      class="group block border-l-2 border-transparent hover:border-amber-accent pl-4 py-3 -ml-4 rounded-r transition-all duration-200 hover:bg-muted/20"
-    >
-      <p class="font-semibold text-foreground mb-1 group-hover:text-amber-accent transition-colors duration-200">
-        {title}
-      </p>
-      <p class="text-muted-foreground text-body mb-2">{description}</p>
-      <div class="flex flex-wrap items-center gap-2 text-muted-foreground">
-        <time datetime={pubDate.toISOString()}>{formattedDate}</time>
-        {tags.length > 0 && (
-          <span class="text-muted-foreground/40">·</span>
-        )}
-        {tags.map((tag) => (
-          <a
-            href={tag === activeTag ? `/${lang}/blog` : `/${lang}/blog/tag/${tag}`}
-            onclick="event.stopPropagation()"
-            class:list={[
-              "border rounded px-1.5 py-0.5 transition-colors duration-200",
-              tag === activeTag
-                ? "border-amber-accent text-amber-accent"
-                : "border-border hover:border-amber-accent hover:text-amber-accent"
-            ]}
-            aria-label={tag === activeTag ? `Clear filter: ${tag}` : `Filter by ${tag}`}
-          >
-            #{tag}
-          </a>
-        ))}
-      </div>
-    </a>
+<li class="group border-l-2 border-transparent hover:border-amber-accent">
+    <div class="flex flex-col justify-start p-6 pl-8 transition-all duration-200 hover:bg-muted/20 rounded-r">
+        <a href={href} class="block">
+            <p class="text-lg font-semibold text-foreground group-hover:text-amber-accent transition-colors duration-200 leading-relaxed mb-3">{title.trim()}</p>
+            <p class="text-muted-foreground text-sm line-clamp-3 mb-4">{description.trim()}</p>
+        </a>
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-3 mb-3 text-xs text-muted-foreground/80">
+          <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+          {tags.length > 0 && (
+            <span class="text-muted-foreground/40">·</span>
+          )}
+          {tags.map((tag) => (
+            <a
+              href={tag === activeTag ? `/${lang}/blog` : `/${lang}/blog/tag/${tag}`}
+              onclick="event.stopPropagation()"
+              class:list={[
+                "border rounded px-1.5 py-0.25 transition-colors duration-200",
+                tag === activeTag
+                  ? "border-amber-accent text-amber-accent"
+                  : "border-border hover:border-amber-accent hover:text-amber-accent"
+              ]}
+              aria-label={tag === activeTag ? `Clear filter: ${tag}` : `Filter by ${tag}`}
+            >
+              #{tag}
+            </a>
+          ))}
+        </div>
+    </div>
 </li>

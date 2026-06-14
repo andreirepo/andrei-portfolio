@@ -33,20 +33,20 @@ const latest = posts.slice(0, limit);
 ---
 
 {latest.length > 0 && (
-  <section data-testid="latest-posts-section" id="blog" class="scroll-mt-50">
-    <div class="flex items-center justify-between mb-6 mt-15">
-      <h2 class="text-muted-foreground uppercase">{title}</h2>
+  <section data-testid="latest-posts-section" id="blog" class="scroll-mt-24">
+    <div class="flex items-center justify-between mb-8 mt-12">
+      <h2 class="text-foreground font-bold uppercase tracking-tight">{title}</h2>
       <a
         data-testid="see-all-posts-link"
         href={seeAllHref}
-        class="text-xs text-amber-accent hover:bg-amber-accent-bg hover:text-background transition-colors"
+        class="text-sm font-medium text-amber-accent hover:bg-amber-accent-bg hover:text-background transition-colors"
       >
         {seeAllLabel} →
       </a>
     </div>
 
-    <ul class="space-y-1">
-      {latest.map((post) => {
+    <ul class="space-y-6">
+       {latest.map((post) => {
         const slug = post.id.replace(/^(en|es)\//, "").replace(/\.md$/, "");
         return (
           <BlogCard

@@ -14,9 +14,11 @@ interface Props {
 const { name, title, p1, p2, p3 } = Astro.props as Props;
 ---
 
-<section data-testid="hero-section" id={name} class="mb-10 mt-50">
-    <h1 data-testid="hero-heading" class="mb-6 font-bold text-heading-xxl md:text-heading-xxl tracking-tight hero-animate">{name}</h1>
-    <div class="[&_p]:mb-6 leading-7">
+<section data-testid="hero-section" id={name} class="mb-10 mt-48">
+    <h1 data-testid="hero-heading" class="mb-16 font-extrabold text-[60px] md:text-[60px] tracking-tighter hero-animate leading-[0.9] lg:leading-[1]">
+        {name}
+    </h1>
+    <div class="max-w-3xl [&_p]:mb-8 leading-relaxed">
         <p class="hero-animate-delay-1">
             <I18NDebug key={title.key}>
                 <span class="text-amber-accent">{title.value} </span>

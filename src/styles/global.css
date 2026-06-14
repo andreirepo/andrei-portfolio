@@ -59,20 +59,20 @@
   --destructive-foreground: oklch(98% 0.004 25);
 
    /* Amber accent — warm and premium, high contrast for accessibility */
-   --amber-accent: oklch(75% 0.14 80);
-   --amber-accent-bg: oklch(75% 0.14 80);
-   --amber-accent-bg-hover: oklch(68% 0.13 80);
+  --amber-accent: oklch(75% 0.14 80);
+  --amber-accent-bg: oklch(75% 0.14 80);
+  --amber-accent-bg-hover: oklch(68% 0.13 80);
 
   /* Typography Tokens - Base Scale */
   --font-size-xs: 0.75rem;    /* 12px */
   --font-size-sm: 0.875rem;   /* 14px */
-  --font-size-base: 1rem;      /* 16px */
-  --font-size-lg: 1.125rem;   /* 18px */
-  --font-size-xl: 1.25rem;    /* 20px */
-  --font-size-2xl: 1.5rem;    /* 24px */
-  --font-size-3xl: 1.875rem;  /* 30px */
-  --font-size-4xl: 2.25rem;   /* 36px */
-  --font-size-5xl: 3rem;      /* 48px */
+  --font-size-base: 1.125rem; /* 18px */
+  --font-size-lg: 1.25rem;    /* 20px */
+  --font-size-xl: 1.5rem;     /* 24px */
+  --font-size-2xl: 2rem;       /* 32px */
+  --font-size-3xl: 3rem;       /* 48px */
+  --font-size-4xl: 9rem;       /* 144px - Increased to meet XXL requirement */
+  --font-size-5xl: 12rem;      /* 192px - Increased from 144px to accommodate "large" text requirement */
 
   /* Semantic Roles */
   --text-body: var(--font-size-base);
@@ -108,9 +108,9 @@
   --destructive-foreground: oklch(96% 0.008 25);
 
    /* Amber accent — bright enough for 4.5:1 on dark background */
-   --amber-accent: oklch(82% 0.16 80);
-   --amber-accent-bg: oklch(75% 0.14 80);
-   --amber-accent-bg-hover: oklch(88% 0.16 80);
+  --amber-accent: oklch(82% 0.16 80);
+  --amber-accent-bg: oklch(75% 0.14 80);
+  --amber-accent-bg-hover: oklch(88% 0.16 80);
 }
 
 @layer base {

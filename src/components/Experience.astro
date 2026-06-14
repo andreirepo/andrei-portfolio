@@ -18,33 +18,33 @@ interface Props {
 const { title, jobs } = Astro.props as Props;
 ---
 
-<section data-testid="experience-section" id={title.value.toLowerCase()} class="scroll-mt-50">
-    <h2 class="text-muted-foreground uppercase mb-6 mt-15 text-heading-m">
+<section data-testid="experience-section" id={title.value.toLowerCase()} class="scroll-mt-24">
+    <h2 class="text-foreground font-bold uppercase tracking-tight mb-10 mt-12 text-heading-m">
         <I18NDebug key={title.key}>
             {title.value}
         </I18NDebug>
     </h2>
-    <ul>
+    <ul class="space-y-8">
         {
             jobs.map((job) => (
-                <li data-testid="experience-item" class="mb-4 flex items-baseline gap-x-6">
-                                    <span class="text-muted-foreground min-w-30">
+                <li data-testid="experience-item" class="group flex items-baseline gap-x-6">
+                    <span class="text-muted-foreground min-w-32">
                         <I18NDebug key={job.period.key}>
                             {job.period.value}
                         </I18NDebug>
                     </span>
-                    <div class="flex-1">
-                        <div class="mb-1">
+                    <div class="flex-1 group-hover:bg-muted/10 p-2 rounded-r transition-colors duration-200">
+                        <div class="mb-2">
                             <I18NDebug key={job.role.key}>
-                                <span class="font-medium">{job.role.value}</span>
+                                <span class="font-semibold text-foreground">{job.role.value}</span>
                             </I18NDebug>
-                            <span class="text-muted-foreground">|</span>
+                            <span class="text-muted-foreground mx-2">|</span>
                             <I18NDebug key={job.company.key}>
-                                <span>{job.company.value}</span>
+                                <span class="text-muted-foreground">{job.company.value}</span>
                             </I18NDebug>
                         </div>
                         <I18NDebug key={job.description.key}>
-                            <p class="text-body text-muted-foreground">
+                            <p class="text-body text-muted-foreground leading-relaxed">
                                 {job.description.value}
                             </p>
                         </I18NDebug>

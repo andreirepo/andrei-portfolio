@@ -37,13 +37,13 @@ function isActive(path: string): boolean {
     <!-- Nav links -->
     <nav data-testid="main-nav" class="flex items-center gap-x-2 md:gap-x-3 gap-y-1 order-2 md:order-1 flex-1 justify-center md:justify-start w-full md:w-auto pb-1 md:pb-0 overflow-x-auto" aria-label="Main navigation">
         {name && (
-            <a
-                data-testid="nav-home"
-                href={`/${currentLocale}`}
-                class="text-sm text-muted-foreground transition-all duration-200 hover:bg-amber-accent-bg hover:text-background py-0.5"
-            >
-                {homeLabel}
-            </a>
+                         <a
+                                 data-testid="nav-home"
+                                 href={`/${currentLocale}`}
+                                 class="text-sm text-muted-foreground transition-all duration-200 hover:bg-amber-accent-bg hover:text-background py-0.5 hover:scale-[1.02] active:scale-[0.98]"
+                             >
+                                 {homeLabel}
+                             </a>
         )}
         {
             nav.map((item) => (

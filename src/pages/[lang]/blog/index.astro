@@ -53,7 +53,7 @@ const footerContent = buildFooter(t);
     {posts.length === 0 ? (
       <p class="text-muted-foreground">{t("blog.empty")}</p>
     ) : (
-      <ul data-testid="blog-post-list" class="space-y-1">
+      <ul data-testid="blog-post-list" class="flex flex-col gap-6">
         {posts.map((post) => {
           const slug = post.id.replace(/^(en|es)\//, "").replace(/\.md$/, "");
           return (
