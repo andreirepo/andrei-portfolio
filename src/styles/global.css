@@ -71,7 +71,7 @@
   /* Typography Tokens - Base Scale */
   --font-size-xs: 0.75rem;    /* 12px */
   --font-size-sm: 0.875rem;   /* 14px */
-  --font-size-base: 1.125rem; /* 18px */
+  --font-size-base: 1rem;     /* 16px */
   --font-size-lg: 1.25rem;    /* 20px */
   --font-size-xl: 1.5rem;     /* 24px */
   --font-size-2xl: 2rem;       /* 32px */
@@ -139,6 +139,7 @@
  
 html {
   scroll-behavior: smooth;
+  overflow-x: clip;
 }
  
 /* Hero entrance animations */
@@ -187,12 +188,7 @@ html {
 }
  
 @utility bg-header-gradient {
-  background-image: 
-    linear-gradient(to bottom, var(--background) 0%, var(--background)/80 50%, var(--background)/20 100%),
-    radial-gradient(at 0% 0%, var(--mesh-color-1) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, var(--mesh-color-2) 0px, transparent 50%),
-    radial-gradient(at 0% 100%, var(--mesh-color-3) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, var(--mesh-color-1) 0px, transparent 50%);
+  background-color: color-mix(in oklch, var(--background) 65%, transparent);
 }
  
 /* Experience timeline grid */
@@ -215,5 +211,30 @@ html {
   .hero-animate-delay-4 {
     opacity: 1;
     animation: none;
+  }
+}
+
+/* Clip i18n debug tooltips in dev — they use width:max-content and overflow the viewport */
+.debug-tooltip-content {
+  display: none !important;
+}
+
+/* Section scroll-triggered fade-in */
+.section-fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.section-fade-in.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-fade-in {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
