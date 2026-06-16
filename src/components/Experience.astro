@@ -27,13 +27,13 @@ const { title, jobs } = Astro.props as Props;
     <ul class="space-y-8">
         {
             jobs.map((job) => (
-                <li data-testid="experience-item" class="group flex items-baseline gap-x-6">
-                    <span class="text-muted-foreground min-w-32">
+                <li data-testid="experience-item" class="group experience-grid grid gap-x-4 items-baseline">
+                    <span class="text-muted-foreground text-sm text-right whitespace-nowrap">
                         <I18NDebug key={job.period.key}>
                             {job.period.value}
                         </I18NDebug>
                     </span>
-                    <div class="flex-1 group-hover:bg-muted/10 p-2 rounded-r transition-colors duration-200">
+                    <div class="border-l-2 border-border pl-4 group-hover:bg-muted/10 rounded-r transition-colors duration-200">
                         <div class="mb-2">
                             <I18NDebug key={job.role.key}>
                                 <span class="font-semibold text-foreground">{job.role.value}</span>
