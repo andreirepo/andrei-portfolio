@@ -54,13 +54,7 @@ function isActive(path: string): boolean {
           <a
             data-testid="nav-home"
             href={`/${currentLocale}`}
-            class={cls(
-              "relative transition-all duration-200 text-sm whitespace-nowrap px-2 py-0.5 rounded active:scale-[0.97]",
-              "after:absolute after:bottom-0 after:left-2 after:right-2 after:h-px after:bg-amber-accent after:transition-transform after:duration-200 after:origin-left",
-              currentPath === `/${currentLocale}` || currentPath === `/${currentLocale}/`
-                ? "text-foreground after:scale-x-100"
-                : "text-muted-foreground hover:text-foreground hover:bg-foreground/8 after:scale-x-0 hover:after:scale-x-100"
-            )}
+            class="relative transition-all duration-200 text-sm whitespace-nowrap px-2 py-0.5 rounded active:scale-[0.97] text-muted-foreground hover:text-foreground hover:bg-foreground/8 after:absolute after:bottom-0 after:left-2 after:right-2 after:h-px after:bg-amber-accent after:scale-x-0 after:origin-left after:transition-transform after:duration-200 hover:after:scale-x-100"
           >
             {homeLabel}
           </a>
