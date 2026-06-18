@@ -29,7 +29,7 @@ export class BlogPage extends BasePage {
 
   get postLinks() {
     // Card links — the outer <a> wrapping each card (not tag links)
-    return this.page.locator('[data-testid="blog-post-list"] li > a');
+    return this.page.locator('[data-testid="blog-post-list"] li a');
   }
 
   get tagLinks() {
@@ -41,7 +41,7 @@ export class BlogPage extends BasePage {
   async getPostTitles(): Promise<string[]> {
     // Get the title text from each card's <p> heading inside the post link
     const titles = await this.page
-      .locator('[data-testid="blog-post-list"] li > a p:first-child')
+      .locator('[data-testid="blog-post-list"] li a p:first-child')
       .allTextContents();
     return titles;
   }

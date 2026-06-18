@@ -29,7 +29,7 @@ export class TagPage extends BasePage {
 
   get postLinks() {
     // Card links — the outer <a> wrapping each card (not tag links)
-    return this.page.locator('[data-testid="tag-post-list"] li > a');
+    return this.page.locator('[data-testid="tag-post-list"] li a');
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────
