@@ -13,13 +13,22 @@
     "title": "Ingeniero QA Senior",
     "p1": "especializado en automatización de pruebas para plataformas SaaS e iGaming regulado. En Lottomart desarrollo flujos de trabajo asistidos por IA para ayudar a los equipos a escribir código de pruebas más limpio y consistente — mientras mantengo la estabilidad de la plataforma.",
     "p2": "Anteriormente en Sketch y Playtech. Creo que una buena automatización debe ser fácil de usar para todo el equipo, no solo para quien la escribió.",
-    "p3": "Cuando no estoy probando, aprendo y experimento gestionando un home lab propio."
+    "p3": "Cuando no estoy probando, aprendo y experimento gestionando un home lab propio.",
+    "cta_projects": "Ver proyectos",
+    "cta_contact": "Contactar",
+    "stack_label": "Stack principal:"
   },
   "projects": {
     "title": "Proyectos",
     "item_1": {
+      "name": "Este Portfolio",
+      "description": "Sitio Astro bilingüe con sistema i18n propio, CI/CD self-hosted via GitHub Actions y Cloudflare Tunnel, revisiones de código con IA local en cada PR, tests de accesibilidad WCAG automatizados y despliegue con Docker — sin puertos abiertos.",
+      "link": "https://github.com/andreirepo/andrei-portfolio",
+      "demo": "https://andreirepo.com"
+    },
+    "item_2": {
       "name": "Plataforma de Gestión de Tareas",
-      "description": "Plataforma full-stack segura en AWS, containerizada con Docker y Traefik, usando GitHub Actions y Playwright para puertas de calidad automatizadas.",
+      "description": "Plataforma full-stack segura en AWS, containerizada con Docker y Traefik, con CI/CD en GitHub Actions y quality gates con Playwright cubriendo flujos críticos de usuario.",
       "link": "https://github.com/andreirepo/todo-app",
       "demo": "https://andreirepo.com/apps/todo"
     }

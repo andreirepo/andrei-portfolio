@@ -15,38 +15,38 @@ const { title, projects } = Astro.props as Props;
 ---
 
 <section id={title.value.toLowerCase()} class="scroll-mt-50">
-    <h2 class="text-muted-foreground uppercase mb-6">{title.value}</h2>
+    <h2 class="text-amber-accent font-bold uppercase tracking-tight mb-6 text-heading-m">{title.value}</h2>
 
     <ul class="space-y-3">
         {
             projects.map((project) => (
                 <li class="group">
                     <span class="font-semibold">{project.name}</span>
-                    <div class="flex gap-3 mb-2 text-[0.8rem]">
+                     <div class="flex gap-3 mb-2 text-muted-foreground">
                         {project.link && (
                             <a
                                 href={project.link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                class="text-green-accent hover:underline"
+                                 class="text-xs text-amber-accent hover:bg-amber-accent-bg hover:text-background transition-colors"
                             >
                                 GitHub
                             </a>
                         )}
-                        {project.demo && (
-                            <a
-                                href={project.demo}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="text-green-accent hover:underline"
-                            >
-                                Live Demo
-                            </a>
-                        )}
+                                {project.demo && (
+                                    <a
+                                        href={project.demo}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="text-xs text-amber-accent hover:bg-amber-accent-bg hover:text-background transition-colors"
+                                    >
+                                        Live Demo
+                                    </a>
+                                )}
                     </div>
-                    <p class="text-muted-foreground text-sm">
-                        {project.description}
-                    </p>
+                         <p class="text-muted-foreground text-body leading-relaxed">
+                             {project.description}
+                         </p>
                 </li>
             ))
         }

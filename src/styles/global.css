@@ -1,111 +1,242 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
+@theme {
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-:root {
-  --background: oklch(98.8% 0.006 290);
-  --foreground: oklch(17% 0.018 285);
-
-  --primary: oklch(50% 0.17 270);
-  --primary-foreground: oklch(98.5% 0.004 270);
-
-  --secondary: oklch(96% 0.01 285);
-  --secondary-foreground: oklch(26% 0.02 285);
-
-  --muted: oklch(94% 0.012 285);
-  --muted-foreground: oklch(52% 0.018 285);
-
-  --accent: oklch(92% 0.09 85);
-  --accent-foreground: oklch(24% 0.05 85);
-
-  --border: oklch(88% 0.012 285);
-  --input: oklch(90% 0.012 285);
-  --ring: oklch(50% 0.17 270);
-
-  --radius: 0.625rem;
-
-  --destructive: oklch(58% 0.21 25);
-  --destructive-foreground: oklch(98% 0.004 25);
-
-  /* Green accent — dark enough for 4.5:1 on light background */
-  --green-accent: oklch(48% 0.17 155);
-  --green-accent-bg: oklch(48% 0.17 155);
-  --green-accent-bg-hover: oklch(44% 0.16 155);
-}
-
-.dark {
-  --background: oklch(14% 0.012 285);
-  --foreground: oklch(96% 0.01 285);
-
-  --primary: oklch(64% 0.18 270);
-  --primary-foreground: oklch(14% 0.01 270);
-
-  --secondary: oklch(22% 0.016 285);
-  --secondary-foreground: oklch(94% 0.012 285);
-
-  --muted: oklch(20% 0.014 285);
-  --muted-foreground: oklch(62% 0.02 285);
-
-  --accent: oklch(32% 0.09 85);
-  --accent-foreground: oklch(96% 0.01 85);
-
-  --border: oklch(28% 0.016 285);
-  --input: oklch(26% 0.016 285);
-  --ring: oklch(70% 0.18 270);
-
-  --destructive: oklch(48% 0.19 25);
-  --destructive-foreground: oklch(96% 0.008 25);
-
-  /* Green accent — bright enough for 4.5:1 on dark background */
-  --green-accent: oklch(72% 0.18 155);
-  --green-accent-bg: oklch(52% 0.17 155);
-  --green-accent-bg-hover: oklch(58% 0.17 155);
-}
-
-
-@theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-
+  
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
-
+  
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
-
+  
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-
+  
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-
+  
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-
+  
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  
+  --color-amber-accent: var(--amber-accent);
+  --color-amber-accent-bg: var(--amber-accent-bg);
+  --color-amber-accent-bg-hover: var(--amber-accent-bg-hover);
+  
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-
-  --color-green-accent: var(--green-accent);
-  --color-green-accent-bg: var(--green-accent-bg);
-  --color-green-accent-bg-hover: var(--green-accent-bg-hover);
 }
-
+ 
+:root {
+  --background: oklch(98.8% 0.006 290);
+  --foreground: oklch(17% 0.018 285);
+  
+  --primary: oklch(50% 0.17 270);
+  --primary-foreground: oklch(98.5% 0.004 270);
+  
+  --secondary: oklch(96% 0.01 285);
+  --secondary-foreground: oklch(26% 0.02 285);
+  
+  --muted: oklch(94% 0.012 285);
+  --muted-foreground: oklch(48% 0.018 285);
+  
+  --accent: oklch(92% 0.09 85);
+  --accent-foreground: oklch(24% 0.05 85);
+  
+  --border: oklch(88% 0.012 285);
+  --input: oklch(90% 0.012 285);
+  --ring: oklch(50% 0.17 270);
+  
+  --radius: 0.625rem;
+  
+  --destructive: oklch(58% 0.21 25);
+  --destructive-foreground: oklch(98% 0.004 25);
+  
+   /* Amber accent — warm and premium, high contrast for accessibility */
+  --amber-accent: oklch(75% 0.14 80);
+  --amber-accent-bg: oklch(48% 0.16 80);
+  --amber-accent-bg-hover: oklch(42% 0.15 80);
+  
+  /* Mesh Gradient Tokens */
+  --mesh-color-1: oklch(99% 0.008 290);
+  --mesh-color-2: oklch(97% 0.015 85);
+  --mesh-color-3: oklch(96% 0.01 285);
+  
+  /* Typography Tokens - Base Scale */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.25rem;    /* 20px */
+  --font-size-xl: 1.5rem;     /* 24px */
+  --font-size-2xl: 2rem;       /* 32px */
+  --font-size-3xl: 3rem;       /* 48px */
+  --font-size-4xl: 9rem;       /* 144px - Increased to meet XXL requirement */
+  --font-size-5xl: 12rem;      /* 192px - Increased from 144px to accommodate "large" text requirement */
+  
+  /* Semantic Roles */
+  --text-body: var(--font-size-base);
+  --text-muted: var(--font-size-sm);
+  --text-heading-s: var(--font-size-lg);
+  --text-heading-m: var(--font-size-xl);
+  --text-heading-l: var(--font-size-2xl);
+  --text-heading-xl: var(--font-size-3xl);
+  --text-heading-xxl: var(--font-size-4xl);
+}
+ 
+.dark {
+  --background: oklch(14% 0.012 285);
+  --foreground: oklch(93% 0.015 285);
+  
+  --primary: oklch(64% 0.18 270);
+  --primary-foreground: oklch(14% 0.01 270);
+  
+  --secondary: oklch(22% 0.016 285);
+  --secondary-foreground: oklch(94% 0.012 285);
+  
+  --muted: oklch(20% 0.014 285);
+  --muted-foreground: oklch(62% 0.02 285);
+  
+  --accent: oklch(32% 0.09 85);
+  --accent-foreground: oklch(96% 0.01 85);
+  
+  --border: oklch(28% 0.016 285);
+  --input: oklch(26% 0.016 285);
+  --ring: oklch(70% 0.18 270);
+  
+  --destructive: oklch(48% 0.19 25);
+  --destructive-foreground: oklch(96% 0.008 25);
+  
+   /* Amber accent — bright enough for 4.5:1 on dark background */
+  --amber-accent: oklch(82% 0.16 80);
+  --amber-accent-bg: oklch(55% 0.17 80);
+  --amber-accent-bg-hover: oklch(62% 0.16 80);
+  
+  /* Mesh Gradient Tokens (Dark) */
+  --mesh-color-1: oklch(16% 0.015 285);
+  --mesh-color-2: oklch(25% 0.03 80);
+  --mesh-color-3: oklch(18% 0.02 285);
+}
+ 
 @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+    background-image:
+      radial-gradient(at 0% 0%, var(--mesh-color-1) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, var(--mesh-color-2) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, var(--mesh-color-3) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, var(--mesh-color-1) 0px, transparent 50%);
+  }
+}
+ 
+html {
+  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+ 
+/* Hero entrance animations */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+ 
+.hero-animate {
+  opacity: 0;
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+ 
+.hero-animate-delay-1 {
+  opacity: 0;
+  animation: fade-in-up 0.6s ease-out 0.15s forwards;
+}
+ 
+.hero-animate-delay-2 {
+  opacity: 0;
+  animation: fade-in-up 0.6s ease-out 0.3s forwards;
+}
+ 
+.hero-animate-delay-3 {
+  opacity: 0;
+  animation: fade-in-up 0.6s ease-out 0.45s forwards;
+}
+ 
+.hero-animate-delay-4 {
+  opacity: 0;
+  animation: fade-in-up 0.6s ease-out 0.6s forwards;
+}
+ 
+@utility bg-mesh {
+  background-image:
+    radial-gradient(at 0% 0%, var(--mesh-color-1) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, var(--mesh-color-2) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, var(--mesh-color-3) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, var(--mesh-color-1) 0px, transparent 50%);
+}
+ 
+@utility bg-header-gradient {
+  background-color: color-mix(in oklch, var(--background) 65%, transparent);
+}
+ 
+/* Experience timeline grid */
+.experience-grid {
+  grid-template-columns: 9rem 1fr;
+}
+ 
+@media (max-width: 640px) {
+  .experience-grid {
+    grid-template-columns: 1fr;
+  }
+}
+ 
+/* Reduced motion: skip animations */
+@media (prefers-reduced-motion: reduce) {
+  .hero-animate,
+  .hero-animate-delay-1,
+  .hero-animate-delay-2,
+  .hero-animate-delay-3,
+  .hero-animate-delay-4 {
+    opacity: 1;
+    animation: none;
   }
 }
 
+/* Clip i18n debug tooltips in dev — they use width:max-content and overflow the viewport */
+.debug-tooltip-content {
+  display: none !important;
+}
 
-html {
-  scroll-behavior: smooth;
+/* Section scroll-triggered fade-in */
+.section-fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.section-fade-in.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-fade-in {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }

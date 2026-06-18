@@ -18,39 +18,39 @@ interface Props {
 const { title, jobs } = Astro.props as Props;
 ---
 
-<section data-testid="experience-section" id={title.value.toLowerCase()} class="scroll-mt-50">
-    <h2 class="text-muted-foreground uppercase mb-6 mt-15">
+<section data-testid="experience-section" id={title.value.toLowerCase()} class="scroll-mt-24 section-fade-in">
+    <h2 class="text-amber-accent font-bold uppercase tracking-tight mb-10 mt-12 text-heading-m">
         <I18NDebug key={title.key}>
             {title.value}
         </I18NDebug>
     </h2>
-    {
-        jobs.map((job) => (
-            <ul>
-                <li data-testid="experience-item" class="mb-4 grid grid-cols-1 md:grid-cols-10">
-                    <span class="text-muted-foreground text-sm col-span-2">
+    <ul class="space-y-8">
+        {
+            jobs.map((job) => (
+                <li data-testid="experience-item" class="experience-grid grid gap-x-4 items-baseline">
+                    <span class="text-muted-foreground text-sm text-right whitespace-nowrap">
                         <I18NDebug key={job.period.key}>
                             {job.period.value}
                         </I18NDebug>
                     </span>
-                    <div class="col-span-8">
-                        <div>
+                    <div class="border-l-2 border-border pl-4 rounded-r">
+                        <div class="mb-2">
                             <I18NDebug key={job.role.key}>
-                                <span>{job.role.value}</span>
+                                <span class="font-semibold text-foreground">{job.role.value}</span>
                             </I18NDebug>
-                            <span class="text-muted-foreground">|</span>
+                            <span class="text-muted-foreground mx-2">·</span>
                             <I18NDebug key={job.company.key}>
-                                <span>{job.company.value}</span>
+                                <span class="text-muted-foreground">{job.company.value}</span>
                             </I18NDebug>
                         </div>
                         <I18NDebug key={job.description.key}>
-                            <p class="text-sm text-muted-foreground">
+                            <p class="text-sm text-muted-foreground leading-relaxed">
                                 {job.description.value}
                             </p>
                         </I18NDebug>
                     </div>
                 </li>
-            </ul>
-        ))
-    }
+            ))
+        }
+    </ul>
 </section>

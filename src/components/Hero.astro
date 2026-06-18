@@ -1,3 +1,4 @@
+
 ---
 import I18NDebug from "@ariaskit/astro-i18n/I18NDebug.astro";
 export type KT = { key: string; value: string };
@@ -13,22 +14,24 @@ interface Props {
 const { name, title, p1, p2, p3 } = Astro.props as Props;
 ---
 
-<section data-testid="hero-section" id={name} class="mb-10 mt-50">
-    <h1 data-testid="hero-heading" class="mb-4 font-semibold text-xl">{name}</h1>
-    <div class="[&_p]:mb-6 leading-7">
-        <p>
+<section data-testid="hero-section" id={name} class="mb-10 mt-20 md:mt-48">
+    <h1 data-testid="hero-heading" class="mb-10 md:mb-20 font-bold text-[48px] md:text-[60px] tracking-tight hero-animate leading-[0.9] lg:leading-[1]">
+        {name}
+    </h1>
+    <div class="max-w-3xl [&_p]:mb-8 leading-relaxed">
+        <p class="hero-animate-delay-1">
             <I18NDebug key={title.key}>
-                <span class="text-green-accent">{title.value} </span>
+                <span class="text-amber-accent">{title.value} </span>
             </I18NDebug>
             <I18NDebug key={p1.key}>
                 <span class="text-muted-foreground">{p1.value}</span>
             </I18NDebug>
         </p>
         <I18NDebug key={p2.key}>
-            <p class="text-muted-foreground">{p2.value}</p>
+            <p class="text-muted-foreground hero-animate-delay-2">{p2.value}</p>
         </I18NDebug>
         <I18NDebug key={p3.key}>
-            <p class="text-muted-foreground">{p3.value}</p>
+            <p class="text-muted-foreground hero-animate-delay-3">{p3.value}</p>
         </I18NDebug>
     </div>
 </section>

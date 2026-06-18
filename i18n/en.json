@@ -13,13 +13,22 @@
     "title": "Senior QA Engineer",
     "p1": "specialising in test automation for SaaS and regulated iGaming. At Lottomart I'm developing AI-augmented workflows to help teams write cleaner, more consistent test code — while keeping the platform stable.",
     "p2": "Previously at Sketch and Playtech. I believe good automation should be easy for the whole team to use, not just the person who wrote it.",
-    "p3": "When I'm not testing, I play and learn by running a self-hosted home lab."
+    "p3": "When I'm not testing, I play and learn by running a self-hosted home lab.",
+    "cta_projects": "View projects",
+    "cta_contact": "Get in touch",
+    "stack_label": "Core stack:"
   },
   "projects": {
     "title": "Projects",
     "item_1": {
+      "name": "This Portfolio",
+      "description": "Bilingual Astro site with a custom i18n system, self-hosted CI/CD via GitHub Actions and Cloudflare Tunnel, local AI code reviews on every PR, automated WCAG accessibility tests, and Docker deployment — zero open ports.",
+      "link": "https://github.com/andreirepo/andrei-portfolio",
+      "demo": "https://andreirepo.com"
+    },
+    "item_2": {
       "name": "Task Management Platform",
-      "description": "Secure full-stack platform on AWS, containerized with Docker and Traefik, using GitHub Actions and Playwright for automated quality gates.",
+      "description": "Secure full-stack platform on AWS, containerized with Docker and Traefik, with GitHub Actions CI/CD and Playwright quality gates covering critical user flows.",
       "link": "https://github.com/andreirepo/todo-app",
       "demo": "https://andreirepo.com/apps/todo"
     }
