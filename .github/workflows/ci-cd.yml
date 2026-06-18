@@ -14,7 +14,7 @@ env:
 
 jobs:
   build-and-test:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -40,11 +40,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build application
+      - name: Build application (includes i18n check)
         run: pnpm build
-
-      - name: Run type checking
-        run: pnpm check-sync
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -54,7 +51,7 @@ jobs:
 
   accessibility-audit:
     needs: build-and-test
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -126,7 +123,7 @@ jobs:
 
   e2e-tests:
     needs: build-and-test
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -196,13 +193,16 @@ jobs:
 
   build-and-push-image:
     needs: [build-and-test, accessibility-audit, e2e-tests]
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
