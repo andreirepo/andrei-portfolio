@@ -1,0 +1,23 @@
+name: 'Setup Playwright'
+description: 'Install Playwright browsers and system dependencies'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Playwright browsers and system dependencies
+      shell: bash
+      run: |
+        if pnpm exec playwright install --dry-run chromium 2>&1 | grep -q "already installed"; then
+          echo "Chromium already installed, skipping browser install"
+        else
+          echo "Chromium not found, installing..."
+          pnpm exec playwright install chromium
+        fi
+        if ! dpkg -l libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 \
+          libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2 \
+          > /dev/null 2>&1; then
+          echo "System dependencies missing, installing..."
+          pnpm exec playwright install-deps chromium
+        else
+          echo "System dependencies already present, skipping"
+        fi

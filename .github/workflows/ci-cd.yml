@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ main, master ]
 
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -15,6 +19,7 @@ env:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -52,6 +57,7 @@ jobs:
   accessibility-audit:
     needs: build-and-test
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -66,25 +72,19 @@ jobs:
         with:
           version: 10
 
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Playwright browsers and system dependencies if missing
-        run: |
-          if pnpm exec playwright install --dry-run chromium 2>&1 | grep -q "already installed"; then
-            echo "Chromium already installed, skipping browser install"
-          else
-            echo "Chromium not found, installing..."
-            pnpm exec playwright install chromium
-          fi
-          if ! dpkg -l libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 \
-            libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2 \
-            > /dev/null 2>&1; then
-            echo "System dependencies missing, installing..."
-            pnpm exec playwright install-deps chromium
-          else
-            echo "System dependencies already present, skipping"
-          fi
+      - name: Setup Playwright
+        uses: ./.github/actions/setup-playwright
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -119,11 +119,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: accessibility-test-results
-          path: .kiro/specs/accessibility-contrast-fix/TEST_FINDINGS.md
+          path: test-results/
 
   e2e-tests:
     needs: build-and-test
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -138,25 +139,19 @@ jobs:
         with:
           version: 10
 
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Playwright browsers and system dependencies if missing
-        run: |
-          if pnpm exec playwright install --dry-run chromium 2>&1 | grep -q "already installed"; then
-            echo "Chromium already installed, skipping browser install"
-          else
-            echo "Chromium not found, installing..."
-            pnpm exec playwright install chromium
-          fi
-          if ! dpkg -l libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 \
-            libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2 \
-            > /dev/null 2>&1; then
-            echo "System dependencies missing, installing..."
-            pnpm exec playwright install-deps chromium
-          else
-            echo "System dependencies already present, skipping"
-          fi
+      - name: Setup Playwright
+        uses: ./.github/actions/setup-playwright
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -194,12 +189,24 @@ jobs:
   build-and-push-image:
     needs: [build-and-test, accessibility-audit, e2e-tests]
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
       packages: write
+    outputs:
+      previous-tag: ${{ steps.meta.outputs.previous-tag }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Save current image tag for rollback
+        id: save-previous
+        run: |
+          PREVIOUS_TAG=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/user/packages/container/${{ github.event.repository.name }}/versions" | \
+            jq -r 'sort_by(.created_at) | reverse | .[0].metadata.container.tags[]? // empty' | head -1)
+          echo "previous-tag=${PREVIOUS_TAG:-none}" >> $GITHUB_OUTPUT
+          echo "Previous image tag: $PREVIOUS_TAG"
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -239,6 +246,7 @@ jobs:
   deploy:
     needs: [build-and-push-image]
     runs-on: self-hosted
+    timeout-minutes: 5
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     steps:
       - name: Checkout code
@@ -278,6 +286,7 @@ jobs:
   health-check:
     needs: deploy
     runs-on: self-hosted
+    timeout-minutes: 5
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Wait for service to be ready
@@ -305,6 +314,7 @@ jobs:
   rollback:
     needs: health-check
     runs-on: self-hosted
+    timeout-minutes: 5
     if: failure()
     steps:
       - name: Setup SSH key
@@ -316,17 +326,20 @@ jobs:
         env:
           SERVER_USER: ${{ secrets.SERVER_USER }}
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          PREVIOUS_TAG: ${{ needs.build-and-push-image.outputs.previous-tag }}
         run: |
           ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} <<'EOF'
             cd ${{ env.DEPLOY_PATH }}
-            echo "Rolling back to previous image..."
-            docker compose -f docker-compose.yml pull website
+            echo "Rolling back to previous image: ${{ env.PREVIOUS_TAG }}"
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.PREVIOUS_TAG }}
+            docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.PREVIOUS_TAG }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
             docker compose -f docker-compose.yml up -d website
           EOF
 
   cleanup-old-packages:
     needs: health-check
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     if: github.ref == 'refs/heads/main' && success()
     permissions:
       packages: write
@@ -334,5 +347,5 @@ jobs:
       - name: Delete old package versions
         run: |
           curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/vnd.github+json" "https://api.github.com/user/packages/container/${{ github.event.repository.name }}/versions" | \
-          jq -r 'sort_by(.created_at) | reverse | .[3:] | .[].id' | \
+          jq -r 'sort_by(.created_at) | reverse | .[5:] | .[].id' | \
           xargs -I _ curl -s -X DELETE -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/vnd.github+json" "https://api.github.com/user/packages/container/${{ github.event.repository.name }}/versions/{}"

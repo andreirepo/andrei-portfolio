@@ -1,4 +1,6 @@
 ---
+import CIStatus from "@/src/components/CIStatus.astro";
+
 type Option = { key:string; value:string }
 
 interface Props {
@@ -27,7 +29,7 @@ const { status, heading, description, email_label, email_url, github_label, gith
         <p class="text-muted-foreground max-w-md mx-auto">{description.value}</p>
     </div>
     
-    <div class="flex flex-wrap justify-center gap-3 mb-12">
+    <div class="flex flex-wrap justify-center gap-3 mb-8">
         {email_url && email_label && (
             <a
                 href={email_url.value}
@@ -68,6 +70,10 @@ const { status, heading, description, email_label, email_url, github_label, gith
                 {linkedin_label.value}
             </a>
         )}
+    </div>
+
+    <div class="flex flex-wrap justify-center gap-3 mb-8">
+        <CIStatus repo="andreirepo/andrei-portfolio" workflow="ci-cd.yml" />
     </div>
 
     <div class="border-t pt-6 text-center text-muted-foreground text-xs">

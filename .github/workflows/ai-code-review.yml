@@ -8,6 +8,7 @@ on:
 jobs:
   ai-review:
     runs-on: self-hosted
+    timeout-minutes: 5
     permissions:
       pull-requests: write
       contents: read
@@ -18,8 +19,29 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check for existing AI review comment
+        id: check-existing
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c =>
+              c.user.type === 'Bot' && c.body.includes('## 🤖 AI Code Review')
+            );
+            if (existing) {
+              core.setOutput('exists', 'true');
+              core.setOutput('comment-id', existing.id);
+            } else {
+              core.setOutput('exists', 'false');
+            }
+
       - name: Check LM Studio availability
         id: lmstudio-check
+        if: steps.check-existing.outputs.exists == 'false'
         run: |
           if curl -sf --max-time 5 ${{ secrets.LMSTUDIO_URL }}/v1/models > /dev/null 2>&1; then
             echo "available=true" >> $GITHUB_OUTPUT
@@ -35,7 +57,7 @@ jobs:
         run: |
           git diff origin/${{ github.base_ref }}...HEAD \
             -- '*.ts' '*.tsx' '*.astro' '*.js' '*.mjs' '*.css' '*.json' \
-            | head -c 8000 > /tmp/pr_diff.txt
+            | head -c 32768 > /tmp/pr_diff.txt
           echo "diff_size=$(wc -c < /tmp/pr_diff.txt)" >> $GITHUB_OUTPUT
 
       - name: Run AI code review
@@ -59,7 +81,7 @@ jobs:
                 }
               ],
               temperature: 0.3,
-              max_tokens: 1000,
+              max_tokens: 2000,
               stream: false
             }')
 
@@ -68,27 +90,41 @@ jobs:
             -H "Content-Type: application/json" \
             -d "$PAYLOAD") || { echo "review_failed=true" >> $GITHUB_OUTPUT; exit 0; }
 
-          REVIEW=$(echo "$RESPONSE" | jq -r '.choices[0].message.content // "No review generated"')
+          REVIEW=$(echo "$RESPONSE" | jq -r '.choices[0].message.content // empty')
+          if [ -z "$REVIEW" ]; then
+            echo "review_failed=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
           echo "$REVIEW" > /tmp/review.txt
           echo "review_failed=false" >> $GITHUB_OUTPUT
 
-      - name: Post review comment
+      - name: Update or post review comment
         if: steps.lmstudio-check.outputs.available == 'true' && steps.ai-review.outputs.review_failed == 'false'
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
             const review = fs.readFileSync('/tmp/review.txt', 'utf8');
+            const body = `## 🤖 AI Code Review\n\n${review}\n\n---\n*Reviewed by [Gemma 4 12B QAT](https://lmstudio.ai) running locally*`;
 
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: `## 🤖 AI Code Review\n\n${review}\n\n---\n*Reviewed by [Gemma 4 12B QAT](https://lmstudio.ai) running locally*`
-            });
+            if ('${{ steps.check-existing.outputs.exists }}' === 'true') {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: parseInt('${{ steps.check-existing.outputs.comment-id }}'),
+                body: body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }
 
       - name: Post skip notice
-        if: steps.lmstudio-check.outputs.available == 'false'
+        if: steps.lmstudio-check.outputs.available == 'false' && steps.check-existing.outputs.exists == 'false'
         uses: actions/github-script@v7
         with:
           script: |
