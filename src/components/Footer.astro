@@ -20,15 +20,10 @@ const { status, heading, description, email_label, email_url, github_label, gith
 <footer
     data-testid="site-footer"
     id={id}
-    class="my-24 border-t pt-12 text-sm"
+    class="my-16 border-t pt-12 text-sm"
 >
     <div class="text-center mb-8">
-        <div class="mb-4">
-                <span class="inline-block w-2 h-2 rounded-full bg-amber-accent-bg mr-2 animate-pulse"></span>
-                <span class="text-muted-foreground uppercase text-xs">{status.value}</span>
-                <span class="inline-block w-2 h-2 rounded-full bg-amber-accent-bg ml-2 animate-pulse"></span>
-        </div>
-        <h2 class="text-xl font-semibold mb-2">{heading.value}</h2>
+        <h2 class="text-xl font-serif font-medium mb-2">{heading.value}</h2>
         <p class="text-muted-foreground max-w-md mx-auto">{description.value}</p>
     </div>
     

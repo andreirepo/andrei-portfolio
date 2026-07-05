@@ -27,10 +27,7 @@ const { title, description, locale, alternateLinks, ogType = 'website', schema }
 				if (isDark) document.documentElement.classList.add('dark');
 			})();
 		</script>
-		<!-- IBM Plex Mono font -->
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet" />
+
 		<PageMetadata
 			lang={locale}
 			title={title}
@@ -73,8 +70,8 @@ const { title, description, locale, alternateLinks, ogType = 'website', schema }
 		<!-- Umami Analytics -->
 		<script defer src="https://analytics.andreirepo.com/script.js" data-website-id="6f047764-b516-4fa2-a909-fe4fa0ac5d48"></script>
 	</head>
-	<body class="flex flex-col items-center w-full font-mono leading-7">
-		<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:bg-green-600 focus:text-white focus:px-4 focus:py-2 focus:rounded focus:z-50">
+	<body class="flex flex-col items-center w-full font-sans leading-relaxed">
+		<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:bg-amber-accent-bg focus:text-white focus:px-4 focus:py-2 focus:rounded focus:z-50">
 			Skip to content
 		</a>
 		<div class="w-full max-w-2xl px-5 md:px-0 flex flex-col">

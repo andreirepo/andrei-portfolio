@@ -2,7 +2,6 @@
   "description": "Ingeniero QA Senior especializado en iGaming altamente regulado, con experiencia en automatización de pruebas, tecnologías en la nube y aseguramiento de calidad. Construyendo soluciones seguras y compatibles.",
   "nav": {
     "home": "inicio",
-    "about": "info",
     "projects": "proyectos",
     "experience": "experiencia",
     "contact": "contacto",
@@ -13,10 +12,7 @@
     "title": "Ingeniero QA Senior",
     "p1": "especializado en automatización de pruebas para plataformas SaaS e iGaming regulado. En Lottomart desarrollo flujos de trabajo asistidos por IA para ayudar a los equipos a escribir código de pruebas más limpio y consistente — mientras mantengo la estabilidad de la plataforma.",
     "p2": "Anteriormente en Sketch y Playtech. Creo que una buena automatización debe ser fácil de usar para todo el equipo, no solo para quien la escribió.",
-    "p3": "Cuando no estoy probando, aprendo y experimento gestionando un home lab propio.",
-    "cta_projects": "Ver proyectos",
-    "cta_contact": "Contactar",
-    "stack_label": "Stack principal:"
+    "p3": "Cuando no estoy probando, aprendo y experimento gestionando un home lab propio."
   },
   "projects": {
     "title": "Proyectos",
@@ -54,51 +50,6 @@
       "description": "Construí y mantuve pruebas end-to-end Cypress integradas con Jenkins para acelerar los lanzamientos y mejorar la calidad en servicios cloud."
     }
   },
-  "skills": {
-    "heading": "Habilidades",
-    "playwright": {
-      "title": "Playwright",
-      "category": "Automatización de Pruebas",
-      "description": "Flujos Web Estables",
-      "experience_years": "4",
-      "experience_label": "años de experiencia"
-    },
-    "cypress": {
-      "title": "Cypress",
-      "category": "Automatización de Pruebas",
-      "description": "Bucles de Retroalimentación",
-      "experience_years": "5",
-      "experience_label": "años de experiencia"
-    },
-    "webdriverio": {
-      "title": "WebdriverIO",
-      "category": "Automatización de Pruebas",
-      "description": "Control de Driver Flexible",
-      "experience_years": "1",
-      "experience_label": "año de experiencia"
-    },
-    "aws": {
-      "title": "AWS",
-      "category": "Cloud",
-      "description": "Diseño de Infraestructura Cloud",
-      "experience_years": "3",
-      "experience_label": "años de experiencia"
-    },
-    "github_actions": {
-      "title": "GitHub Actions",
-      "category": "CI/CD",
-      "description": "Orquestación de Pipelines CI/CD",
-      "experience_years": "3",
-      "experience_label": "años de experiencia"
-    },
-    "typescript": {
-      "title": "TypeScript",
-      "category": "Lenguaje",
-      "description": "Seguridad de Tipos Estricta",
-      "experience_years": "4",
-      "experience_label": "años de experiencia"
-    }
-  },
   "contact": {
     "status": "Abierto a nuevas oportunidades",
     "heading": "Conectemos",
@@ -115,7 +66,6 @@
     "empty": "Aún no hay artículos. Vuelve pronto.",
     "back": "← Volver al blog",
     "back_home": "← Volver al inicio",
-    "read_more": "Leer más",
     "published": "Publicado",
     "latest_title": "Últimas entradas",
     "see_all": "Ver todos los artículos",

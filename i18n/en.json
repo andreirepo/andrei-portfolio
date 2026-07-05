@@ -2,7 +2,6 @@
   "description": "Senior QA Engineer specializing in highly regulated iGaming, with expertise in test automation, cloud technologies, and quality assurance. Building secure, compliant software solutions.",
   "nav": {
     "home": "home",
-    "about": "about",
     "projects": "projects",
     "experience": "experience",
     "contact": "contact",
@@ -13,10 +12,7 @@
     "title": "Senior QA Engineer",
     "p1": "specialising in test automation for SaaS and regulated iGaming. At Lottomart I'm developing AI-augmented workflows to help teams write cleaner, more consistent test code — while keeping the platform stable.",
     "p2": "Previously at Sketch and Playtech. I believe good automation should be easy for the whole team to use, not just the person who wrote it.",
-    "p3": "When I'm not testing, I play and learn by running a self-hosted home lab.",
-    "cta_projects": "View projects",
-    "cta_contact": "Get in touch",
-    "stack_label": "Core stack:"
+    "p3": "When I'm not testing, I play and learn by running a self-hosted home lab."
   },
   "projects": {
     "title": "Projects",
@@ -54,51 +50,6 @@
       "description": "Built and maintained Cypress end-to-end tests integrated with Jenkins to speed up releases and improve quality across cloud services."
     }
   },
-  "skills": {
-    "heading": "Skills",
-    "playwright": {
-      "title": "Playwright",
-      "category": "Test Automation",
-      "description": "Stable Web Flows",
-      "experience_years": "4",
-      "experience_label": "years of experience"
-    },
-    "cypress": {
-      "title": "Cypress",
-      "category": "Test Automation",
-      "description": "Feedback Loops",
-      "experience_years": "5",
-      "experience_label": "years of experience"
-    },
-    "webdriverio": {
-      "title": "WebdriverIO",
-      "category": "Test Automation",
-      "description": "Flexible Driver Control",
-      "experience_years": "1",
-      "experience_label": "year of experience"
-    },
-    "aws": {
-      "title": "AWS",
-      "category": "Cloud",
-      "description": "Cloud Infrastructure Design",
-      "experience_years": "3",
-      "experience_label": "years of experience"
-    },
-    "github_actions": {
-      "title": "GitHub Actions",
-      "category": "CI/CD",
-      "description": "CI/CD Pipeline Orchestration",
-      "experience_years": "3",
-      "experience_label": "years of experience"
-    },
-    "typescript": {
-      "title": "TypeScript",
-      "category": "Language",
-      "description": "Strict Type Safety",
-      "experience_years": "4",
-      "experience_label": "years of experience"
-    }
-  },
   "contact": {
     "status": "Open to new opportunities",
     "heading": "Let's connect",
@@ -115,7 +66,6 @@
     "empty": "No posts yet. Check back soon.",
     "back": "← Back to blog",
     "back_home": "← Back to home",
-    "read_more": "Read more",
     "published": "Published",
     "latest_title": "Latest posts",
     "see_all": "See all posts",

@@ -48,7 +48,7 @@ const footerContent = buildFooter(t);
   <Header nav={nav} locales={["en", "es"]} currentLocale={locale} resumeLabel={t("nav.resume")} name="Andrei Repo" currentPath={Astro.url.pathname} />
 
   <main id="main-content" class="mt-40 mb-24">
-    <h1 data-testid="blog-index-heading" class="text-muted-foreground uppercase mb-6">{t("blog.title")}</h1>
+    <h1 data-testid="blog-index-heading" class="text-amber-accent font-serif font-medium tracking-tight mb-8 text-[1.75rem] md:text-[2rem]">{t("blog.title")}</h1>
 
     {posts.length === 0 ? (
       <p class="text-muted-foreground">{t("blog.empty")}</p>

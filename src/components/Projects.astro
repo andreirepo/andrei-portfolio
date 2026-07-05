@@ -14,39 +14,39 @@ interface Props {
 const { title, projects } = Astro.props as Props;
 ---
 
-<section id={title.value.toLowerCase()} class="scroll-mt-50">
-    <h2 class="text-amber-accent font-bold uppercase tracking-tight mb-6 text-heading-m">{title.value}</h2>
+<section id={title.value.toLowerCase()} class="scroll-mt-24 mt-16 section-fade-in">
+    <h2 class="text-amber-accent font-serif font-medium tracking-tight mb-8 text-[1.75rem] md:text-[2rem]">{title.value}</h2>
 
-    <ul class="space-y-3">
+    <ul class="space-y-10">
         {
             projects.map((project) => (
                 <li class="group">
-                    <span class="font-semibold">{project.name}</span>
-                     <div class="flex gap-3 mb-2 text-muted-foreground">
+                    <span class="font-serif font-medium text-lg">{project.name}</span>
+                    <div class="flex gap-3 mt-3 mb-3 text-muted-foreground">
                         {project.link && (
                             <a
                                 href={project.link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                 class="text-xs text-amber-accent hover:bg-amber-accent-bg hover:text-background transition-colors"
+                                class="text-xs text-amber-accent hover:text-foreground transition-colors"
                             >
                                 GitHub
                             </a>
                         )}
-                                {project.demo && (
-                                    <a
-                                        href={project.demo}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        class="text-xs text-amber-accent hover:bg-amber-accent-bg hover:text-background transition-colors"
-                                    >
-                                        Live Demo
-                                    </a>
-                                )}
+                        {project.demo && (
+                            <a
+                                href={project.demo}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-xs text-amber-accent hover:text-foreground transition-colors"
+                            >
+                                Live Demo
+                            </a>
+                        )}
                     </div>
-                         <p class="text-muted-foreground text-body leading-relaxed">
-                             {project.description}
-                         </p>
+                    <p class="text-foreground/60 text-body leading-relaxed">
+                        {project.description}
+                    </p>
                 </li>
             ))
         }

@@ -18,8 +18,8 @@ interface Props {
 const { title, jobs } = Astro.props as Props;
 ---
 
-<section data-testid="experience-section" id={title.value.toLowerCase()} class="scroll-mt-24 section-fade-in">
-    <h2 class="text-amber-accent font-bold uppercase tracking-tight mb-10 mt-12 text-heading-m">
+<section data-testid="experience-section" id={title.value.toLowerCase()} class="scroll-mt-24 mt-16 section-fade-in">
+    <h2 class="text-amber-accent font-serif font-medium tracking-tight mb-8 text-[1.75rem] md:text-[2rem]">
         <I18NDebug key={title.key}>
             {title.value}
         </I18NDebug>
@@ -36,7 +36,7 @@ const { title, jobs } = Astro.props as Props;
                     <div class="border-l-2 border-border pl-4 rounded-r">
                         <div class="mb-2">
                             <I18NDebug key={job.role.key}>
-                                <span class="font-semibold text-foreground">{job.role.value}</span>
+                                <span class="font-serif font-medium text-foreground">{job.role.value}</span>
                             </I18NDebug>
                             <span class="text-muted-foreground mx-2">·</span>
                             <I18NDebug key={job.company.key}>
