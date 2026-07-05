@@ -1,7 +1,6 @@
 
 ---
 import I18NDebug from "@ariaskit/astro-i18n/I18NDebug.astro";
-export type KT = { key: string; value: string };
 
 interface Props {
     name: string;
@@ -9,29 +8,78 @@ interface Props {
     p1: KT;
     p2: KT;
     p3: KT;
+    stack?: string[];
 }
 
-const { name, title, p1, p2, p3 } = Astro.props as Props;
+const { name, title, p1, p2, p3, stack = [] } = Astro.props as Props;
 ---
 
-<section data-testid="hero-section" id={name} class="mb-10 mt-20 md:mt-48">
-    <h1 data-testid="hero-heading" class="mb-10 md:mb-20 font-bold text-[48px] md:text-[60px] tracking-tight hero-animate leading-[0.9] lg:leading-[1]">
-        {name}
-    </h1>
-    <div class="max-w-3xl [&_p]:mb-8 leading-relaxed">
+<section data-testid="hero-section" id={name} class="mb-16 mt-20 md:mt-48">
+    <div class="relative">
+        <div id="hero-glow" class="absolute -inset-32 blur-3xl pointer-events-none opacity-0 transition-opacity duration-500" aria-hidden="true" />
+        <h1
+            data-testid="hero-heading"
+            id="hero-heading"
+            class="relative mb-6 md:mb-10 font-serif font-medium text-[3rem] md:text-[4.75rem] lg:text-[6rem] leading-[1] tracking-tight hero-animate text-foreground"
+        >
+            {name}
+        </h1>
+    </div>
+    <div class="max-w-3xl [&_p]:mb-4 leading-snug">
         <p class="hero-animate-delay-1">
             <I18NDebug key={title.key}>
-                <span class="text-amber-accent">{title.value} </span>
+                <span class="text-foreground/70">{title.value} </span>
             </I18NDebug>
             <I18NDebug key={p1.key}>
-                <span class="text-muted-foreground">{p1.value}</span>
+                <span class="text-foreground/60">{p1.value}</span>
             </I18NDebug>
         </p>
         <I18NDebug key={p2.key}>
-            <p class="text-muted-foreground hero-animate-delay-2">{p2.value}</p>
+            <p class="text-foreground/60 hero-animate-delay-2">{p2.value}</p>
         </I18NDebug>
         <I18NDebug key={p3.key}>
-            <p class="text-muted-foreground hero-animate-delay-3">{p3.value}</p>
+            <p class="text-foreground/60 hero-animate-delay-3">{p3.value}</p>
         </I18NDebug>
     </div>
+    {
+        stack.length > 0 && (
+            <div class="flex flex-wrap gap-2 mt-8 hero-animate-delay-4">
+                {stack.map((tech) => (
+                    <span class="inline-flex items-center px-3 py-1 text-xs font-mono border border-amber-accent/30 text-amber-accent rounded-full bg-amber-accent/5">
+                        {tech}
+                    </span>
+                ))}
+            </div>
+        )
+    }
 </section>
+
+<script>
+    (function () {
+        var heading = document.getElementById('hero-heading');
+        var glow = document.getElementById('hero-glow');
+        if (!heading || !glow) return;
+        var isHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+        if (!isHover) return;
+        var ticking = false;
+        function update(e) {
+            var rect = heading.getBoundingClientRect();
+            var x = e.clientX - rect.left;
+            var y = e.clientY - rect.top;
+            glow.style.background = 'radial-gradient(circle at ' + x + 'px ' + y + 'px, color-mix(in oklch, var(--foreground) 10%, transparent) 0%, transparent 50%)';
+        }
+        function onMove(e) {
+            glow.classList.remove('opacity-0');
+            glow.classList.add('opacity-100');
+            if (!ticking) {
+                requestAnimationFrame(function () { update(e); ticking = false; });
+                ticking = true;
+            }
+        }
+        heading.addEventListener('mousemove', onMove);
+        heading.addEventListener('mouseleave', function () {
+            glow.classList.remove('opacity-100');
+            glow.classList.add('opacity-0');
+        });
+    })();
+</script>

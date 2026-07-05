@@ -1,7 +1,19 @@
 @import "tailwindcss";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+@import "@fontsource/playfair-display/500.css";
+@import "@fontsource/playfair-display/600.css";
+@import "@fontsource/playfair-display/700.css";
+@import "@fontsource/geist-mono/400.css";
+@import "@fontsource/geist-mono/500.css";
+@import "@fontsource/geist-mono/700.css";
 
 @theme {
-  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -51,8 +63,8 @@
   --accent: oklch(92% 0.09 85);
   --accent-foreground: oklch(24% 0.05 85);
   
-  --border: oklch(88% 0.012 285);
-  --input: oklch(90% 0.012 285);
+  --border: oklch(85% 0.012 285);
+  --input: oklch(87% 0.012 285);
   --ring: oklch(50% 0.17 270);
   
   --radius: 0.625rem;
@@ -61,14 +73,15 @@
   --destructive-foreground: oklch(98% 0.004 25);
   
    /* Amber accent — warm and premium, high contrast for accessibility */
-  --amber-accent: oklch(75% 0.14 80);
+  --amber-accent: oklch(68% 0.15 80);
   --amber-accent-bg: oklch(48% 0.16 80);
   --amber-accent-bg-hover: oklch(42% 0.15 80);
   
   /* Mesh Gradient Tokens */
   --mesh-color-1: oklch(99% 0.008 290);
-  --mesh-color-2: oklch(97% 0.015 85);
-  --mesh-color-3: oklch(96% 0.01 285);
+  --mesh-color-2: oklch(96% 0.018 85);
+  --mesh-color-3: oklch(94% 0.012 285);
+  --mesh-color-4: oklch(95% 0.015 160);
   
   /* Typography Tokens - Base Scale */
   --font-size-xs: 0.75rem;    /* 12px */
@@ -85,14 +98,14 @@
   --text-body: var(--font-size-base);
   --text-muted: var(--font-size-sm);
   --text-heading-s: var(--font-size-lg);
-  --text-heading-m: var(--font-size-xl);
-  --text-heading-l: var(--font-size-2xl);
-  --text-heading-xl: var(--font-size-3xl);
+  --text-heading-m: 1.75rem;
+  --text-heading-l: 2.25rem;
+  --text-heading-xl: 3.5rem;
   --text-heading-xxl: var(--font-size-4xl);
 }
  
 .dark {
-  --background: oklch(14% 0.012 285);
+  --background: oklch(18% 0.014 285);
   --foreground: oklch(93% 0.015 285);
   
   --primary: oklch(64% 0.18 270);
@@ -107,8 +120,8 @@
   --accent: oklch(32% 0.09 85);
   --accent-foreground: oklch(96% 0.01 85);
   
-  --border: oklch(28% 0.016 285);
-  --input: oklch(26% 0.016 285);
+  --border: oklch(32% 0.016 285);
+  --input: oklch(30% 0.016 285);
   --ring: oklch(70% 0.18 270);
   
   --destructive: oklch(48% 0.19 25);
@@ -120,9 +133,10 @@
   --amber-accent-bg-hover: oklch(62% 0.16 80);
   
   /* Mesh Gradient Tokens (Dark) */
-  --mesh-color-1: oklch(16% 0.015 285);
-  --mesh-color-2: oklch(25% 0.03 80);
-  --mesh-color-3: oklch(18% 0.02 285);
+  --mesh-color-1: oklch(20% 0.018 285);
+  --mesh-color-2: oklch(28% 0.035 80);
+  --mesh-color-3: oklch(22% 0.022 285);
+  --mesh-color-4: oklch(24% 0.025 160);
 }
  
 @layer base {
@@ -132,10 +146,11 @@
   body {
     @apply bg-background text-foreground;
     background-image:
-      radial-gradient(at 0% 0%, var(--mesh-color-1) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, var(--mesh-color-2) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, var(--mesh-color-3) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, var(--mesh-color-1) 0px, transparent 50%);
+      radial-gradient(at 0% 0%, var(--mesh-color-1) 0px, transparent 60%),
+      radial-gradient(at 100% 0%, var(--mesh-color-2) 0px, transparent 60%),
+      radial-gradient(at 0% 100%, var(--mesh-color-3) 0px, transparent 60%),
+      radial-gradient(at 50% 50%, var(--mesh-color-4) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, var(--mesh-color-2) 0px, transparent 60%);
   }
 }
  
@@ -180,15 +195,7 @@ html {
   opacity: 0;
   animation: fade-in-up 0.6s ease-out 0.6s forwards;
 }
- 
-@utility bg-mesh {
-  background-image:
-    radial-gradient(at 0% 0%, var(--mesh-color-1) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, var(--mesh-color-2) 0px, transparent 50%),
-    radial-gradient(at 0% 100%, var(--mesh-color-3) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, var(--mesh-color-1) 0px, transparent 50%);
-}
- 
+
 @utility bg-header-gradient {
   background-color: color-mix(in oklch, var(--background) 65%, transparent);
 }
@@ -214,11 +221,6 @@ html {
     opacity: 1;
     animation: none;
   }
-}
-
-/* Clip i18n debug tooltips in dev — they use width:max-content and overflow the viewport */
-.debug-tooltip-content {
-  display: none !important;
 }
 
 /* Section scroll-triggered fade-in */

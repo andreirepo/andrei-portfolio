@@ -14,7 +14,7 @@ interface Props {
     currentPath?: string;
 }
 
-const { nav, locales, currentLocale, resumeLabel = "Resume", name, homeLabel = "home", currentPath = "", id } = Astro.props as Props
+const { nav, locales, currentLocale, resumeLabel = "Resume", name, homeLabel = "home", currentPath = "" } = Astro.props as Props
 
 const RESUME_VERSION = "1";
 
@@ -29,7 +29,7 @@ function isActive(path: string): boolean {
 }
 ---
 
-<header data-testid="site-header" id={id} class="py-3 md:py-5 fixed top-0 left-0 right-0 bg-header-gradient backdrop-blur-xl backdrop-saturate-150 z-40 w-full max-w-[100vw] border-b border-border/40 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.12)] transition-shadow duration-300">
+<header data-testid="site-header" class="py-3 md:py-5 fixed top-0 left-0 right-0 bg-header-gradient backdrop-blur-xl backdrop-saturate-150 z-40 w-full max-w-[100vw] border-b border-border/40 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.12)] transition-shadow duration-300">
   <div class="w-full max-w-2xl mx-auto px-5 md:px-0">
 
     <!-- Single row: name left | nav center | controls right (desktop) -->
@@ -43,7 +43,7 @@ function isActive(path: string): boolean {
         target="_blank"
         rel="noopener noreferrer"
         onclick="umami.track('Resume Download')"
-        class="text-sm transition-all duration-200 rounded px-2 py-0.5 leading-tight bg-amber-accent-bg hover:bg-amber-accent-bg-hover text-white hover:scale-[1.03] active:scale-[0.97] shrink-0"
+        class="text-sm transition-all duration-200 rounded px-3 h-7 flex items-center border border-amber-accent/50 text-amber-accent hover:bg-amber-accent/10 hover:scale-[1.03] active:scale-[0.97] shrink-0"
       >
         {resumeLabel}
       </a>
@@ -54,7 +54,7 @@ function isActive(path: string): boolean {
           <a
             data-testid="nav-home"
             href={`/${currentLocale}`}
-            class="relative transition-all duration-200 text-sm whitespace-nowrap px-2 py-0.5 rounded active:scale-[0.97] text-muted-foreground hover:text-foreground hover:bg-foreground/8 after:absolute after:bottom-0 after:left-2 after:right-2 after:h-px after:bg-amber-accent after:scale-x-0 after:origin-left after:transition-transform after:duration-200 hover:after:scale-x-100"
+            class="relative transition-all duration-200 text-sm whitespace-nowrap px-2 py-0.5 rounded active:scale-[0.97] text-muted-foreground hover:text-foreground after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-amber-accent after:scale-x-0 after:origin-left after:transition-transform after:duration-200 hover:after:scale-x-100"
           >
             {homeLabel}
           </a>
@@ -65,10 +65,10 @@ function isActive(path: string): boolean {
               data-testid={`nav-${item.text.toLowerCase()}`}
               class={cls(
                 "relative transition-all duration-200 text-sm whitespace-nowrap px-2 py-0.5 rounded active:scale-[0.97]",
-                "after:absolute after:bottom-0 after:left-2 after:right-2 after:h-px after:bg-amber-accent after:transition-transform after:duration-200 after:origin-left",
+                "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-amber-accent after:transition-transform after:duration-200 after:origin-left",
                 isActive(item.path)
                   ? "text-foreground after:scale-x-100"
-                  : "text-muted-foreground hover:text-foreground hover:bg-foreground/8 after:scale-x-0 hover:after:scale-x-100"
+                  : "text-muted-foreground hover:text-foreground after:scale-x-0 hover:after:scale-x-100"
               )}
               href={resolveHref(item.path)}
               aria-current={isActive(item.path) ? "page" : undefined}
@@ -100,11 +100,6 @@ function isActive(path: string): boolean {
 
         <!-- Locale switcher -->
         <div data-testid="locale-switcher" class="flex items-center gap-0.5">
-          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground shrink-0" aria-hidden="true">
-            <circle cx="12" cy="12" r="10"/>
-            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
-            <path d="M2 12h20"/>
-          </svg>
           {locales.map(item =>
             <a
               data-testid={`locale-${item.toLowerCase()}`}
@@ -113,7 +108,7 @@ function isActive(path: string): boolean {
             >
               {item}
             </a>
-            <span class="last:hidden text-muted-foreground text-xs">/</span>
+            <span class="last:hidden text-muted-foreground text-sm">/</span>
           )}
         </div>
 
@@ -151,7 +146,7 @@ function isActive(path: string): boolean {
         {name && (
           <a
             href={`/${currentLocale}`}
-            class="text-sm text-muted-foreground hover:text-foreground hover:bg-foreground/8 px-2 py-1.5 rounded transition-all duration-200 active:scale-[0.98]"
+            class={cls("text-sm px-2 py-1.5 rounded transition-all duration-200 active:scale-[0.98]", isActive(`/${currentLocale}`) ? "text-foreground font-medium hover:bg-foreground/8 hover:text-foreground" : "text-muted-foreground hover:text-foreground hover:bg-foreground/8")}
           >
             {homeLabel}
           </a>
@@ -162,7 +157,7 @@ function isActive(path: string): boolean {
               class={cls(
                 "text-sm px-2 py-1.5 rounded transition-all duration-200 active:scale-[0.98]",
                 isActive(item.path)
-                  ? "text-foreground font-medium"
+                  ? "text-foreground font-medium hover:bg-foreground/8 hover:text-foreground"
                   : "text-muted-foreground hover:text-foreground hover:bg-foreground/8"
               )}
               href={resolveHref(item.path)}
@@ -227,12 +222,12 @@ function isActive(path: string): boolean {
       menu!.setAttribute('aria-hidden', String(!state));
       if (state) {
         menu!.classList.remove('max-h-0', 'opacity-0');
-        menu!.classList.add('max-h-96', 'opacity-100');
+        menu!.classList.add('max-h-[999px]', 'opacity-100');
         hamburger!.classList.add('hidden');
         close!.classList.remove('hidden');
       } else {
         menu!.classList.add('max-h-0', 'opacity-0');
-        menu!.classList.remove('max-h-96', 'opacity-100');
+        menu!.classList.remove('max-h-[999px]', 'opacity-100');
         hamburger!.classList.remove('hidden');
         close!.classList.add('hidden');
       }
