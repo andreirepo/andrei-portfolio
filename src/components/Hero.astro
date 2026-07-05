@@ -4,10 +4,10 @@ import I18NDebug from "@ariaskit/astro-i18n/I18NDebug.astro";
 
 interface Props {
     name: string;
-    title: KT;
-    p1: KT;
-    p2: KT;
-    p3: KT;
+    title: { key: string; value: string };
+    p1: { key: string; value: string };
+    p2: { key: string; value: string };
+    p3: { key: string; value: string };
     stack?: string[];
 }
 

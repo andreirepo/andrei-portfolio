@@ -1,0 +1,109 @@
+---
+interface Props {
+    repo: string;
+    workflow: string;
+}
+
+const { repo, workflow } = Astro.props as Props;
+const actionsUrl = `https://github.com/${repo}/actions/workflows/${workflow}`;
+---
+
+<a
+    href={actionsUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="inline-flex items-center gap-2 border rounded px-3 py-1.5 text-xs font-mono text-muted-foreground hover:border-amber-accent hover:text-amber-accent hover:bg-amber-accent/10 transition-all duration-200 active:scale-[0.97]"
+    data-testid="ci-status-badge"
+>
+    <span class="relative flex h-2 w-2" id="ci-status-dot">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-muted-foreground/40"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-muted-foreground"></span>
+    </span>
+    <span id="ci-status-text">ci ·</span>
+    <span id="ci-status-label" class="text-muted-foreground/60">loading…</span>
+</a>
+
+<script define:vars={{ repo, workflow }}>
+    (function () {
+        var dot = document.getElementById('ci-status-dot');
+        var text = document.getElementById('ci-status-text');
+        var label = document.getElementById('ci-status-label');
+        if (!dot || !text || !label) return;
+
+        var cacheKey = 'ci-status-' + repo;
+        var cacheTTL = 3600000; // 1 hour
+
+        function renderStatus(data) {
+            var run = data.workflow_runs[0];
+            var status = run.status;
+            var conclusion = run.conclusion;
+            var createdAt = new Date(run.created_at);
+            var now = new Date();
+            var diffMs = now - createdAt;
+            var diffMin = Math.floor(diffMs / 60000);
+            var diffHr = Math.floor(diffMin / 60);
+            var diffDay = Math.floor(diffHr / 24);
+
+            var timeAgo;
+            if (diffDay > 0) timeAgo = diffDay + 'd ago';
+            else if (diffHr > 0) timeAgo = diffHr + 'h ago';
+            else if (diffMin > 0) timeAgo = diffMin + 'm ago';
+            else timeAgo = 'just now';
+
+            var dotInner = dot.querySelector('span:last-child');
+            var pingSpan = dot.querySelector('span:first-child');
+
+            if (status === 'in_progress') {
+                if (dotInner) { dotInner.className = 'relative inline-flex rounded-full h-2 w-2 bg-amber-accent'; }
+                if (pingSpan) { pingSpan.className = 'animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-accent/40'; }
+                label.textContent = 'running · ' + timeAgo;
+            } else if (conclusion === 'success') {
+                if (dotInner) { dotInner.className = 'relative inline-flex rounded-full h-2 w-2 bg-emerald-500'; }
+                if (pingSpan) { pingSpan.className = 'absolute inline-flex h-full w-full rounded-full bg-emerald-500/0'; }
+                label.textContent = 'passed · ' + timeAgo;
+            } else if (conclusion === 'failure') {
+                if (dotInner) { dotInner.className = 'relative inline-flex rounded-full h-2 w-2 bg-red-500'; }
+                if (pingSpan) { pingSpan.className = 'absolute inline-flex h-full w-full rounded-full bg-red-500/0'; }
+                label.textContent = 'failed · ' + timeAgo;
+            } else {
+                label.textContent = conclusion || status;
+            }
+        }
+
+        function fetchAndRender() {
+            var apiUrl = 'https://api.github.com/repos/' + repo + '/actions/workflows/' + workflow + '/runs?per_page=1';
+            return fetch(apiUrl)
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    if (!data.workflow_runs || !data.workflow_runs.length) return null;
+                    try { localStorage.setItem(cacheKey, JSON.stringify({ ts: Date.now(), data: data })); } catch (_) {}
+                    return data;
+                });
+        }
+
+        // Try cache first
+        var cached = null;
+        try {
+            var raw = localStorage.getItem(cacheKey);
+            if (raw) {
+                cached = JSON.parse(raw);
+                if (Date.now() - cached.ts > cacheTTL) cached = null;
+            }
+        } catch (_) {}
+
+        if (cached && cached.data) {
+            renderStatus(cached.data);
+            // Refresh in background if stale
+            if (Date.now() - cached.ts > cacheTTL / 2) {
+                fetchAndRender().then(function (d) { if (d) renderStatus(d); });
+            }
+        } else {
+            fetchAndRender().then(function (d) {
+                if (d) renderStatus(d);
+                else label.textContent = 'unavailable';
+            }).catch(function () {
+                label.textContent = 'unavailable';
+            });
+        }
+    })();
+</script>
