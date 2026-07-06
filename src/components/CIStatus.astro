@@ -6,6 +6,7 @@ interface Props {
 
 const { repo, workflow } = Astro.props as Props;
 const actionsUrl = `https://github.com/${repo}/actions/workflows/${workflow}`;
+const apiUrl = `https://api.github.com/repos/${repo}/actions/workflows/${workflow}/runs?per_page=1`;
 ---
 
 <a
@@ -23,11 +24,9 @@ const actionsUrl = `https://github.com/${repo}/actions/workflows/${workflow}`;
     <span class="ci-status-label text-muted-foreground/60">loading…</span>
 </a>
 
-<script>
+<script define:vars={{ apiUrl, actionsUrl }}>
     (function () {
-        const REPO = "andreirepo/andrei-portfolio";
-        const WORKFLOW = "ci-cd.yml";
-        const CACHE_KEY = `ci-status-${REPO}`;
+        const CACHE_KEY = "ci-status-andreirepo/andrei-portfolio";
         const CACHE_TTL = 3600000; // 1 hour
 
         const badge = document.querySelector('[data-testid="ci-status-badge"]');
@@ -38,52 +37,45 @@ const actionsUrl = `https://github.com/${repo}/actions/workflows/${workflow}`;
         const label = badge.querySelector('.ci-status-label');
         if (!dot || !ping || !label) return;
 
+        function setStatus(colorClass, text) {
+            dot.className = `ci-status-dot relative inline-flex rounded-full h-2 w-2 ${colorClass}`;
+            ping.className = 'ci-status-ping absolute inline-flex h-full w-full rounded-full bg-transparent';
+            label.textContent = text;
+            badge.setAttribute('aria-busy', 'false');
+            badge.setAttribute('aria-label', `CI pipeline: ${text}`);
+        }
+
         function renderStatus(data) {
             const run = data.workflow_runs[0];
-            const status = run.status;
-            const conclusion = run.conclusion;
-            const createdAt = new Date(run.created_at);
-            const diffMs = Date.now() - createdAt.getTime();
+            const { status, conclusion, created_at } = run;
+            const diffMs = Date.now() - new Date(created_at).getTime();
             const diffMin = Math.floor(diffMs / 60000);
             const diffHr = Math.floor(diffMin / 60);
             const diffDay = Math.floor(diffHr / 24);
 
-            let timeAgo: string;
+            let timeAgo;
             if (diffDay > 0) timeAgo = `${diffDay}d ago`;
             else if (diffHr > 0) timeAgo = `${diffHr}h ago`;
             else if (diffMin > 0) timeAgo = `${diffMin}m ago`;
             else timeAgo = 'just now';
 
             if (status === 'in_progress') {
-                dot.className = 'ci-status-dot relative inline-flex rounded-full h-2 w-2 bg-amber-accent';
+                setStatus('bg-amber-accent', `running · ${timeAgo}`);
                 ping.className = 'ci-status-ping absolute inline-flex h-full w-full rounded-full animate-ping bg-amber-accent/40';
-                label.textContent = `running · ${timeAgo}`;
             } else if (conclusion === 'success') {
-                dot.className = 'ci-status-dot relative inline-flex rounded-full h-2 w-2 bg-emerald-500';
-                ping.className = 'ci-status-ping absolute inline-flex h-full w-full rounded-full bg-transparent';
-                label.textContent = `passed · ${timeAgo}`;
+                setStatus('bg-emerald-500', `passed · ${timeAgo}`);
             } else if (conclusion === 'failure') {
-                dot.className = 'ci-status-dot relative inline-flex rounded-full h-2 w-2 bg-red-500';
-                ping.className = 'ci-status-ping absolute inline-flex h-full w-full rounded-full bg-transparent';
-                label.textContent = `failed · ${timeAgo}`;
+                setStatus('bg-red-500', `failed · ${timeAgo}`);
             } else {
-                label.textContent = conclusion || status;
+                setStatus('bg-muted-foreground', conclusion || status);
             }
-
-            badge.setAttribute('aria-busy', 'false');
-            badge.setAttribute('aria-label', `CI pipeline: ${label.textContent}`);
         }
 
-        function showFallback() {
-            dot.className = 'ci-status-dot relative inline-flex rounded-full h-2 w-2 bg-emerald-500';
-            ping.className = 'ci-status-ping absolute inline-flex h-full w-full rounded-full bg-transparent';
-            label.textContent = 'passed';
-            badge.setAttribute('aria-busy', 'false');
-            badge.setAttribute('aria-label', 'CI pipeline: passed');
+        function showUnknown() {
+            setStatus('bg-muted-foreground', 'unknown');
         }
 
         function fetchAndRender() {
-            const apiUrl = `https://api.github.com/repos/${REPO}/actions/workflows/${WORKFLOW}/runs?per_page=1`;
             return fetch(apiUrl)
                 .then((res) => {
                     if (!res.ok) throw new Error(`API ${res.status}`);
@@ -99,7 +91,7 @@ const actionsUrl = `https://github.com/${repo}/actions/workflows/${workflow}`;
         }
 
         // Try cache first
-        let cached: { ts: number; data: any } | null = null;
+        let cached = null;
         try {
             const raw = localStorage.getItem(CACHE_KEY);
             if (raw) {
@@ -110,14 +102,13 @@ const actionsUrl = `https://github.com/${repo}/actions/workflows/${workflow}`;
 
         if (cached?.data) {
             renderStatus(cached.data);
-            // Background refresh if stale
             if (Date.now() - cached.ts > CACHE_TTL / 2) {
                 fetchAndRender().then((d) => { if (d) renderStatus(d); });
             }
         } else {
             fetchAndRender()
-                .then((d) => { if (d) renderStatus(d); else showFallback(); })
-                .catch(() => { showFallback(); });
+                .then((d) => { if (d) renderStatus(d); else showUnknown(); })
+                .catch(() => { showUnknown(); });
         }
     })();
 </script>
