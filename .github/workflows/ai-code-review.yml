@@ -5,6 +5,10 @@ on:
     branches: [main, master]
     types: [opened, synchronize, reopened]
 
+concurrency:
+  group: ai-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   ai-review:
     runs-on: self-hosted
