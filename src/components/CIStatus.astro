@@ -26,7 +26,7 @@ const apiUrl = `https://api.github.com/repos/${repo}/actions/workflows/${workflo
 
 <script define:vars={{ apiUrl, actionsUrl }}>
     (function () {
-        const CACHE_KEY = "ci-status-andreirepo/andrei-portfolio";
+        const CACHE_KEY = "ci-status-v2-andreirepo/andrei-portfolio";
         const CACHE_TTL = 3600000; // 1 hour
 
         const badge = document.querySelector('[data-testid="ci-status-badge"]');
