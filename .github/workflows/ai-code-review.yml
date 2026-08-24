@@ -34,7 +34,7 @@ jobs:
               issue_number: context.issue.number,
             });
             const existing = comments.find(c =>
-              c.user.type === 'Bot' && c.body.includes('## 🤖 AI Code Review')
+              c.body.includes('## 🤖 AI Code Review')
             );
             if (existing) {
               core.setOutput('exists', 'true');
@@ -60,8 +60,8 @@ jobs:
         if: steps.lmstudio-check.outputs.available == 'true'
         run: |
           git diff origin/${{ github.base_ref }}...HEAD \
-            -- '*.ts' '*.tsx' '*.astro' '*.js' '*.mjs' '*.css' '*.json' \
-            | head -c 32768 > /tmp/pr_diff.txt
+            -- '*.ts' '*.tsx' '*.astro' '*.js' '*.mjs' '*.css' '*.json' '*.md' '*.yaml' '*.yml' \
+            | head -c 16384 > /tmp/pr_diff.txt
           echo "diff_size=$(wc -c < /tmp/pr_diff.txt)" >> $GITHUB_OUTPUT
 
       - name: Run AI code review
@@ -73,11 +73,11 @@ jobs:
           PAYLOAD=$(jq -n \
             --arg diff "$DIFF" \
             '{
-              model: "google/gemma-4-12b-qat",
+              model: "qwen/qwen3-14b",
               messages: [
                 {
                   role: "system",
-                  content: "You are a senior software engineer doing a code review. Be concise and practical. Focus on: bugs, security issues, performance problems, and code quality. Skip minor style issues. Format your response in markdown with clear sections. If the code looks good, say so briefly."
+                  content: "You are a senior software engineer reviewing a PR for an Astro + TypeScript portfolio site. Be concise and practical. Focus on: bugs, security issues, performance problems, accessibility (a11y), and code quality. Skip minor style issues. Format your response in markdown with clear sections. If the code looks good, say so briefly."
                 },
                 {
                   role: "user",
@@ -109,7 +109,7 @@ jobs:
           script: |
             const fs = require('fs');
             const review = fs.readFileSync('/tmp/review.txt', 'utf8');
-            const body = `## 🤖 AI Code Review\n\n${review}\n\n---\n*Reviewed by [Gemma 4 12B QAT](https://lmstudio.ai) running locally*`;
+            const body = `## 🤖 AI Code Review\n\n${review}\n\n---\n*Reviewed by [Qwen3 14B](https://lmstudio.ai) running locally*`;
 
             if ('${{ steps.check-existing.outputs.exists }}' === 'true') {
               await github.rest.issues.updateComment({
