@@ -1,7 +1,8 @@
 ---
-title: "Corrigiendo 40+ Violaciones de Contraste WCAG con axe-core y Property-Based Testing"
-description: "Cómo encontré, verifiqué y prevení permanentemente los fallos de contraste de accesibilidad en este portfolio usando axe-core, fast-check y un pipeline de CI que bloquea regresiones automáticamente."
+title: "Fixing 40+ WCAG Contrast Violations with axe-core and Property-Based Testing"
+description: "How I found, verified, and permanently prevented color contrast accessibility failures on this portfolio using axe-core, fast-check, and a CI pipeline that blocks regressions automatically."
 pubDate: 2026-04-28
+author: "Andrei Repo"
 tags: ["accessibility", "testing", "axe-core", "ci-cd", "tailwindcss"]
 draft: false
 ---

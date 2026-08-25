@@ -2,6 +2,7 @@
 title: "Email Forwarding to Gmail with AWS SES, S3, and Lambda"
 description: "How I set up a serverless email forwarding pipeline on AWS to keep my real Gmail address private while still receiving mail at contact@andreirepo.com."
 pubDate: 2025-03-15
+author: "Andrei Repo"
 tags: ["aws", "lambda", "ses", "s3", "serverless"]
 draft: false
 ---

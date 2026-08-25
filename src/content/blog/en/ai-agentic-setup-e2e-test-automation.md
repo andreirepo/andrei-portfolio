@@ -2,6 +2,7 @@
 title: "Building an AI Agent Layer for E2E Test Automation"
 description: "How I structured a knowledge-driven AI agent setup using Cline that lets any developer generate, debug, and maintain E2E tests with minimal domain knowledge — by encoding team patterns into machine-readable files."
 pubDate: 2026-05-20
+author: "Andrei Repo"
 tags: ["testing", "ai", "automation", "webdriverio", "typescript", "cline"]
 draft: false
 ---
@@ -9,12 +10,6 @@ draft: false
 Writing E2E tests for a complex platform is slow — not because the code is hard, but because the knowledge is scattered. You need to know which API helpers exist, which page objects cover which flows, what the timing gotchas are, and how the fixture files are structured. That knowledge lives in people's heads, in Slack threads, and in code you have to read before you can write any.
 
 I wanted to fix that. Not by writing better documentation, but by encoding team knowledge into structured, machine-readable files that an AI agent can actually use.
-
-## A Quick Word on AI Coding Tools
-
-If you're new to AI-assisted development, here's the landscape in brief. Tools like [Cline](https://cline.bot), [Cursor](https://cursor.sh), [Windsurf](https://windsurf.ai), and GitHub Copilot all let an AI agent read your codebase and generate code alongside you. The key difference from a basic chatbot is that these tools can read files, run commands, and take multi-step actions in your project.
-
-**Cline** is the tool this setup is built around. It's an open-source VS Code extension that gives you full control over which AI model you use, and it has a native system for Rules and Skills — the building blocks of the setup described here. The same concepts apply to other tools, but the file names and invocation syntax differ slightly.
 
 ## The Core Problem
 
@@ -29,13 +24,13 @@ An AI tool without this context would scan the entire codebase, make wrong assum
 
 ## The Building Blocks: Rules, Skills, and Memory
 
-Before getting into the structure, it helps to understand what each piece actually does. Cline has three native concepts for customizing agent behavior:
+Cline has three native concepts for customizing agent behavior:
 
-**[Rules](https://docs.cline.bot/customization/cline-rules)** (`.clinerules`) — a markdown file at the root of your project that Cline reads on every task. Think of it as the standing instructions: coding standards, naming conventions, what to never do. Every AI tool has an equivalent: `.cursorrules` for Cursor, `.windsurfrules` for Windsurf, `CLAUDE.md` for Claude Code, `copilot-instructions.md` for GitHub Copilot.
+**Rules** (`.clinerules`) — standing instructions: coding standards, naming conventions, what to never do. Always active. Every AI tool has an equivalent (`.cursorrules`, `.windsurfrules`, `CLAUDE.md`).
 
-**[Skills](https://docs.cline.bot/customization/skills)** — modular instruction sets for specific tasks, each stored as a `SKILL.md` file inside a named directory under `.cline/skills/`. A skill is invoked via a slash command (e.g., `/generate-test`) or auto-loaded when Cline detects it's relevant based on the skill's description. The `SKILL.md` contains everything: the step-by-step process, what files to read, when to stop and ask for approval, what to do if something fails. The difference from a rule is scope: rules are always active, skills are loaded on demand.
+**Skills** — modular instruction sets for specific tasks, stored as `SKILL.md` files under `.cline/skills/`. Invoked via slash commands (e.g., `/generate-test`) or auto-loaded on demand. Contains the full pipeline: what to read, what to check, when to stop and ask for approval.
 
-**[Memory files](https://docs.cline.bot/best-practices/memory-bank)** (the "brain") — markdown files that store domain knowledge the agent should carry between sessions. Unlike rules (which are instructions), memory files are facts: what this feature does, which helpers exist, what caused that flaky test last month. You write and maintain these files — they're not auto-generated. The agent reads them at the start of a task to get up to speed instantly.
+**Memory files** — markdown files storing domain knowledge the agent carries between sessions. Unlike rules (instructions), memory files are facts: what this feature does, which helpers exist, what caused that flaky test last month.
 
 ---
 
@@ -91,9 +86,7 @@ Here's what a gotcha entry looks like:
 
 The memory grows over time. When you hit a new gotcha, you add it. When you discover a pattern, you document it.
 
-One way to make this stick: treat updating `gotchas.md` as the last step of any defect resolution. If a test flaked in CI and a developer spent two hours tracking it down, the fix isn't complete until the symptom and resolution are in the context layer. That reframes the memory bank from a maintenance chore into a natural byproduct of the work you're already doing.
-
-Better yet, automate it. Since Cline has terminal and file-writing access, you can add a `/log-gotcha` skill that runs after a fix is merged. The agent reads the git diff, extracts the symptom, root cause, and solution, and appends a formatted entry to `gotchas.md` automatically. Documentation becomes a side effect of fixing the bug, not a separate task that gets skipped.
+The trick is making this stick. Treat updating `gotchas.md` as the last step of any defect resolution — the fix isn't complete until the symptom and resolution are in the context layer. Better yet, automate it: a `/log-gotcha` skill can read the git diff and append a formatted entry automatically. Documentation becomes a side effect of fixing the bug.
 
 ## The Feature Registry: Intent to Code
 
@@ -111,9 +104,7 @@ The feature registry is what makes short-prompt generation possible. It maps bus
 - Memory reference: .cline/memory/domain-a/flows.md → Checkout section
 ```
 
-With this in place, a prompt like `/generate-test TICKET-123 intent:flow:checkout` gives the agent everything it needs. It knows the file paths, the relevant memory sections, and the key patterns before writing a single line.
-
-Without the registry, the agent would need to search 40+ spec files to understand the checkout pattern. With it, the lookup is instant.
+With this in place, a prompt like `/generate-test TICKET-123 intent:flow:checkout` gives the agent everything it needs — file paths, relevant memory sections, and key patterns — before writing a single line. Without the registry, the agent searches 40+ spec files. With it, the lookup is instant.
 
 ## The Skills: Structured Pipelines as Slash Commands
 
@@ -163,47 +154,19 @@ Do not generate any code until the user approves the plan.
 
 The `STOP — wait for human approval` in step 3 is the key safety valve. Without it, the agent will happily generate 10 files, half of which duplicate things that already exist. And step 4's automatic handoff to `/debug-test` on failure is what makes the whole thing feel agentic — one skill chains into another without you having to intervene.
 
-**Debug Test** (`/debug-test`) follows the same pattern — a skill with a 4-step pipeline in its SKILL.md:
-
-1. Analyze logs, screenshots, and environment state
-2. Generate hypotheses (selector issue? timing? data? environment?)
-3. Apply fix, rerun, verify it's not flaky
-4. Run regression check, clean up
-
-The debug skill cross-references `troubleshooting.md` and `gotchas.md` automatically. Most flaky test failures fall into a handful of known patterns — the skill finds them in seconds instead of minutes.
+**Debug Test** (`/debug-test`) follows the same pattern — analyze logs, generate hypotheses, apply fix, rerun. It cross-references `troubleshooting.md` and `gotchas.md` automatically. Most flaky test failures fall into a handful of known patterns — the skill finds them in seconds instead of minutes.
 
 ## MCP Integration: From Ticket to Test
 
-Step 2 of the generate skill already fetches the Jira ticket before generating anything. With a Jira MCP server configured in Cline:
-
-```markdown
-## Step 2 — Discovery
-- Use the Jira MCP tool to fetch ticket {TICKET_ID}
-- Extract: summary, description, acceptance criteria, linked tickets
-- Use the acceptance criteria as the primary source for what the test must verify
-- Then resolve the intent key and scan the codebase as usual
-```
-
-The prompt becomes `/generate-test TICKET-123 intent:flow:checkout` and the agent reads the acceptance criteria directly from Jira. The test is grounded in the actual requirement, not your summary of it.
+With a Jira MCP server configured in Cline, the prompt becomes `/generate-test TICKET-123 intent:flow:checkout` and the agent reads acceptance criteria directly from Jira. The test is grounded in the actual requirement, not your summary of it.
 
 This matters because the biggest source of test drift is when the ticket says one thing and the test verifies something slightly different. When the agent reads the acceptance criteria directly, that gap closes.
 
-The same pattern works with Linear, GitHub Issues, or any tool that has an [MCP server](https://docs.cline.bot/mcp/mcp-overview). The memory files handle the *how* — patterns, gotchas, file paths. The MCP connection handles the *what* — what this specific ticket requires. They complement each other cleanly.
+The same pattern works with Linear, GitHub Issues, or any tool that has an [MCP server](https://docs.cline.bot/mcp/mcp-overview). The memory files handle the *how* — patterns, gotchas, file paths. The MCP connection handles the *what* — what this specific ticket requires.
 
 ## Multi-Tool Consistency
 
-If your team uses different AI tools — Cline, Cursor, Windsurf, GitHub Copilot — each has its own format for coding rules. Maintaining separate rule files for each tool is a maintenance nightmare.
-
-The source of truth is `.clinerules`. The other formats are just copies with different filenames:
-
-| Tool | Rule file location |
-|---|---|
-| Cline | `.clinerules` |
-| Cursor | `.cursor/rules/` (individual `.mdc` files with `globs` / `alwaysApply` frontmatter) |
-| Windsurf | `.windsurfrules` |
-| GitHub Copilot | `.github/copilot-instructions.md` |
-
-The simplest approach is to ask your AI tool to generate a sync script for you — something like: *"Write a shell script that copies `.clinerules` to the rule file locations for Cursor, Windsurf, and GitHub Copilot."* It's a handful of `cp` commands. Run it whenever the rules change and everyone stays in sync regardless of which tool they use.
+If your team uses different AI tools, keep `.clinerules` as the source of truth and sync to other formats (`.cursorrules`, `.windsurfrules`, `CLAUDE.md`) with a simple copy script. One file to maintain, every tool stays in sync.
 
 ## What Actually Changed
 
@@ -215,16 +178,18 @@ The simplest approach is to ask your AI tool to generate a sync script for you �
 | New team member ramp-up | Weeks | Days |
 | Multi-tool rule consistency | Manual | Automated |
 
-The time savings are real, but the more significant change is the floor. A developer who's never touched the test suite can generate a working test on their first day, because the memory files have the context they'd otherwise spend weeks accumulating.
+The time savings are real, but the bigger win is the floor. A developer who's never touched the test suite can generate a working test on their first day, because the memory files have the context they'd otherwise spend weeks accumulating.
 
 ## What I'd Do Differently
 
-**Start the memory files earlier.** The most valuable entries are the gotchas — timing issues and edge cases that took hours to debug. Document them the moment you hit them, not retroactively.
+**Start earlier.** The most valuable entries are the gotchas — document them the moment you hit them, not retroactively.
 
-**Version the memory files.** Adding `last_updated` frontmatter would make it easier to spot stale entries. A gotcha documented 18 months ago might no longer apply after a framework upgrade.
+**Version the memory files.** Adding `last_updated` frontmatter makes it easier to spot stale entries after framework upgrades.
 
-**Make the debug skill domain-aware.** The current `/debug-test` skill checks general troubleshooting patterns first. It should check domain-specific failure patterns first, since those are more likely to be the cause for any given test.
+**Make the debug skill domain-aware.** Check domain-specific failure patterns first — they're more likely to be the cause than generic troubleshooting steps.
 
 The system isn't magic — it's structured context. The AI tools were already capable of generating good tests. What they were missing was the knowledge that experienced team members carry around in their heads. Rules, Skills, and memory files are just a way to write that knowledge down in a format machines can use.
 
 If your test suite has grown to the point where onboarding takes weeks and flaky tests take hours to debug, the bottleneck probably isn't the AI tool. It's the missing context layer.
+
+**See also:** [How I set up local AI code reviews on GitHub PRs](/en/blog/local-ai-code-review-github-actions-lm-studio) — the same self-hosted AI infrastructure, applied to pull requests instead of test generation.

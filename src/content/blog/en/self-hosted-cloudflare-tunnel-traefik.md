@@ -2,6 +2,7 @@
 title: "Self-Hosting Without Opening Ports: Cloudflare Tunnel + Traefik"
 description: "How I serve this portfolio and other services from a Lenovo mini PC in my living room — no open ports, no static IP, with automatic HTTPS and Cloudflare's DDoS protection."
 pubDate: 2025-03-28
+author: "Andrei Repo"
 tags: ["cloudflare", "traefik", "docker", "self-hosted", "networking"]
 draft: false
 ---

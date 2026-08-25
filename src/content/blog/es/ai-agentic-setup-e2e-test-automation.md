@@ -1,7 +1,8 @@
 ---
-title: "Construyendo una Capa de Agente IA para Automatización de Tests E2E"
-description: "Cómo estructuré un sistema de agente IA con Cline que permite a cualquier desarrollador generar, depurar y mantener tests E2E con mínimo conocimiento del dominio — codificando los patrones del equipo en archivos legibles por máquinas."
+title: "Building an AI Agent Layer for E2E Test Automation"
+description: "How I structured a knowledge-driven AI agent setup using Cline that lets any developer generate, debug, and maintain E2E tests with minimal domain knowledge — by encoding team patterns into machine-readable files."
 pubDate: 2026-05-20
+author: "Andrei Repo"
 tags: ["testing", "ai", "automation", "webdriverio", "typescript", "cline"]
 draft: false
 ---

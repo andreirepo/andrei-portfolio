@@ -33,15 +33,19 @@ const latest = posts.slice(0, limit);
 ---
 
 {latest.length > 0 && (
-  <section data-testid="latest-posts-section" id="blog" class="scroll-mt-24 mt-16 section-fade-in">
+  <section data-testid="latest-posts-section" id="blog" class="scroll-mt-24 mt-12 md:mt-16 section-fade-in">
     <div class="flex items-center justify-between mb-8">
-      <h2 class="text-amber-accent font-serif font-medium tracking-tight text-[1.75rem] md:text-[2rem]">{title}</h2>
+      <h2 class="text-amber-accent font-serif font-medium tracking-tight text-lg md:text-xl">{title}</h2>
       <a
         data-testid="see-all-posts-link"
         href={seeAllHref}
-        class="text-xs text-amber-accent hover:text-foreground transition-colors"
+        class="inline-flex items-center gap-1.5 text-xs border border-border/60 rounded px-2.5 py-1 text-muted-foreground hover:border-amber-accent hover:text-amber-accent hover:bg-amber-accent/5 transition-all duration-200"
       >
-        {seeAllLabel} →
+        {seeAllLabel}
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14"/>
+          <path d="m12 5 7 7-7 7"/>
+        </svg>
       </a>
     </div>
 

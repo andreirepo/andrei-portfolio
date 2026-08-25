@@ -29,21 +29,21 @@ function isActive(path: string): boolean {
 }
 ---
 
-<header data-testid="site-header" class="py-3 md:py-5 fixed top-0 left-0 right-0 bg-header-gradient backdrop-blur-xl backdrop-saturate-150 z-40 w-full max-w-[100vw] border-b border-border/40 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.12)] transition-shadow duration-300">
+<header data-testid="site-header" class="py-3 md:py-5 fixed top-0 left-0 right-0 bg-header-gradient backdrop-blur-xl backdrop-saturate-150 z-40 w-full max-w-[100vw] border-b border-border/40 transition-shadow duration-300">
   <div class="w-full max-w-2xl mx-auto px-5 md:px-0">
 
     <!-- Single row: name left | nav center | controls right (desktop) -->
     <!-- Single row: name left | controls+hamburger right (mobile) -->
     <div class="flex items-center justify-between">
 
-      <!-- Left: Resume button (replaces site name) -->
+      <!-- Left: Resume button -->
       <a
         data-testid="resume-button"
         href={`/assets/AndreiRepoResume.pdf?v=${RESUME_VERSION}`}
         target="_blank"
         rel="noopener noreferrer"
         onclick="umami.track('Resume Download')"
-        class="text-sm transition-all duration-200 rounded px-3 h-7 flex items-center border border-amber-accent/50 text-amber-accent hover:bg-amber-accent/10 hover:scale-[1.03] active:scale-[0.97] shrink-0"
+        class="text-xs transition-all duration-200 rounded px-2.5 py-1 flex items-center border border-border/60 text-muted-foreground hover:border-amber-accent hover:text-amber-accent hover:bg-amber-accent/5 active:scale-[0.97] shrink-0"
       >
         {resumeLabel}
       </a>
@@ -146,7 +146,7 @@ function isActive(path: string): boolean {
         {name && (
           <a
             href={`/${currentLocale}`}
-            class={cls("text-sm px-2 py-1.5 rounded transition-all duration-200 active:scale-[0.98]", isActive(`/${currentLocale}`) ? "text-foreground font-medium hover:bg-foreground/8 hover:text-foreground" : "text-muted-foreground hover:text-foreground hover:bg-foreground/8")}
+            class={cls("text-sm px-2 py-1.5 rounded transition-all duration-200 active:scale-[0.98]", isActive(`/${currentLocale}`) ? "text-amber-accent font-medium border-l-2 border-amber-accent pl-2" : "text-muted-foreground hover:text-foreground hover:bg-foreground/8")}
           >
             {homeLabel}
           </a>
@@ -157,7 +157,7 @@ function isActive(path: string): boolean {
               class={cls(
                 "text-sm px-2 py-1.5 rounded transition-all duration-200 active:scale-[0.98]",
                 isActive(item.path)
-                  ? "text-foreground font-medium hover:bg-foreground/8 hover:text-foreground"
+                  ? "text-amber-accent font-medium border-l-2 border-amber-accent pl-2"
                   : "text-muted-foreground hover:text-foreground hover:bg-foreground/8"
               )}
               href={resolveHref(item.path)}
