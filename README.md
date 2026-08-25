@@ -62,7 +62,7 @@ src/
 ## Content Sections
 
 - **About**: Professional summary and QA engineering expertise
-- **Experience**: Work history at Lottomart, Sketch, and Playtech
+- **Experience**: Work history at Open Assessment Technologies, Lottomart, and Sketch
 - **Projects**: Task Management Platform showcase
 - **Blog**: Technical articles in English and Spanish
 

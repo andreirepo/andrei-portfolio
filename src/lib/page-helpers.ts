@@ -14,7 +14,6 @@ export function buildNav(t: T, locale: string, isHome = false) {
 export function buildFooter(t: T) {
   return {
     id: (t("nav.contact") as string).toLowerCase(),
-    status: { key: "contact.status", value: t("contact.status") },
     heading: { key: "contact.heading", value: t("contact.heading") },
     description: { key: "contact.description", value: t("contact.description") },
     email_label: { key: "contact.email_label", value: t("contact.email_label") },
