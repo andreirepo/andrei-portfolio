@@ -11,7 +11,7 @@
   "hero": {
     "title": "Ingeniero QA Senior",
     "p1": "especializado en automatización de pruebas para plataformas SaaS e iGaming regulado. Construyo flujos de trabajo asistidos por IA que ayudan a los equipos a lanzar software confiable más rápido.",
-    "p2": "Anteriormente en Sketch y Playtech. Creo que una buena automatización debe ser fácil de usar para todo el equipo, no solo para quien la escribió.",
+    "p2": "Anteriormente en Lottomart y Sketch. Creo que una buena automatización debe ser fácil de usar para todo el equipo, no solo para quien la escribió.",
     "p3": "Fuera del trabajo, mantengo un home lab propio. Solo confío en lo que sé romper yo mismo."
   },
   "projects": {
@@ -32,28 +32,27 @@
   "experience": {
     "title": "experiencia",
     "item_1": {
-      "period": "2025 — Presente",
+      "period": "2026 — Presente",
+      "role": "Ingeniero QA Automation",
+      "company": "Open Assessment Technologies",
+      "description": "Mantengo y optimizo suites de pruebas Cypress en codebases legacy y modernos, gestiono CI/CD en GitHub Actions con test parallelization, y colaboro con equipos multifuncionales para ejecutar suites de regresión y gestionar riesgos de release."
+    },
+    "item_2": {
+      "period": "2025 — 2026",
       "role": "Ingeniero QA",
       "company": "Lottomart",
       "description": "Mantengo suites de pruebas WebdriverIO en pipelines CI/CD, reduciendo ciclos de regresión y mejorando la confianza en cada release."
     },
-    "item_2": {
+    "item_3": {
       "period": "2021 — 2025",
       "role": "Ingeniero QA",
       "company": "Sketch",
       "description": "Lideré el cambio de Cypress a Playwright para hacer las pruebas más estables y cubrir más flujos de usuario, mientras ayudaba a los equipos a adoptar el nuevo framework."
-    },
-    "item_3": {
-      "period": "2018 — 2021",
-      "role": "Ingeniero QA Automation",
-      "company": "Playtech",
-      "description": "Construí suites E2E con Cypress integradas a Jenkins, reduciendo ciclos de release y mejorando la calidad en servicios cloud."
     }
   },
   "contact": {
-    "status": "Abierto a nuevas oportunidades",
     "heading": "conectemos",
-    "description": "Siempre estoy interesado en nuevos desafíos y colaboraciones. No dudes en contactarme.",
+    "description": "Abierto a nuevas oportunidades. Construyamos algo confiable.",
     "email_label": "Email",
     "email_url": "mailto:contact@andreirepo.com",
     "github_label": "GitHub",

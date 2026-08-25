@@ -11,7 +11,7 @@
   "hero": {
     "title": "Senior QA Engineer",
     "p1": "specialising in test automation for SaaS and regulated iGaming. I build AI-augmented workflows that help teams ship reliable software faster.",
-    "p2": "Previously at Sketch and Playtech. I believe good automation should be easy for the whole team to use, not just the person who wrote it.",
+    "p2": "Previously at Lottomart and Sketch. I believe good automation should be easy for the whole team to use, not just the person who wrote it.",
     "p3": "Outside work, I run a self-hosted home lab. I trust what I can break myself."
   },
   "projects": {
@@ -32,28 +32,27 @@
   "experience": {
     "title": "experience",
     "item_1": {
-      "period": "2025 — Present",
+      "period": "2026 — Present",
+      "role": "QA Automation Engineer",
+      "company": "Open Assessment Technologies",
+      "description": "Maintain and optimize Cypress test suites across legacy and modern codebases, manage GitHub Actions CI/CD with test parallelization, and partner with cross-functional teams to execute regression suites and manage release risks."
+    },
+    "item_2": {
+      "period": "2025 — 2026",
       "role": "QA Engineer",
       "company": "Lottomart",
       "description": "Maintaining WebdriverIO test suites across CI/CD pipelines, reducing regression cycles and improving release confidence."
     },
-    "item_2": {
+    "item_3": {
       "period": "2021 — 2025",
       "role": "QA Engineer",
       "company": "Sketch",
       "description": "Led the switch from Cypress to Playwright to make tests more stable and cover more user workflows, while helping teams adopt the new framework."
-    },
-    "item_3": {
-      "period": "2018 — 2021",
-      "role": "QA Automation Engineer",
-      "company": "Playtech",
-      "description": "Built Cypress E2E suites integrated with Jenkins, cutting release cycles and improving quality across cloud services."
     }
   },
   "contact": {
-    "status": "Open to new opportunities",
     "heading": "let's connect",
-    "description": "I'm always interested in new challenges and collaborations. Feel free to reach out.",
+    "description": "Open to new opportunities. Let's build something reliable.",
     "email_label": "Email",
     "email_url": "mailto:contact@andreirepo.com",
     "github_label": "GitHub",
