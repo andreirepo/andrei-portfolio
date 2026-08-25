@@ -67,13 +67,13 @@ describe('Preservation Properties: Baseline Behavior for Non-Buggy Elements', ()
             await page.waitForTimeout(300);
           }
 
-          // Query skill titles with text-green-500
+          // Query skill titles with amber accent
           const skillTitles = await page.evaluate(() => {
-            const elements = document.querySelectorAll('.text-green-500');
+            const elements = document.querySelectorAll('.text-amber-accent');
             return elements.length;
           });
 
-          // Verify green accent elements exist
+          // Verify amber accent elements exist
           expect(skillTitles).toBeGreaterThan(0);
 
           await page.close();
@@ -83,9 +83,9 @@ describe('Preservation Properties: Baseline Behavior for Non-Buggy Elements', ()
     });
 
     /**
-     * Verify resume button maintains green background and white text
+     * Verify resume button exists and has correct styling
      */
-    it('should preserve resume button styling (green background, white text)', async () => {
+    it('should preserve resume button styling (border, muted text)', async () => {
       const page = await browser.newPage();
       await page.goto(`${BASE_URL}/en`, { waitUntil: 'networkidle' });
       await waitForPageReady(page);
@@ -95,15 +95,15 @@ describe('Preservation Properties: Baseline Behavior for Non-Buggy Elements', ()
         if (!btn) return null;
 
         return {
-          hasGreenBg: btn.className.includes('bg-green-600') || btn.className.includes('bg-green-500'),
-          hasWhiteText: btn.className.includes('text-white'),
+          hasBorder: btn.className.includes('border'),
+          hasMutedText: btn.className.includes('text-muted-foreground'),
           text: btn.textContent,
         };
       });
 
       expect(resumeButton).not.toBeNull();
-      expect(resumeButton?.hasGreenBg).toBe(true);
-      expect(resumeButton?.hasWhiteText).toBe(true);
+      expect(resumeButton?.hasBorder).toBe(true);
+      expect(resumeButton?.hasMutedText).toBe(true);
       expect(resumeButton?.text).toBeTruthy();
 
       await page.close();
@@ -406,12 +406,12 @@ describe('Preservation Properties: Baseline Behavior for Non-Buggy Elements', ()
       await waitForPageReady(page);
 
       const projectsContent = await page.evaluate(() => {
-        const projectsSection = document.querySelector('section');
+        const projectsSection = document.querySelector('#projects');
         if (!projectsSection) return { hasContent: false };
 
         // Check for project items (li elements) or project links
         const projectItems = projectsSection.querySelectorAll('li');
-        const projectLinks = projectsSection.querySelectorAll('a.text-green-500');
+        const projectLinks = projectsSection.querySelectorAll('a');
         return {
           hasContent: projectItems.length > 0 || projectLinks.length > 0,
         };

@@ -62,13 +62,17 @@ const alternate = [
     <a
       data-testid="back-link"
       href={`/${locale}/blog`}
-      class="text-xs text-amber-accent hover:text-foreground transition-colors duration-200 mb-8 inline-block"
+      class="inline-flex items-center gap-1.5 text-xs border border-border/60 rounded px-2.5 py-1 text-muted-foreground hover:border-amber-accent hover:text-amber-accent hover:bg-amber-accent/5 transition-all duration-200 mb-8"
     >
+      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m12 19-7-7 7-7"/>
+        <path d="M19 12H5"/>
+      </svg>
       {t("blog.back")}
     </a>
 
     <div data-testid="tag-page-header" class="flex items-center gap-3 mb-8">
-      <h1 data-testid="tag-heading" class="text-xl font-semibold">#{tag}</h1>
+      <h1 data-testid="tag-heading" class="text-amber-accent font-serif font-medium tracking-tight text-lg md:text-xl">#{tag}</h1>
       <span class="text-sm text-muted-foreground">
         {posts.length} {posts.length === 1 ? t("blog.tag_post_singular") : t("blog.tag_post_plural")}
       </span>

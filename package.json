@@ -17,9 +17,9 @@
   "dependencies": {
     "@ariaskit/astro-i18n": "^0.0.8",
     "@astrojs/sitemap": "^3.7.0",
+    "@fontsource/fraunces": "^5.3.0",
     "@fontsource/geist-mono": "^5.2.8",
     "@fontsource/inter": "^5.2.8",
-    "@fontsource/playfair-display": "^5.2.8",
     "@lucide/astro": "^0.563.0",
     "@tailwindcss/vite": "~4.1.18",
     "astro": "^5.17.1",

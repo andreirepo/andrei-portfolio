@@ -47,7 +47,7 @@ const { title, description, locale, alternateLinks, ogType = 'website', schema }
 			{
 				"@context": "https://schema.org",
 				"@type": "Person",
-				"name": "Andrei",
+				"name": "Andrei Repo",
 				"url": "https://andreirepo.com",
 				"jobTitle": "Senior QA Engineer",
 				"description": "Senior QA Engineer specializing in highly regulated iGaming",
@@ -81,7 +81,8 @@ const { title, description, locale, alternateLinks, ogType = 'website', schema }
 		<button
 			id="scroll-top"
 			aria-label="Scroll to top"
-			class="fixed bottom-5 right-3 sm:bottom-6 sm:right-4 w-9 h-9 flex items-center justify-center rounded border border-amber-accent/50 text-amber-accent bg-amber-accent/10 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300 hover:bg-amber-accent hover:text-white hover:border-amber-accent active:scale-95 text-base z-50"
+			class="fixed bottom-5 right-4 w-9 h-9 flex items-center justify-center rounded border border-amber-accent/50 text-amber-accent bg-amber-accent/10 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300 hover:bg-amber-accent hover:text-white hover:border-amber-accent active:scale-95 text-base z-50"
+			style="bottom: max(1.25rem, env(safe-area-inset-bottom, 1.25rem));"
 		>
 			↑
 		</button>
@@ -98,26 +99,6 @@ const { title, description, locale, alternateLinks, ogType = 'website', schema }
 			}
 		</script>
 		<script>
-			// Section scroll-triggered fade-in
-			function initSectionAnimations() {
-				const sections = document.querySelectorAll('.section-fade-in');
-				if (!sections.length) return;
-				const observer = new IntersectionObserver(
-					(entries) => {
-						entries.forEach((entry) => {
-							if (entry.isIntersecting) {
-								entry.target.classList.add('is-visible');
-								observer.unobserve(entry.target);
-							}
-						});
-					},
-					{ threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
-				);
-				sections.forEach((el) => observer.observe(el));
-			}
-			initSectionAnimations();
-			document.addEventListener('astro:after-swap', initSectionAnimations);
-
 			// Dynamic copyright year
 			const yearEl = document.getElementById('copyright-year');
 			if (yearEl) yearEl.textContent = String(new Date().getFullYear());

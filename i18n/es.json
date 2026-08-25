@@ -1,21 +1,21 @@
 {
-  "description": "Ingeniero QA Senior especializado en iGaming altamente regulado, con experiencia en automatización de pruebas, tecnologías en la nube y aseguramiento de calidad. Construyendo soluciones seguras y compatibles.",
+  "description": "Ingeniero QA Senior especializado en automatización de pruebas para SaaS e iGaming regulado. Construyo flujos de trabajo asistidos por IA que ayudan a los equipos a lanzar software confiable más rápido.",
   "nav": {
     "home": "inicio",
     "projects": "proyectos",
     "experience": "experiencia",
     "contact": "contacto",
-    "resume": "CV",
+    "resume": "cv",
     "blog": "blog"
   },
   "hero": {
     "title": "Ingeniero QA Senior",
-    "p1": "especializado en automatización de pruebas para plataformas SaaS e iGaming regulado. En Lottomart desarrollo flujos de trabajo asistidos por IA para ayudar a los equipos a escribir código de pruebas más limpio y consistente — mientras mantengo la estabilidad de la plataforma.",
+    "p1": "especializado en automatización de pruebas para plataformas SaaS e iGaming regulado. Construyo flujos de trabajo asistidos por IA que ayudan a los equipos a lanzar software confiable más rápido.",
     "p2": "Anteriormente en Sketch y Playtech. Creo que una buena automatización debe ser fácil de usar para todo el equipo, no solo para quien la escribió.",
-    "p3": "Cuando no estoy probando, aprendo y experimento gestionando un home lab propio."
+    "p3": "Fuera del trabajo, mantengo un home lab propio. Solo confío en lo que sé romper yo mismo."
   },
   "projects": {
-    "title": "Proyectos",
+    "title": "proyectos",
     "item_1": {
       "name": "Este Portfolio",
       "description": "Sitio Astro bilingüe con sistema i18n propio, CI/CD self-hosted via GitHub Actions y Cloudflare Tunnel, revisiones de código con IA local en cada PR, tests de accesibilidad WCAG automatizados y despliegue con Docker — sin puertos abiertos.",
@@ -30,12 +30,12 @@
     }
   },
   "experience": {
-    "title": "Experiencia",
+    "title": "experiencia",
     "item_1": {
       "period": "2025 — Presente",
       "role": "Ingeniero QA",
       "company": "Lottomart",
-      "description": "Desarrollé y mantuve pruebas automatizadas de extremo a extremo usando WebdriverIO y Docker, integradas en CI/CD para una retroalimentación más rápida y pruebas de regresión más confiables."
+      "description": "Mantengo suites de pruebas WebdriverIO en pipelines CI/CD, reduciendo ciclos de regresión y mejorando la confianza en cada release."
     },
     "item_2": {
       "period": "2021 — 2025",
@@ -47,12 +47,12 @@
       "period": "2018 — 2021",
       "role": "Ingeniero QA Automation",
       "company": "Playtech",
-      "description": "Construí y mantuve pruebas end-to-end Cypress integradas con Jenkins para acelerar los lanzamientos y mejorar la calidad en servicios cloud."
+      "description": "Construí suites E2E con Cypress integradas a Jenkins, reduciendo ciclos de release y mejorando la calidad en servicios cloud."
     }
   },
   "contact": {
     "status": "Abierto a nuevas oportunidades",
-    "heading": "Conectemos",
+    "heading": "conectemos",
     "description": "Siempre estoy interesado en nuevos desafíos y colaboraciones. No dudes en contactarme.",
     "email_label": "Email",
     "email_url": "mailto:contact@andreirepo.com",
@@ -62,13 +62,13 @@
     "linkedin_url": "https://linkedin.com/in/andreirepo"
   },
   "blog": {
-    "title": "Blog",
+    "title": "blog",
     "empty": "Aún no hay artículos. Vuelve pronto.",
     "back": "← Volver al blog",
     "back_home": "← Volver al inicio",
     "published": "Publicado",
-    "latest_title": "Últimas entradas",
-    "see_all": "Ver todos los artículos",
+    "latest_title": "últimas entradas",
+    "see_all": "ver todos los artículos",
     "tag_description_prefix": "Artículos etiquetados con",
     "tag_post_singular": "artículo",
     "tag_post_plural": "artículos"

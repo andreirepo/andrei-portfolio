@@ -1,7 +1,8 @@
 ---
-title: "Revisiones de Código con IA Local en GitHub PRs usando LM Studio y GitHub Actions"
-description: "Cómo configuré revisiones automáticas de PRs usando un modelo Qwen2.5 Coder ejecutándose localmente en LM Studio, Tailscale y un runner self-hosted de GitHub Actions — con fallback graceful cuando el PC está apagado."
+title: "Local AI Code Reviews on GitHub PRs with LM Studio and GitHub Actions"
+description: "How I set up automated PR code reviews using a locally running Qwen2.5 Coder model via LM Studio, Tailscale, and a self-hosted GitHub Actions runner — with a graceful fallback when the PC is off."
 pubDate: 2025-04-12
+author: "Andrei Repo"
 tags: ["github-actions", "ai", "lm-studio", "tailscale", "self-hosted", "devops"]
 draft: false
 ---

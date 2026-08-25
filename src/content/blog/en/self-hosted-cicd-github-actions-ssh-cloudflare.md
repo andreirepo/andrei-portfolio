@@ -2,6 +2,7 @@
 title: "Zero-Exposure CI/CD: GitHub Actions, Self-Hosted Runner, and SSH over Cloudflare Tunnel"
 description: "How I deploy this portfolio from a GitHub push to a home server in my living room — using a self-hosted runner and SSH tunnelled through Cloudflare, with no open ports anywhere."
 pubDate: 2025-04-01
+author: "Andrei Repo"
 tags: ["github-actions", "ci-cd", "cloudflare", "self-hosted", "docker", "devops"]
 draft: false
 ---

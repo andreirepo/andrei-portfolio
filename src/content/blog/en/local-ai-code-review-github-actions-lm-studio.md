@@ -2,6 +2,7 @@
 title: "Local AI Code Reviews on GitHub PRs with LM Studio and GitHub Actions"
 description: "How I set up automated PR code reviews using a locally running Qwen2.5 Coder model via LM Studio, Tailscale, and a self-hosted GitHub Actions runner — with a graceful fallback when the PC is off."
 pubDate: 2025-04-12
+author: "Andrei Repo"
 tags: ["github-actions", "ai", "lm-studio", "tailscale", "self-hosted", "devops"]
 draft: false
 ---
@@ -113,3 +114,7 @@ The 14B size is a sweet spot — fast enough to review a typical PR diff in unde
 Every PR now gets an automated review comment within 1–2 minutes (depending on diff size and GPU load). When my gaming PC is off, the workflow posts a one-line notice and exits cleanly — no failed checks, no blocked PRs.
 
 The whole thing runs on hardware I already own, costs nothing per review, and keeps the code entirely on my own infrastructure.
+
+**What's Next**
+
+I've since extended this pattern to full E2E test generation — encoding team knowledge into structured files so an AI agent can generate, debug, and maintain tests with minimal context. [Here's how I built that layer](/en/blog/ai-agentic-setup-e2e-test-automation).

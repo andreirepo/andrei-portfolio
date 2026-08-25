@@ -3,16 +3,16 @@
 @import "@fontsource/inter/500.css";
 @import "@fontsource/inter/600.css";
 @import "@fontsource/inter/700.css";
-@import "@fontsource/playfair-display/500.css";
-@import "@fontsource/playfair-display/600.css";
-@import "@fontsource/playfair-display/700.css";
+@import "@fontsource/fraunces/500.css";
+@import "@fontsource/fraunces/600.css";
+@import "@fontsource/fraunces/700.css";
 @import "@fontsource/geist-mono/400.css";
 @import "@fontsource/geist-mono/500.css";
 @import "@fontsource/geist-mono/700.css";
 
 @theme {
   --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
   --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   --color-background: var(--background);
@@ -196,6 +196,47 @@ html {
   animation: fade-in-up 0.6s ease-out 0.6s forwards;
 }
 
+/* Hero floating shapes */
+.hero-shape {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.04;
+  animation: float 20s ease-in-out infinite;
+}
+
+.hero-shape-1 {
+  width: 400px;
+  height: 400px;
+  background: var(--amber-accent);
+  top: -10%;
+  right: -5%;
+  animation-delay: 0s;
+}
+
+.hero-shape-2 {
+  width: 250px;
+  height: 250px;
+  background: var(--primary);
+  bottom: 10%;
+  left: -3%;
+  animation-delay: -7s;
+}
+
+.hero-shape-3 {
+  width: 180px;
+  height: 180px;
+  background: var(--amber-accent);
+  top: 40%;
+  right: 15%;
+  animation-delay: -14s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(15px, -20px) scale(1.03); }
+  66% { transform: translate(-10px, 10px) scale(0.97); }
+}
+
 @utility bg-header-gradient {
   background-color: color-mix(in oklch, var(--background) 65%, transparent);
 }
@@ -204,8 +245,8 @@ html {
 .experience-grid {
   grid-template-columns: 9rem 1fr;
 }
- 
-@media (max-width: 640px) {
+
+@media (max-width: 768px) {
   .experience-grid {
     grid-template-columns: 1fr;
   }
@@ -221,24 +262,28 @@ html {
     opacity: 1;
     animation: none;
   }
+  .hero-shape {
+    animation: none;
+  }
 }
 
-/* Section scroll-triggered fade-in */
+/* Section scroll-triggered fade-in — CSS scroll-driven animations */
+@keyframes section-reveal {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 .section-fade-in {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-}
-
-.section-fade-in.is-visible {
-  opacity: 1;
-  transform: translateY(0);
+  animation: section-reveal linear both;
+  animation-duration: auto;
+  animation-timeline: view();
+  animation-range: entry 0% cover 30%;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .section-fade-in {
     opacity: 1;
     transform: none;
-    transition: none;
+    animation: none;
   }
 }

@@ -2,6 +2,7 @@
 title: "Fixing 40+ WCAG Contrast Violations with axe-core and Property-Based Testing"
 description: "How I found, verified, and permanently prevented color contrast accessibility failures on this portfolio using axe-core, fast-check, and a CI pipeline that blocks regressions automatically."
 pubDate: 2026-04-28
+author: "Andrei Repo"
 tags: ["accessibility", "testing", "axe-core", "ci-cd", "tailwindcss"]
 draft: false
 ---
@@ -173,4 +174,6 @@ accessibility-audit:
 **The exploration test pattern works well.** Writing a test that's *expected to fail* on broken code, then inverting it after the fix, gives you a test that's grounded in a real observed failure rather than a hypothetical one. It's harder to write a test that accidentally passes on broken code when you've seen it fail first.
 
 The full fix touched 8 components and 3 pages, replaced 36 opacity-dimmed elements, and took the axe-core violation count from 37 to 0.
+
+**See also:** [How the CI/CD pipeline deploys this site](/en/blog/self-hosted-cicd-github-actions-ssh-cloudflare) — the self-hosted runner that runs these accessibility checks on every PR.
 

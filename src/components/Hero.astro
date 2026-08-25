@@ -9,23 +9,29 @@ interface Props {
     p2: { key: string; value: string };
     p3: { key: string; value: string };
     stack?: string[];
+    certs?: string[];
 }
 
-const { name, title, p1, p2, p3, stack = [] } = Astro.props as Props;
+const { name, title, p1, p2, p3, stack = [], certs = [] } = Astro.props as Props;
 ---
 
-<section data-testid="hero-section" id={name} class="mb-16 mt-20 md:mt-48">
+<section data-testid="hero-section" id={name} class="min-h-[100dvh] flex flex-col justify-center mt-8 mb-16 relative">
+    <div class="hero-shapes pointer-events-none fixed inset-0" aria-hidden="true">
+        <div class="hero-shape hero-shape-1"></div>
+        <div class="hero-shape hero-shape-2"></div>
+        <div class="hero-shape hero-shape-3"></div>
+    </div>
     <div class="relative">
         <div id="hero-glow" class="absolute -inset-32 blur-3xl pointer-events-none opacity-0 transition-opacity duration-500" aria-hidden="true" />
         <h1
             data-testid="hero-heading"
             id="hero-heading"
-            class="relative mb-6 md:mb-10 font-serif font-medium text-[3rem] md:text-[4.75rem] lg:text-[6rem] leading-[1] tracking-tight hero-animate text-foreground"
+            class="relative mb-6 md:mb-10 font-serif font-medium text-[2.75rem] md:text-[4.25rem] lg:text-[5rem] leading-[1] tracking-tight hero-animate text-foreground"
         >
             {name}
         </h1>
     </div>
-    <div class="max-w-3xl [&_p]:mb-4 leading-snug">
+    <div class="[&_p]:mb-4 leading-snug">
         <p class="hero-animate-delay-1">
             <I18NDebug key={title.key}>
                 <span class="text-foreground/70">{title.value} </span>
@@ -43,10 +49,21 @@ const { name, title, p1, p2, p3, stack = [] } = Astro.props as Props;
     </div>
     {
         stack.length > 0 && (
-            <div class="flex flex-wrap gap-2 mt-8 hero-animate-delay-4">
+            <div class="flex flex-wrap justify-center gap-2 mt-8 hero-animate-delay-4">
                 {stack.map((tech) => (
-                    <span class="inline-flex items-center px-3 py-1 text-xs font-mono border border-amber-accent/30 text-amber-accent rounded-full bg-amber-accent/5">
+                    <span class="inline-flex items-center px-3 py-1 text-xs font-mono border border-border/60 text-muted-foreground rounded-full">
                         {tech}
+                    </span>
+                ))}
+            </div>
+        )
+    }
+    {
+        certs.length > 0 && (
+            <div class="flex flex-wrap justify-center gap-2 mt-3 hero-animate-delay-4">
+                {certs.map((cert) => (
+                    <span class="inline-flex items-center px-3 py-1 text-xs font-mono border border-border/60 text-muted-foreground rounded-full">
+                        {cert}
                     </span>
                 ))}
             </div>

@@ -1,21 +1,21 @@
 {
-  "description": "Senior QA Engineer specializing in highly regulated iGaming, with expertise in test automation, cloud technologies, and quality assurance. Building secure, compliant software solutions.",
+  "description": "Senior QA Engineer specialising in test automation for SaaS and regulated iGaming. I build AI-augmented workflows that help teams ship reliable software faster.",
   "nav": {
     "home": "home",
     "projects": "projects",
     "experience": "experience",
     "contact": "contact",
-    "resume": "Resume",
+    "resume": "resume",
     "blog": "blog"
   },
   "hero": {
     "title": "Senior QA Engineer",
-    "p1": "specialising in test automation for SaaS and regulated iGaming. At Lottomart I'm developing AI-augmented workflows to help teams write cleaner, more consistent test code — while keeping the platform stable.",
+    "p1": "specialising in test automation for SaaS and regulated iGaming. I build AI-augmented workflows that help teams ship reliable software faster.",
     "p2": "Previously at Sketch and Playtech. I believe good automation should be easy for the whole team to use, not just the person who wrote it.",
-    "p3": "When I'm not testing, I play and learn by running a self-hosted home lab."
+    "p3": "Outside work, I run a self-hosted home lab. I trust what I can break myself."
   },
   "projects": {
-    "title": "Projects",
+    "title": "projects",
     "item_1": {
       "name": "This Portfolio",
       "description": "Bilingual Astro site with a custom i18n system, self-hosted CI/CD via GitHub Actions and Cloudflare Tunnel, local AI code reviews on every PR, automated WCAG accessibility tests, and Docker deployment — zero open ports.",
@@ -30,12 +30,12 @@
     }
   },
   "experience": {
-    "title": "Experience",
+    "title": "experience",
     "item_1": {
       "period": "2025 — Present",
       "role": "QA Engineer",
       "company": "Lottomart",
-      "description": "Built and maintained automated end-to-end tests using WebdriverIO and Docker, integrated into CI/CD for faster feedback and more reliable testing."
+      "description": "Maintaining WebdriverIO test suites across CI/CD pipelines, reducing regression cycles and improving release confidence."
     },
     "item_2": {
       "period": "2021 — 2025",
@@ -47,12 +47,12 @@
       "period": "2018 — 2021",
       "role": "QA Automation Engineer",
       "company": "Playtech",
-      "description": "Built and maintained Cypress end-to-end tests integrated with Jenkins to speed up releases and improve quality across cloud services."
+      "description": "Built Cypress E2E suites integrated with Jenkins, cutting release cycles and improving quality across cloud services."
     }
   },
   "contact": {
     "status": "Open to new opportunities",
-    "heading": "Let's connect",
+    "heading": "let's connect",
     "description": "I'm always interested in new challenges and collaborations. Feel free to reach out.",
     "email_label": "Email",
     "email_url": "mailto:contact@andreirepo.com",
@@ -62,13 +62,13 @@
     "linkedin_url": "https://linkedin.com/in/andreirepo"
   },
   "blog": {
-    "title": "Blog",
+    "title": "blog",
     "empty": "No posts yet. Check back soon.",
     "back": "← Back to blog",
     "back_home": "← Back to home",
     "published": "Published",
-    "latest_title": "Latest posts",
-    "see_all": "See all posts",
+    "latest_title": "latest posts",
+    "see_all": "see all posts",
     "tag_description_prefix": "Posts tagged",
     "tag_post_singular": "post",
     "tag_post_plural": "posts"

@@ -27,6 +27,9 @@ const formattedDate = post.data.pubDate.toLocaleDateString(
   { year: "numeric", month: "long", day: "numeric" }
 );
 
+const wordCount = post.body?.split(/\s+/).length ?? 0;
+const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+
 const nav = buildNav(t, locale);
 const footerContent = buildFooter(t);
 
@@ -80,8 +83,12 @@ const blogPostingSchema = {
       data-testid="back-link"
       id="back-link"
       href={`/${locale}/blog`}
-      class="text-xs text-amber-accent hover:text-foreground transition-colors mb-8 inline-block"
+      class="inline-flex items-center gap-1.5 text-xs border border-border/60 rounded px-2.5 py-1 text-muted-foreground hover:border-amber-accent hover:text-amber-accent hover:bg-amber-accent/5 transition-all duration-200 mb-8"
     >
+      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m12 19-7-7 7-7"/>
+        <path d="M19 12H5"/>
+      </svg>
       {t("blog.back")}
     </a>
 
@@ -104,12 +111,16 @@ const blogPostingSchema = {
     </script>
 
     <header data-testid="post-header" class="mb-10">
-      <div class="text-xs text-muted-foreground mb-3">
+      <div class="text-xs text-muted-foreground mb-3 flex items-center gap-2">
+        <span>{post.data.author}</span>
+        <span aria-hidden="true">·</span>
         <time data-testid="post-date" datetime={post.data.pubDate.toISOString()}>
-          {t("blog.published")} {formattedDate}
+          {formattedDate}
         </time>
+        <span aria-hidden="true">·</span>
+        <span>{readingTime} min read</span>
       </div>
-      <h1 data-testid="post-heading" class="text-xl font-semibold mb-3 leading-snug">{post.data.title}</h1>
+      <h1 data-testid="post-heading" class="text-amber-accent font-serif font-medium tracking-tight mb-3 text-lg md:text-xl leading-snug">{post.data.title}</h1>
       <p data-testid="post-description" class="text-muted-foreground text-sm leading-6">{post.data.description}</p>
       {post.data.tags.length > 0 && (
         <div class="flex flex-wrap gap-2 mt-4">
@@ -125,7 +136,7 @@ const blogPostingSchema = {
       )}
     </header>
 
-    <div data-testid="post-content" class="prose prose-sm dark:prose-invert max-w-none overflow-x-hidden opacity-80 leading-7 [&_h1]:text-lg [&_h2]:text-base [&_h2]:font-semibold [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-2 [&_p]:mb-4 [&_ul]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:mb-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:mb-1 [&_pre]:bg-transparent [&_pre]:border [&_pre]:rounded [&_pre]:p-4 [&_pre]:mb-4 [&_pre]:overflow-x-auto [&_code]:text-amber-accent [&_pre_code]:text-amber-accent [&_a]:text-amber-accent [&_a]:underline [&_hr]:opacity-20 [&_hr]:my-8">
+    <div data-testid="post-content" class="max-w-none overflow-x-hidden opacity-80 leading-7 [&_h1]:text-lg [&_h2]:text-base [&_h2]:font-semibold [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-2 [&_p]:mb-4 [&_ul]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:mb-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:mb-1 [&_pre]:bg-transparent [&_pre]:border [&_pre]:rounded [&_pre]:p-4 [&_pre]:mb-4 [&_pre]:overflow-x-auto [&_code]:text-amber-accent [&_pre_code]:text-amber-accent [&_a]:text-amber-accent [&_a]:underline [&_hr]:opacity-20 [&_hr]:my-8">
       <Content />
     </div>
   </main>
