@@ -67,9 +67,12 @@ describe('Preservation Properties: Baseline Behavior for Non-Buggy Elements', ()
             await page.waitForTimeout(300);
           }
 
-          // Query skill titles with amber accent
+          // Query skill titles with amber accent. The class was renamed to
+          // text-amber-text in the contrast sweep — the decorative
+          // text-amber-accent no longer reaches 4.5:1, so it is no longer used
+          // for text anywhere on the page.
           const skillTitles = await page.evaluate(() => {
-            const elements = document.querySelectorAll('.text-amber-accent');
+            const elements = document.querySelectorAll('.text-amber-text');
             return elements.length;
           });
 
@@ -258,7 +261,7 @@ describe('Preservation Properties: Baseline Behavior for Non-Buggy Elements', ()
       expect(page.url()).toContain('/en');
 
       // Find and click Spanish locale link
-      const esLink = await page.$('a[href="/es"]');
+      const esLink = await page.$('a[href="/es/"]');
       expect(esLink).not.toBeNull();
 
       // Navigate directly to /es to verify locale switching works
@@ -315,20 +318,18 @@ describe('Preservation Properties: Baseline Behavior for Non-Buggy Elements', ()
         const footer = document.querySelector('footer');
         if (!footer) return null;
 
-        const heading = footer.querySelector('h2, h3, h4');
-        const description = footer.querySelector('p');
+        const copyright = footer.querySelector('p');
         const links = footer.querySelectorAll('a');
 
         return {
           exists: !!footer,
-          hasHeading: !!heading,
-          hasDescription: !!description,
+          hasCopyright: !!copyright,
           linkCount: links.length,
         };
       });
 
       expect(footerLayout?.exists).toBe(true);
-      expect(footerLayout?.hasHeading).toBe(true);
+      expect(footerLayout?.hasCopyright).toBe(true);
       expect(footerLayout?.linkCount).toBeGreaterThan(0);
 
       await page.close();
