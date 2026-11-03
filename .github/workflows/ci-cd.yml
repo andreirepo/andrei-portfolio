@@ -194,7 +194,7 @@ jobs:
       contents: read
       packages: write
     outputs:
-      previous-tag: ${{ steps.meta.outputs.previous-tag }}
+      previous-tag: ${{ steps.save-previous.outputs.previous-tag }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -205,7 +205,7 @@ jobs:
           PREVIOUS_TAG=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/user/packages/container/${{ github.event.repository.name }}/versions" | \
             jq -r 'sort_by(.created_at) | reverse | .[0].metadata.container.tags[]? // empty' | head -1)
-          echo "previous-tag=${PREVIOUS_TAG:-none}" >> $GITHUB_OUTPUT
+          echo "previous-tag=${PREVIOUS_TAG:-none}" >> "$GITHUB_OUTPUT"
           echo "Previous image tag: $PREVIOUS_TAG"
 
       - name: Set up QEMU
@@ -312,10 +312,13 @@ jobs:
             --data '{"purge_everything":true}'
 
   rollback:
-    needs: health-check
+    needs: [health-check, build-and-push-image]
     runs-on: self-hosted
     timeout-minutes: 5
-    if: failure()
+    # Deploys are gated to main; rollback must be too. With a bare
+    # `if: failure()`, a failed PR build satisfies the condition — any failed
+    # ancestor job does — and the job runs on the runner inside the homelab.
+    if: failure() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
     steps:
       - name: Setup SSH key
         uses: webfactory/ssh-agent@v0.9.0
@@ -328,12 +331,27 @@ jobs:
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
           PREVIOUS_TAG: ${{ needs.build-and-push-image.outputs.previous-tag }}
         run: |
+          # The heredoc is quoted, so GitHub substitutes its expressions
+          # first and the remote shell handles everything else.
           ssh ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} <<'EOF'
+            set -euo pipefail
             cd ${{ env.DEPLOY_PATH }}
-            echo "Rolling back to previous image: ${{ env.PREVIOUS_TAG }}"
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.PREVIOUS_TAG }}
-            docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.PREVIOUS_TAG }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-            docker compose -f docker-compose.yml up -d website
+
+            PREV='${{ env.PREVIOUS_TAG }}'
+            IMAGE='${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}'
+
+            if [ -z "$PREV" ] || [ "$PREV" = "none" ]; then
+              echo "No previous image tag recorded — nothing to roll back to."
+              exit 0
+            fi
+
+            echo "Rolling back from $IMAGE:$PREV"
+            docker pull "$IMAGE:$PREV"
+
+            # docker-compose.yml deploys $IMAGE:main, not :latest — retag to
+            # the tag compose actually uses or the rollback is a no-op.
+            docker tag "$IMAGE:$PREV" "$IMAGE:main"
+            docker compose -f docker-compose.yml up -d --force-recreate website
           EOF
 
   cleanup-old-packages:
