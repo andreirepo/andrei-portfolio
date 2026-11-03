@@ -1,6 +1,6 @@
 packages:
   - .
-  
-ignoredBuiltDependencies:
-  - esbuild
-  - sharp
+
+allowBuilds:
+  esbuild: true
+  sharp: true

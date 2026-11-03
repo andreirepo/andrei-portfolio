@@ -1,15 +1,19 @@
 # Multi-stage Dockerfile for Andrei Repo Portfolio
 # Stage 1: Build stage
-FROM node:18-alpine AS builder
+FROM node:22-alpine AS builder
 
 # Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package.json pnpm-lock.yaml ./
+# Copy package files.
+# pnpm-workspace.yaml must be here too: it carries the allowBuilds config,
+# and pnpm 11 aborts the install when build scripts are left unapproved.
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-# Install pnpm
-RUN npm install -g pnpm
+# Install pnpm.
+# Pinned to an exact version, not a major: pnpm raised its Node floor from 18
+# to 22.13 *within* the 11.x line, so "pnpm@11" is still a moving target.
+RUN npm install -g pnpm@11.21.0
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
