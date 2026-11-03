@@ -1,0 +1,27 @@
+# Build context hygiene.
+#
+# node_modules must never enter the context: COPY . . runs after the install
+# step, so a host node_modules (different platform, different pnpm store)
+# overwrites the container's and pnpm aborts with
+# ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY.
+node_modules
+
+# Build output and generated caches
+dist
+.astro
+
+# VCS and editor metadata
+.git
+.gitignore
+.github
+.DS_Store
+*.log
+
+# Test artifacts
+test-results
+playwright-report
+coverage
+
+# Agent tool runtime
+.kilo
+.brain
