@@ -1,27 +1,48 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { chromium, Browser, Page } from 'playwright';
-import { injectAxe, getViolations } from 'axe-playwright';
+import { chromium, type Browser, type Page } from 'playwright';
+import { injectAxe } from 'axe-playwright';
+import { readdirSync, existsSync } from 'node:fs';
 
 /**
- * Task 6: Full Accessibility Audit — Both Routes, Both Themes
+ * Full Accessibility Audit — color contrast at rest.
  *
- * **Validates: Requirements 2.1, 2.2, 2.3, 2.6**
+ * Two things previously made this check meaningless:
  *
- * Runs axe-core on /en and /es in light and dark mode after the fix.
+ * 1. `body` carries a five-layer gradient. axe cannot sample a gradient
+ *    background, so it reported color-contrast as *incomplete* for every
+ *    element — "0 violations" meant "not checked", not "passing".
+ * 2. `.section-fade-in` and the hero entrance animations drive opacity from
+ *    a scroll timeline. Elements below the fold are mid-fade when axe runs,
+ *    so it measured a transient colour rather than the real one.
  *
- * FINDINGS:
- * - The opacity-50/70 fix eliminated 40+ color-contrast violations.
- * - 1 remaining violation group persists (pre-existing design issues, not introduced by the fix):
- *   - Resume button (bg-green-600 text-white): axe flags this in both light and dark mode
- *   - text-green-500 spans (Hero title, project links): green-500 on white ~2.5:1, below 4.5:1
- * - These are design-level choices that require a separate decision to address.
- *
- * This test documents the current state after the opacity fix.
+ * Both are presentation. The audit neutralises them and measures the resting
+ * state against the solid `--background` token, which is what a reader
+ * actually sees once the page has settled.
  */
 
-describe('Full Accessibility Audit: Color-Contrast Violations After Fix', () => {
+const BASE_URL = 'http://localhost:4321';
+
+const NEUTRALISE = `
+  body { background-image: none !important; }
+  .section-fade-in { animation: none !important; opacity: 1 !important; transform: none !important; }
+  [class*="hero-animate"] { animation: none !important; opacity: 1 !important; transform: none !important; }
+  .animate-ping { animation: none !important; }
+  /* the ping ring overlays the badge text, which makes axe bail on geometry */
+  .ci-status-ping { display: none !important; }
+  #scroll-top { display: none !important; }
+`;
+
+/** Blog post routes, discovered from the build output the CI downloads. */
+function postRoutes(): string[] {
+  const dir = 'dist/en/blog';
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir, { withFileTypes: true })
+    .filter((d) => d.isDirectory() && d.name !== 'tag')
+    .map((d) => `/en/blog/${d.name}/`);
+}
+
+describe('Color contrast at rest, across routes and themes', () => {
   let browser: Browser;
-  const BASE_URL = 'http://localhost:4321';
 
   beforeAll(async () => {
     browser = await chromium.launch();
@@ -31,69 +52,64 @@ describe('Full Accessibility Audit: Color-Contrast Violations After Fix', () => 
     await browser?.close();
   });
 
-  async function auditPage(url: string, theme: 'light' | 'dark'): Promise<{ violations: any[]; contrastViolations: any[] }> {
-    const page: Page = await browser.newPage();
-    await page.goto(url, { waitUntil: 'networkidle' });
-
-    if (theme === 'dark') {
-      await page.evaluate(() => {
-        localStorage.setItem('theme', 'dark');
-        document.documentElement.classList.add('dark');
-      });
-      await page.waitForTimeout(500);
-    }
+  async function audit(url: string, theme: 'light' | 'dark', viewport = { width: 1440, height: 900 }) {
+    const context = await browser.newContext({ viewport });
+    const page: Page = await context.newPage();
+    await page.addInitScript((t) => localStorage.setItem('theme', t), theme);
+    await page.goto(`${BASE_URL}${url}`, { waitUntil: 'networkidle' });
+    await page.evaluate(() => document.fonts.ready);
+    await page.addStyleTag({ content: NEUTRALISE });
+    await page.waitForTimeout(250);
 
     await injectAxe(page);
-    const violations = await getViolations(page);
-    const contrastViolations = violations.filter(v => v.id === 'color-contrast');
+    const results = await page.evaluate(() =>
+      (window as any).axe.run(document, { runOnly: ['color-contrast'] })
+    );
 
-    console.log(`\n[${theme} mode, ${url}] axe-core violations:`);
-    console.log(`  Total violations: ${violations.length}`);
-    console.log(`  Color-contrast violations: ${contrastViolations.length}`);
-    if (contrastViolations.length > 0) {
-      contrastViolations.forEach(v => {
-        console.log(`  ⚠ ${v.id}: ${v.nodes.length} nodes — ${v.description}`);
-        v.nodes.slice(0, 5).forEach((n: any) => {
-          console.log(`    - ${n.html?.substring(0, 120)}`);
-        });
-      });
-    } else {
-      console.log('  ✓ Zero color-contrast violations!');
-    }
+    const nodes = results.violations.flatMap((v: any) =>
+      v.nodes.map((n: any) => ({
+        target: n.target.join(' '),
+        html: String(n.html).slice(0, 100),
+        reason: String(n.any?.[0]?.message ?? '').replace('Element has insufficient color contrast of ', ''),
+      }))
+    );
+    const incomplete = results.incomplete.length;
 
-    await page.close();
-    return { violations, contrastViolations };
+    await context.close();
+    return { nodes, incomplete };
   }
 
-  /**
-   * Verify the opacity-50/70 fix eliminated the bulk of violations.
-   * Pre-existing green accent violations (text-green-500, Resume button) are documented
-   * but are design-level issues outside the scope of the opacity fix.
-   */
-  it('should have significantly fewer color-contrast violations on /en (light mode) — opacity fix verified', async () => {
-    const { contrastViolations } = await auditPage(`${BASE_URL}/en`, 'light');
-    // The opacity fix eliminated 40+ violations. Remaining violations are pre-existing
-    // design issues (text-green-500 on white, Resume button green-600).
-    // We verify the count is dramatically reduced (≤ 1 violation group remaining).
-    console.log(`\n  Remaining violations after fix: ${contrastViolations.length} (was 40+ before fix)`);
-    expect(contrastViolations.length).toBeLessThanOrEqual(1);
-  });
+  const routes = ['/en', '/es', '/en/blog', '/es/blog', '/404.html', '/en/blog/tag/testing/'];
 
-  it('should have significantly fewer color-contrast violations on /en (dark mode) — opacity fix verified', async () => {
-    const { contrastViolations } = await auditPage(`${BASE_URL}/en`, 'dark');
-    console.log(`\n  Remaining violations after fix: ${contrastViolations.length} (was 40+ before fix)`);
-    expect(contrastViolations.length).toBeLessThanOrEqual(1);
-  });
+  for (const route of routes) {
+    for (const theme of ['light', 'dark'] as const) {
+      it(`${route} (${theme}) has no contrast violations`, async () => {
+        const { nodes } = await audit(route, theme);
+        expect(nodes, JSON.stringify(nodes, null, 2)).toHaveLength(0);
+      });
+    }
+  }
 
-  it('should have significantly fewer color-contrast violations on /es (light mode) — opacity fix verified', async () => {
-    const { contrastViolations } = await auditPage(`${BASE_URL}/es`, 'light');
-    console.log(`\n  Remaining violations after fix: ${contrastViolations.length} (was 40+ before fix)`);
-    expect(contrastViolations.length).toBeLessThanOrEqual(1);
-  });
+  for (const route of postRoutes()) {
+    for (const theme of ['light', 'dark'] as const) {
+      it(`${route} (${theme}) has no contrast violations`, async () => {
+        const { nodes } = await audit(route, theme);
+        expect(nodes, JSON.stringify(nodes, null, 2)).toHaveLength(0);
+      });
+    }
+  }
 
-  it('should have significantly fewer color-contrast violations on /es (dark mode) — opacity fix verified', async () => {
-    const { contrastViolations } = await auditPage(`${BASE_URL}/es`, 'dark');
-    console.log(`\n  Remaining violations after fix: ${contrastViolations.length} (was 40+ before fix)`);
-    expect(contrastViolations.length).toBeLessThanOrEqual(1);
+  // Narrow viewports change type sizes, which can change what counts as large text
+  for (const theme of ['light', 'dark'] as const) {
+    it(`/en at 390px (${theme}) has no contrast violations`, async () => {
+      const { nodes } = await audit('/en', theme, { width: 390, height: 844 });
+      expect(nodes, JSON.stringify(nodes, null, 2)).toHaveLength(0);
+    });
+  }
+
+  it('axe can actually measure contrast once the gradient is neutralised', async () => {
+    // Guards against the check silently degrading back to all-incomplete.
+    const { incomplete } = await audit('/en', 'light');
+    expect(incomplete).toBe(0);
   });
 });
