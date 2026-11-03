@@ -62,8 +62,6 @@
     }
   },
   "contact": {
-    "heading": "let's connect",
-    "description": "Email is the quickest way to reach me.",
     "email_label": "Email",
     "email_url": "mailto:contact@andreirepo.com",
     "github_label": "GitHub",
