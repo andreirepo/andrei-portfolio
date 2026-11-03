@@ -210,7 +210,7 @@ El enfoque más sencillo es pedirle a tu herramienta IA que genere un script de 
 
 ## Lo que Realmente Cambió
 
-| | Antes | Después |
+| Tarea | Antes | Después |
 |---|---|---|
 | Generar un nuevo test | 30–60 min | 10–15 min |
 | Depurar un test flaky | 20–40 min | 5–10 min |

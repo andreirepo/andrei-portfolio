@@ -170,7 +170,7 @@ If your team uses different AI tools, keep `.clinerules` as the source of truth 
 
 ## What Actually Changed
 
-| | Before | After |
+| Task | Before | After |
 |---|---|---|
 | Generate a new test | 30–60 min | 10–15 min |
 | Debug a flaky test | 20–40 min | 5–10 min |
