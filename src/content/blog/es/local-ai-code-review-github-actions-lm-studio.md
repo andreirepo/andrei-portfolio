@@ -18,7 +18,7 @@ PR abierto → GitHub Actions (runner self-hosted en la VM)
               → no: publicar aviso "IA offline" → fin
 ```
 
-El runner self-hosted ya está en la misma VM que el sitio del portfolio (explicado en un [post anterior](/es/blog/self-hosted-cicd-github-actions-ssh-cloudflare)). LM Studio corre en un PC Windows separado conectado via Tailscale.
+El runner self-hosted ya está en la misma VM que el sitio del portfolio (explicado en un [post anterior](/es/blog/self-hosted-cicd-github-actions-ssh-cloudflare/)). LM Studio corre en un PC Windows separado conectado via Tailscale.
 
 ## Conectar LM Studio por Tailscale
 

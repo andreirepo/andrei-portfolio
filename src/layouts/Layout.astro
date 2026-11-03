@@ -1,6 +1,6 @@
 ---
 import { PageMetadata } from "@/src/components/hybrid-astro-ui/page-metadata";
-import OGImage from "@/src/assets/background.png"
+import OGImage from "@/src/assets/og-card.png"
 
 interface Props {
 	title: string;
@@ -8,11 +8,82 @@ interface Props {
 	locale: string;
 	alternateLinks?: { href: string; hreflang: string }[];
 	ogType?: 'website' | 'article';
+	robots?: string;
 	schema?: Record<string, unknown>;
 }
 
-const { title, description, locale, alternateLinks, ogType = 'website', schema } =
+const { title, description, locale, alternateLinks, ogType = 'website', robots, schema } =
 	Astro.props as Props;
+
+const SITE = Astro.site ?? new URL("https://andreirepo.com/");
+
+/**
+ * One Person node, referenced from every page by @id, plus the WebSite it
+ * belongs to. Pages add their own node (ProfilePage, BlogPosting) and point
+ * at these rather than restating them — duplicated, divergent Person copies
+ * are how a crawler ends up with three different jobs for the same person.
+ */
+const PERSON_ID = new URL("/#person", SITE).href;
+
+const person = {
+	"@type": "Person",
+	"@id": PERSON_ID,
+	name: "Andrei Repo",
+	url: SITE.href,
+	image: new URL(OGImage.src, SITE).href,
+	jobTitle: "Senior QA Engineer",
+	description,
+	email: "contact@andreirepo.com",
+	sameAs: ["https://github.com/andreirepo", "https://linkedin.com/in/andreirepo"],
+	knowsAbout: [
+		"QA Engineering",
+		"Test Automation",
+		"Playwright",
+		"Cypress",
+		"WebdriverIO",
+		"iGaming",
+		"AWS",
+		"Docker",
+		"GitHub Actions",
+	],
+	knowsLanguage: ["en", "es"],
+	address: { "@type": "PostalAddress", addressCountry: "ES" },
+	worksFor: { "@type": "Organization", name: "Open Assessment Technologies" },
+	hasOccupation: {
+		"@type": "Occupation",
+		name: "QA Automation Engineer",
+		skills: "Playwright, Cypress, WebdriverIO, GitHub Actions, Docker, AWS",
+	},
+	seeks: { "@type": "Demand", name: "Senior or lead QA Engineer roles" },
+};
+
+const website = {
+	"@type": "WebSite",
+	"@id": new URL("/#website", SITE).href,
+	url: SITE.href,
+	name: "Andrei Repo",
+	description,
+	inLanguage: "en",
+	publisher: { "@id": PERSON_ID },
+};
+
+/**
+ * Cloudflare's Scrape Shield rewrites anything that looks like an address
+ * inside the HTML, including inside this script — and rewriting it injects a
+ * <span> that turns the JSON into a syntax error. Escaping the @ as \u0040 is
+ * still valid JSON (every parser decodes it to "@"), but does not match
+ * Cloudflare's pattern, so the node survives intact.
+ */
+const jsonLd = JSON.stringify({
+	"@context": "https://schema.org",
+	"@graph": [person, website],
+}).replace('"contact@andreirepo.com"', '"contact\\u0040andreirepo.com"');
+
+// Page-level nodes (ProfilePage, BlogPosting) inherit the shared social card
+// unless they bring their own, so no page ships an image-less article.
+const pageSchema = schema
+	? { ...schema, image: schema.image ?? new URL(OGImage.src, SITE).href }
+	: null;
 ---
 
 <!doctype html>
@@ -33,8 +104,10 @@ const { title, description, locale, alternateLinks, ogType = 'website', schema }
 			title={title}
 			description={description}
 			image={OGImage}
+			imageAlt="Andrei Repo — Senior QA Engineer, open to senior and lead QA roles"
 			enableClientRouter
 			ogType={ogType}
+			robots={robots}
 			favicons={[
 				{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
 				{ rel: "apple-touch-icon", type: "image/png", href: "/favicon.png" },
@@ -42,31 +115,9 @@ const { title, description, locale, alternateLinks, ogType = 'website', schema }
 			]}
 			alternateLinks={alternateLinks}
 		/>
-		<!-- Schema.org structured data -->
-		<script is:inline type="application/ld+json">
-			{
-				"@context": "https://schema.org",
-				"@type": "Person",
-				"name": "Andrei Repo",
-				"url": "https://andreirepo.com",
-				"jobTitle": "Senior QA Engineer",
-				"description": "Senior QA Engineer specializing in highly regulated iGaming",
-				"sameAs": [
-					"https://github.com/andreirepo",
-					"https://linkedin.com/in/andreirepo"
-				],
-				"knowsAbout": [
-					"QA Engineering",
-					"Test Automation",
-					"Playwright",
-					"Cypress",
-					"iGaming",
-					"AWS",
-					"Docker"
-				]
-			}
-		</script>
-		{schema && <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />}
+		<!-- Schema.org: Person + WebSite, referenced by @id from each page -->
+		<script is:inline type="application/ld+json" set:html={jsonLd} />
+		{pageSchema && <script is:inline type="application/ld+json" set:html={JSON.stringify(pageSchema)} />}
 		<!-- Umami Analytics -->
 		<script defer src="https://analytics.andreirepo.com/script.js" data-website-id="6f047764-b516-4fa2-a909-fe4fa0ac5d48"></script>
 	</head>

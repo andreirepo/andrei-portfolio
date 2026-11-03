@@ -1,0 +1,60 @@
+# Andrei Repo
+
+> Senior QA Engineer specialising in test automation for SaaS and regulated
+> iGaming. Based in Spain, working remotely across EU/UK/US time zones.
+> Open to senior and lead QA Engineering roles.
+
+## Contact
+
+- Email: contact@andreirepo.com
+- LinkedIn: https://linkedin.com/in/andreirepo
+- GitHub: https://github.com/andreirepo
+- Resume (PDF): https://andreirepo.com/assets/AndreiRepoResume.pdf
+
+## Current position
+
+QA Automation Engineer at Open Assessment Technologies (2026 — present).
+Maintains Cypress suites across legacy and modern codebases, runs GitHub
+Actions CI/CD with test parallelisation, and owns regression and release risk.
+
+Previously: QA Engineer at Lottomart (2025 — 2026), QA Engineer at Sketch
+(2021 — 2025), where he led the migration from Cypress to Playwright.
+
+## What he does
+
+Builds test automation that lets teams release every day: Playwright and
+WebdriverIO suites, CI gates that block regressions, and AI-assisted workflows
+for writing and maintaining tests. Reported result: 60% faster release cycles
+with zero critical post-release defects.
+
+Certifications: ISTQB, AWS Certified.
+
+Tools: Playwright, Cypress, WebdriverIO, TypeScript, Python, GitHub Actions,
+Docker, AWS, Terraform.
+
+## Site
+
+- [Home](https://andreirepo.com/en/): profile, projects, experience, contact.
+  Also available in Spanish at https://andreirepo.com/es/
+- [Blog](https://andreirepo.com/en/blog/): six technical write-ups on test
+  automation, self-hosted CI/CD, AWS, and accessibility testing.
+
+### Articles
+
+- [Building an AI Agent Layer for E2E Test Automation](https://andreirepo.com/en/blog/ai-agentic-setup-e2e-test-automation/):
+  encoding team test patterns into machine-readable files so any developer can
+  generate and maintain E2E tests.
+- [Fixing 40+ WCAG Contrast Violations with axe-core and Property-Based Testing](https://andreirepo.com/en/blog/fixing-wcag-contrast-with-axe-core-and-property-based-testing/):
+  finding, verifying and permanently preventing colour contrast regressions in CI.
+- [Self-Hosting Without Opening Ports: Cloudflare Tunnel + Traefik](https://andreirepo.com/en/blog/self-hosted-cloudflare-tunnel-traefik/):
+  exposing self-hosted services with no inbound ports.
+- [Self-Hosted CI/CD with GitHub Actions over SSH and Cloudflare Tunnel](https://andreirepo.com/en/blog/self-hosted-cicd-github-actions-ssh-cloudflare/)
+- [Local AI Code Review in GitHub Actions with LM Studio](https://andreirepo.com/en/blog/local-ai-code-review-github-actions-lm-studio/)
+- [Email Forwarding with AWS SES, S3 and Lambda](https://andreirepo.com/en/blog/email-forwarding-aws-ses-s3-lambda/)
+
+## Notes
+
+- The site is a static Astro build; all content above is present in the HTML
+  and does not require JavaScript.
+- Spanish translations of every article exist under /es/blog/.
+- Structured data: schema.org Person, WebSite, ProfilePage and BlogPosting.

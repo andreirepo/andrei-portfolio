@@ -45,8 +45,9 @@ const nav = buildNav(t, locale);
 const footerContent = buildFooter(t);
 
 const alternate = [
-  { href: `/en/blog/tag/${tag}`, hreflang: "en" },
-  { href: `/es/blog/tag/${tag}`, hreflang: "es" },
+  { href: `/en/blog/tag/${tag}/`, hreflang: "en" },
+  { href: `/es/blog/tag/${tag}/`, hreflang: "es" },
+  { href: `/en/blog/tag/${tag}/`, hreflang: "x-default" },
 ];
 ---
 
@@ -55,13 +56,14 @@ const alternate = [
   title={`#${tag} – ${t("blog.title")} – Andrei Repo`}
   description={`${t("blog.tag_description_prefix")} #${tag}`}
   alternateLinks={alternate}
+  robots="noindex, follow"
 >
   <Header nav={nav} locales={["en", "es"]} currentLocale={locale} resumeLabel={t("nav.resume")} name="Andrei Repo" currentPath={Astro.url.pathname} />
 
   <main id="main-content" class="pt-24 md:pt-32">
     <a
       data-testid="back-link"
-      href={`/${locale}/blog`}
+      href={`/${locale}/blog/`}
       class="inline-flex items-center gap-1.5 text-xs border border-border/60 rounded px-2.5 py-1 text-muted-foreground hover:border-amber-accent hover:text-amber-text hover:bg-amber-accent/5 transition-all duration-200 mb-8"
     >
       <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

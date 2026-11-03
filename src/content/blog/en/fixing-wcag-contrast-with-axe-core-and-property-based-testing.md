@@ -175,5 +175,5 @@ accessibility-audit:
 
 The full fix touched 8 components and 3 pages, replaced 36 opacity-dimmed elements, and took the axe-core violation count from 37 to 0.
 
-**See also:** [How the CI/CD pipeline deploys this site](/en/blog/self-hosted-cicd-github-actions-ssh-cloudflare) — the self-hosted runner that runs these accessibility checks on every PR.
+**See also:** [How the CI/CD pipeline deploys this site](/en/blog/self-hosted-cicd-github-actions-ssh-cloudflare/) — the self-hosted runner that runs these accessibility checks on every PR.
 

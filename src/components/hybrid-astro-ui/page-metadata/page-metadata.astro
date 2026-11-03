@@ -12,6 +12,7 @@ interface Props {
   title: string;
   description: string;
   image: ImageMetadata;
+  imageAlt?: string;
   enableClientRouter: boolean;
   preloadFonts?: { href: string; type: FontMimeType }[];
   loadRSS?: boolean;
@@ -24,6 +25,8 @@ interface Props {
     color?: string;
   }[];
   googleSiteVerification?: string;
+  /** Overrides the default "index, follow" — tag pages use noindex. */
+  robots?: string;
   lang: string; 
   alternateLinks?: { href: string; hreflang: string }[]; 
 }
@@ -37,9 +40,11 @@ const {
   enableClientRouter = true,
   ogType = 'website',
   image,
+  imageAlt,
   loadRSS,
   favicons,
   googleSiteVerification,
+  robots = 'index, follow',
   lang,
   alternateLinks = []
 } = Astro.props as Props;
@@ -109,13 +114,20 @@ const {
 <title>{title.charAt(0).toUpperCase() + title.slice(1)}</title>
 <meta name="title" content={title} />
 <meta name="description" content={description} />
-<meta name="robots" content="index, follow" />
+<meta name="robots" content={robots} />
 
 <meta property="og:type" content={ogType} />
 <meta property="og:url" content={Astro.url} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={new URL(image.src, Astro.url)} />
+<!-- Declared dimensions let LinkedIn, Slack and X render the preview without
+     fetching the image first; without them the card can fall back to a
+     thumbnail or be skipped entirely. -->
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content={String(image.width)} />
+<meta property="og:image:height" content={String(image.height)} />
+<meta property="og:image:alt" content={imageAlt ?? title} />
 
 <meta property="og:locale" content={lang} />
 {
@@ -129,6 +141,7 @@ const {
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image.src, Astro.url)} />
+<meta name="twitter:image:alt" content={imageAlt ?? title} />
 
 {
   googleSiteVerification && (

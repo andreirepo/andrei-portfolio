@@ -131,9 +131,26 @@ const experienceData = {
 };
 
 const alternate = [
-  { href: "/es", hreflang: "es" },
-  { href: "/en", hreflang: "en" },
+  { href: "/es/", hreflang: "es" },
+  { href: "/en/", hreflang: "en" },
+  // x-default is required for the page to be picked when no locale matches.
+  // Trailing slashes here must match the canonical, or the two disagree.
+  { href: "/en/", hreflang: "x-default" },
 ];
+
+const SITE = Astro.site ?? new URL("https://andreirepo.com/");
+
+const profilePageSchema = {
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  "@id": new URL(`/${locale}/#profilepage`, SITE).href,
+  url: new URL(`/${locale}/`, SITE).href,
+  name: "Andrei Repo – Senior QA Engineer",
+  inLanguage: locale,
+  isPartOf: { "@id": new URL("/#website", SITE).href },
+  about: { "@id": new URL("/#person", SITE).href },
+  mainEntity: { "@id": new URL("/#person", SITE).href },
+};
 
 const footerContent = buildFooter(t);
 ---
@@ -143,6 +160,7 @@ const footerContent = buildFooter(t);
   title="Andrei Repo – Senior QA Engineer"
   description={t("description")}
   alternateLinks={alternate}
+  schema={profilePageSchema}
 >
   <Header nav={nav} locales={["en", "es"]} currentLocale={locale} resumeLabel={t("nav.resume")} name="Andrei Repo" homeLabel={t("nav.home")} currentPath={Astro.url.pathname} />
 
@@ -153,7 +171,7 @@ const footerContent = buildFooter(t);
       lang={locale}
       title={t("blog.latest_title")}
       seeAllLabel={t("blog.see_all")}
-      seeAllHref={`/${locale}/blog`}
+      seeAllHref={`/${locale}/blog/`}
     />
     <Experience {...experienceData} />
   </main>

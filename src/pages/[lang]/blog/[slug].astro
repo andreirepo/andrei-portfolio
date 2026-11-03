@@ -34,9 +34,11 @@ const nav = buildNav(t, locale);
 const footerContent = buildFooter(t);
 
 const slug = post.id.replace(/^(en|es)\//, "").replace(/\.md$/, "");
-const postUrl = `https://andreirepo.com/${locale}/blog/${slug}`;
-const enUrl = `/en/blog/${slug}`;
-const esUrl = `/es/blog/${slug}`;
+// Trailing slashes throughout: these are the same strings the canonical and
+// hreflang tags emit, and a mismatch between them is a real hreflang error.
+const postUrl = `https://andreirepo.com/${locale}/blog/${slug}/`;
+const enUrl = `/en/blog/${slug}/`;
+const esUrl = `/es/blog/${slug}/`;
 
 // Only include es alternate if a Spanish version of this post exists
 const allPosts = await getCollection("blog", ({ data }) => !data.draft);
@@ -48,6 +50,8 @@ const alternate = [
   ...(hasEsVersion ? [{ href: esUrl, hreflang: "es" }] : []),
 ];
 
+const PERSON_ID = "https://andreirepo.com/#person";
+
 const blogPostingSchema = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
@@ -56,16 +60,11 @@ const blogPostingSchema = {
   "datePublished": post.data.pubDate.toISOString(),
   "url": postUrl,
   "keywords": post.data.tags.join(", "),
-  "author": {
-    "@type": "Person",
-    "name": "Andrei Repo",
-    "url": "https://andreirepo.com"
-  },
-  "publisher": {
-    "@type": "Person",
-    "name": "Andrei Repo",
-    "url": "https://andreirepo.com"
-  }
+  "mainEntityOfPage": { "@type": "WebPage", "@id": postUrl },
+  // References the Person node emitted by Layout, so the author on every
+  // article is the same entity as the site owner rather than a look-alike.
+  "author": { "@id": PERSON_ID },
+  "publisher": { "@id": PERSON_ID }
 };---
 
 <Layout
@@ -82,7 +81,7 @@ const blogPostingSchema = {
     <a
       data-testid="back-link"
       id="back-link"
-      href={`/${locale}/blog`}
+      href={`/${locale}/blog/`}
       class="inline-flex items-center gap-1.5 text-xs border border-border/60 rounded px-2.5 py-1 text-muted-foreground hover:border-amber-accent hover:text-amber-text hover:bg-amber-accent/5 transition-all duration-200 mb-8"
     >
       <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -103,7 +102,7 @@ const blogPostingSchema = {
           // If the referrer is the home page for this locale, point back there
           const homePaths = [`/${locale}`, `/${locale}/`];
           if (refUrl.hostname === location.hostname && homePaths.includes(refUrl.pathname)) {
-            link.href = `/${locale}`;
+            link.href = `/${locale}/`;
             // swap only the label — textContent would remove the arrow icon
             const label = document.getElementById('back-label');
             if (label) label.textContent = backHomeLabel;
@@ -128,7 +127,7 @@ const blogPostingSchema = {
         <div class="flex flex-wrap gap-2 mt-4">
           {post.data.tags.map((tag: string) => (
             <a
-              href={`/${locale}/blog/tag/${tag}`}
+              href={`/${locale}/blog/tag/${tag}/`}
               class="text-xs border border-border rounded px-2 py-0.5 text-muted-foreground hover:border-amber-accent hover:text-amber-text transition-colors duration-200"
             >
               #{tag}
