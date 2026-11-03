@@ -22,15 +22,19 @@ The test suite I was working with had grown to ~40 spec files, 35+ API helpers, 
 
 An AI tool without this context would scan the entire codebase, make wrong assumptions, and produce code that needed heavy correction. The problem wasn't the AI — it was the missing context.
 
+*Last updated November 2026. Originally published May 2026 — the rules-file landscape has moved since; see [Multi-Tool Consistency](#multi-tool-consistency).*
+
 ## The Building Blocks: Rules, Skills, and Memory
 
-Cline has three native concepts for customizing agent behavior:
+I use three layers to customize agent behavior:
 
-**Rules** (`.clinerules`) — standing instructions: coding standards, naming conventions, what to never do. Always active. Every AI tool has an equivalent (`.cursorrules`, `.windsurfrules`, `CLAUDE.md`).
+**Rules** (`AGENTS.md`) — standing instructions: coding standards, naming conventions, what to never do. Always active.
+
+This used to be a per-tool file: `.clinerules` for Cline, `.cursorrules` for Cursor, `.windsurfrules` for Windsurf. Keeping them in sync was its own chore, and both single-file formats are now legacy — Cursor and Windsurf both moved to directory-based rules. All of them, plus Kilo Code, GitHub Copilot and Codex, read `AGENTS.md` natively. One file, every tool.
 
 **Skills** — modular instruction sets for specific tasks, stored as `SKILL.md` files under `.cline/skills/`. Invoked via slash commands (e.g., `/generate-test`) or auto-loaded on demand. Contains the full pipeline: what to read, what to check, when to stop and ask for approval.
 
-**Memory files** — markdown files storing domain knowledge the agent carries between sessions. Unlike rules (instructions), memory files are facts: what this feature does, which helpers exist, what caused that flaky test last month.
+**Memory files** — markdown files storing domain knowledge the agent carries between sessions. This one is a convention rather than a built-in feature: you point the rules and skills at the files, and the agent reads them. Unlike rules (instructions), memory files are facts: what this feature does, which helpers exist, what caused that flaky test last month.
 
 ---
 
@@ -41,7 +45,7 @@ Together, these three pieces turn a general-purpose AI tool into a team-aware ag
 Here's how these concepts map to a concrete folder layout:
 
 ```
-.clinerules                           # Rules: always-on coding standards for Cline
+AGENTS.md                             # Rules: always-on standards, read by every tool
 
 .cline/
 ├── skills/
@@ -147,7 +151,7 @@ Present a technical plan:
 Do not generate any code until the user approves the plan.
 
 ## Step 4 — Generation
-- Write the spec file adhering strictly to `.clinerules` and `.cline/memory/shared/gotchas.md`
+- Write the spec file adhering strictly to `AGENTS.md` and `.cline/memory/shared/gotchas.md`
 - Run the local test execution command to verify passing status
 - If the test fails, transition automatically to the `/debug-test` skill and rerun until passing
 ```
@@ -166,7 +170,17 @@ The same pattern works with Linear, GitHub Issues, or any tool that has an [MCP 
 
 ## Multi-Tool Consistency
 
-If your team uses different AI tools, keep `.clinerules` as the source of truth and sync to other formats (`.cursorrules`, `.windsurfrules`, `CLAUDE.md`) with a simple copy script. One file to maintain, every tool stays in sync.
+This is the part I've changed my mind about.
+
+The original advice was to keep `.clinerules` as the source of truth and copy it into each tool's format with a shell script. In practice that doesn't hold, for a boring reason: copies drift. I had exactly two copies of my rules, and within a couple of months they had diverged in six places, in both directions — one had lost a line the other kept, the other had picked up a hand-patched correction that never made it back. Nothing made them stay equal, so they didn't.
+
+Two approaches remove the copy step entirely.
+
+**Use the file every tool already reads.** `AGENTS.md` is an open format — plain markdown at the repo root, read natively by Cursor, Windsurf, Cline, Kilo Code, GitHub Copilot, Codex, opencode and a dozen others. There is no second format to maintain, so there is nothing to sync.
+
+**Where a tool insists on its own filename, symlink it.** `ln -s AGENTS.md .clinerules` and the tool reads the same bytes. A symlink cannot go stale the way a copy can, because it *is* the same file. It's also what the [agents.md](https://agents.md/) migration guide recommends.
+
+A copy script is still the right answer for one case: when two agents need genuinely different content. That's a real problem. It just isn't the same problem as keeping two files identical.
 
 ## What Actually Changed
 
