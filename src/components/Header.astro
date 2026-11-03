@@ -42,7 +42,7 @@ function isActive(path: string): boolean {
         target="_blank"
         rel="noopener noreferrer"
         onclick="umami.track('Resume Download')"
-        class="text-xs transition-all duration-200 rounded px-2.5 py-1 flex items-center border border-border/60 text-muted-foreground hover:border-amber-accent hover:text-amber-accent hover:bg-amber-accent/5 active:scale-[0.97] shrink-0"
+        class="text-xs transition-all duration-200 rounded px-2.5 py-1 flex items-center border border-border/60 text-muted-foreground hover:border-amber-accent hover:text-amber-text hover:bg-amber-accent/5 active:scale-[0.97] shrink-0"
       >
         {resumeLabel}
       </a>
@@ -146,7 +146,7 @@ function isActive(path: string): boolean {
         {name && (
           <a
             href={`/${currentLocale}`}
-            class={cls("text-sm px-2 py-1.5 rounded transition-all duration-200 active:scale-[0.98]", isActive(`/${currentLocale}`) ? "text-amber-accent font-medium border-l-2 border-amber-accent pl-2" : "text-muted-foreground hover:text-foreground hover:bg-foreground/8")}
+            class={cls("text-sm px-2 py-1.5 rounded transition-all duration-200 active:scale-[0.98]", isActive(`/${currentLocale}`) ? "text-amber-text font-medium border-l-2 border-amber-accent pl-2" : "text-muted-foreground hover:text-foreground hover:bg-foreground/8")}
           >
             {homeLabel}
           </a>
@@ -157,7 +157,7 @@ function isActive(path: string): boolean {
               class={cls(
                 "text-sm px-2 py-1.5 rounded transition-all duration-200 active:scale-[0.98]",
                 isActive(item.path)
-                  ? "text-amber-accent font-medium border-l-2 border-amber-accent pl-2"
+                  ? "text-amber-text font-medium border-l-2 border-amber-accent pl-2"
                   : "text-muted-foreground hover:text-foreground hover:bg-foreground/8"
               )}
               href={resolveHref(item.path)}
