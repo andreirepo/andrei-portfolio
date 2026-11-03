@@ -1,6 +1,7 @@
 ---
 import I18NDebug from "@ariaskit/astro-i18n/I18NDebug.astro";
 import { cls } from "@/src/lib/utils";
+import { RESUME_HREF } from "@/src/lib/page-helpers";
 
 type Locales = "es" | "en"
 
@@ -15,8 +16,6 @@ interface Props {
 }
 
 const { nav, locales, currentLocale, resumeLabel = "Resume", name, homeLabel = "home", currentPath = "" } = Astro.props as Props
-
-const RESUME_VERSION = "1";
 
 function resolveHref(path: string): string {
     return path.startsWith('/') ? path : `/${currentLocale}/${path}`;
@@ -39,7 +38,7 @@ function isActive(path: string): boolean {
       <!-- Left: Resume button -->
       <a
         data-testid="resume-button"
-        href={`/assets/AndreiRepoResume.pdf?v=${RESUME_VERSION}`}
+        href={RESUME_HREF}
         target="_blank"
         rel="noopener noreferrer"
         onclick="umami.track('Resume Download')"

@@ -15,7 +15,7 @@ import Projects from "@/src/components/Projects.astro";
 import Experience from "@/src/components/Experience.astro";
 import LatestPosts from "@/src/components/LatestPosts.astro";
 import Footer from "@/src/components/Footer.astro";
-import { buildNav, buildFooter } from "@/src/lib/page-helpers";
+import { buildNav, buildFooter, RESUME_HREF } from "@/src/lib/page-helpers";
 
 const { t, locale } = useI18n<LocaleSchema>({
   ssg: {
@@ -28,11 +28,23 @@ const nav = buildNav(t, locale, true);
 const heroProps = {
   name: "Andrei Repo",
   title: { key: "hero.title", value: t("hero.title") },
-  p1: { key: "hero.p1", value: t("hero.p1") },
-  p2: { key: "hero.p2", value: t("hero.p2") },
-  p3: { key: "hero.p3", value: t("hero.p3") },
-  stack: ["Playwright", "TypeScript", "AI Test Automation", "iGaming & SaaS", "CI/CD"],
-  certs: ["ISTQB Certified", "AWS Certified"],
+  roleDetail: { key: "hero.role_detail", value: t("hero.role_detail") },
+  availability: { key: "hero.availability", value: t("hero.availability") },
+  pitch: { key: "hero.pitch", value: t("hero.pitch") },
+  pitchResult: { key: "hero.pitch_result", value: t("hero.pitch_result") },
+  proof: [
+    { key: "hero.proof.axe", value: t("hero.proof.axe") },
+    { key: "hero.proof.ci", value: t("hero.proof.ci") },
+    { key: "hero.proof.istqb", value: t("hero.proof.istqb") },
+    { key: "hero.proof.aws", value: t("hero.proof.aws") },
+  ],
+  ctaEmail: { key: "hero.cta_email", value: t("hero.cta_email") },
+  ctaResume: { key: "hero.cta_resume", value: t("hero.cta_resume") },
+  ctaLinkedin: { key: "hero.cta_linkedin", value: t("hero.cta_linkedin") },
+  location: { key: "hero.location", value: t("hero.location") },
+  emailHref: t("contact.email_url"),
+  resumeHref: RESUME_HREF,
+  linkedinHref: t("contact.linkedin_url"),
 };
 
 const projects = [

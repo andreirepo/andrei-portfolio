@@ -10,9 +10,20 @@
   },
   "hero": {
     "title": "Senior QA Engineer",
-    "p1": "specialising in test automation for SaaS and regulated iGaming. I build AI-augmented workflows that help teams ship reliable software faster.",
-    "p2": "Previously at Lottomart and Sketch. I believe good automation should be easy for the whole team to use, not just the person who wrote it.",
-    "p3": "Outside work, I run a self-hosted home lab. I trust what I can break myself."
+    "role_detail": "Test automation & quality engineering",
+    "availability": "Open to senior / lead QA roles",
+    "pitch": "I build the safety net that lets teams ship every day — Playwright and WebdriverIO suites, CI gates, and AI-assisted workflows.",
+    "pitch_result": "The result is 60% faster release cycles with zero critical post-release defects.",
+    "proof": {
+      "axe": "0 axe violations on this site",
+      "ci": "every deploy CI-gated",
+      "istqb": "ISTQB certified",
+      "aws": "AWS certified"
+    },
+    "cta_email": "Email me",
+    "cta_resume": "Résumé",
+    "cta_linkedin": "LinkedIn",
+    "location": "Remote · Spain (CET) · EU / UK / US overlap"
   },
   "projects": {
     "title": "projects",

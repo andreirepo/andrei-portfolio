@@ -34,8 +34,8 @@ const latest = posts.slice(0, limit);
 
 {latest.length > 0 && (
   <section data-testid="latest-posts-section" id="blog" class="scroll-mt-24 mt-12 md:mt-16 section-fade-in">
-    <div class="flex items-center justify-between mb-8">
-      <h2 class="text-amber-accent font-serif font-medium tracking-tight text-lg md:text-xl">{title}</h2>
+    <div class="section-head">
+      <h2>{title}</h2>
       <a
         data-testid="see-all-posts-link"
         href={seeAllHref}

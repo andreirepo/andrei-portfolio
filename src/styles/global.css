@@ -76,7 +76,14 @@
   --amber-accent: oklch(68% 0.15 80);
   --amber-accent-bg: oklch(48% 0.16 80);
   --amber-accent-bg-hover: oklch(42% 0.15 80);
-  
+
+  /* Amber for small text on the page background — darker than the
+     decorative --amber-accent, which does not reach 4.5:1 as body copy. */
+  --amber-text: oklch(52% 0.13 72);
+
+  /* Availability indicator */
+  --status-ok: oklch(52% 0.11 155);
+
   /* Mesh Gradient Tokens */
   --mesh-color-1: oklch(99% 0.008 290);
   --mesh-color-2: oklch(96% 0.018 85);
@@ -131,7 +138,12 @@
   --amber-accent: oklch(82% 0.16 80);
   --amber-accent-bg: oklch(55% 0.17 80);
   --amber-accent-bg-hover: oklch(62% 0.16 80);
-  
+
+  /* On dark, the decorative amber is already legible as small text */
+  --amber-text: oklch(82% 0.16 80);
+
+  --status-ok: oklch(78% 0.14 155);
+
   /* Mesh Gradient Tokens (Dark) */
   --mesh-color-1: oklch(20% 0.018 285);
   --mesh-color-2: oklch(28% 0.035 80);
@@ -196,45 +208,108 @@ html {
   animation: fade-in-up 0.6s ease-out 0.6s forwards;
 }
 
-/* Hero floating shapes */
-.hero-shape {
-  position: absolute;
+/* ─── Hero: availability eyebrow ─────────────────────────────────────── */
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--amber-text);
+}
+
+.hero-dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  opacity: 0.04;
-  animation: float 20s ease-in-out infinite;
+  background: var(--status-ok);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--status-ok) 22%, transparent);
+  animation: hero-dot-pulse 2.4s ease-in-out infinite;
 }
 
-.hero-shape-1 {
-  width: 400px;
-  height: 400px;
-  background: var(--amber-accent);
-  top: -10%;
-  right: -5%;
-  animation-delay: 0s;
+@keyframes hero-dot-pulse {
+  50% { opacity: 0.45; }
 }
 
-.hero-shape-2 {
-  width: 250px;
-  height: 250px;
-  background: var(--primary);
-  bottom: 10%;
-  left: -3%;
-  animation-delay: -7s;
+/* ─── Hero: avatar — photo, 4px gap, 1px amber hairline ──────────────── */
+.avatar {
+  position: relative;
+  flex: none;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--foreground) 6%, var(--background));
+  outline: 1px solid color-mix(in oklch, var(--amber-accent) 55%, transparent);
+  outline-offset: 4px;
+  box-shadow: 0 14px 34px -20px color-mix(in oklch, var(--foreground) 55%, transparent);
 }
 
-.hero-shape-3 {
-  width: 180px;
-  height: 180px;
-  background: var(--amber-accent);
-  top: 40%;
-  right: 15%;
-  animation-delay: -14s;
+.avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 50% 22%;
 }
 
-@keyframes float {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(15px, -20px) scale(1.03); }
-  66% { transform: translate(-10px, 10px) scale(0.97); }
+/* The studio background of the photo glows against a dark page */
+.dark .avatar img {
+  filter: brightness(0.86) saturate(0.92);
+}
+
+.avatar--lg { width: 96px; height: 96px; }
+
+/* Smaller circle gets a smaller gap, or the ring eats the face */
+.avatar--sm { width: 56px; height: 56px; outline-offset: 3px; }
+
+/* ─── Hero: proof grid ───────────────────────────────────────────────── */
+.hero-proof {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.625rem 1.5rem;
+  margin-top: 1.75rem;
+  padding-top: 1.125rem;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.71875rem;
+  letter-spacing: 0.04em;
+  color: color-mix(in oklch, var(--foreground) 76%, var(--background));
+}
+
+.hero-proof li {
+  display: flex;
+  align-items: center;
+  gap: 0.4375rem;
+}
+
+@media (max-width: 560px) {
+  .hero-proof {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+}
+
+/* ─── Section heading rhythm ─────────────────────────────────────────── */
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.section-head h2 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 1.75rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--foreground);
 }
 
 @utility bg-header-gradient {
@@ -262,7 +337,7 @@ html {
     opacity: 1;
     animation: none;
   }
-  .hero-shape {
+  .hero-dot {
     animation: none;
   }
 }

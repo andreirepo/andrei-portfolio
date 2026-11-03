@@ -2,6 +2,10 @@ import type { LocaleSchema } from "@/src/types";
 
 type T = (key: keyof LocaleSchema | string) => string;
 
+/** Bump when the PDF is replaced so clients skip the cached copy. */
+export const RESUME_VERSION = "1";
+export const RESUME_HREF = `/assets/AndreiRepoResume.pdf?v=${RESUME_VERSION}`;
+
 export function buildNav(t: T, locale: string, isHome = false) {
   return [
     { path: `#${t("nav.projects")}`, text: t("nav.projects") },
