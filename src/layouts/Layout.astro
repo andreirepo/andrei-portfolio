@@ -1,6 +1,6 @@
 ---
 import { PageMetadata } from "@/src/components/hybrid-astro-ui/page-metadata";
-import OGImage from "@/src/assets/background.png"
+import OGImage from "@/src/assets/og-card.png"
 
 interface Props {
 	title: string;
@@ -33,6 +33,7 @@ const { title, description, locale, alternateLinks, ogType = 'website', schema }
 			title={title}
 			description={description}
 			image={OGImage}
+			imageAlt="Andrei Repo — Senior QA Engineer, open to senior and lead QA roles"
 			enableClientRouter
 			ogType={ogType}
 			favicons={[
