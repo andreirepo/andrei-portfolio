@@ -40,6 +40,9 @@
   --color-amber-accent: var(--amber-accent);
   --color-amber-accent-bg: var(--amber-accent-bg);
   --color-amber-accent-bg-hover: var(--amber-accent-bg-hover);
+
+  /* Text-safe amber — see the :root comment */
+  --color-amber-text: var(--amber-text);
   
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -76,7 +79,14 @@
   --amber-accent: oklch(68% 0.15 80);
   --amber-accent-bg: oklch(48% 0.16 80);
   --amber-accent-bg-hover: oklch(42% 0.15 80);
-  
+
+  /* Amber for small text on the page background — darker than the
+     decorative --amber-accent, which does not reach 4.5:1 as body copy. */
+  --amber-text: oklch(52% 0.13 72);
+
+  /* Availability indicator */
+  --status-ok: oklch(52% 0.11 155);
+
   /* Mesh Gradient Tokens */
   --mesh-color-1: oklch(99% 0.008 290);
   --mesh-color-2: oklch(96% 0.018 85);
@@ -131,10 +141,17 @@
   --amber-accent: oklch(82% 0.16 80);
   --amber-accent-bg: oklch(55% 0.17 80);
   --amber-accent-bg-hover: oklch(62% 0.16 80);
-  
-  /* Mesh Gradient Tokens (Dark) */
+
+  /* On dark, the decorative amber is already legible as small text */
+  --amber-text: oklch(82% 0.16 80);
+
+  --status-ok: oklch(78% 0.14 155);
+
+  /* Mesh Gradient Tokens (Dark)
+     Kept close to --background: a brighter warm stop here reads as a
+     brown haze across the whole page, not a tint behind the portrait. */
   --mesh-color-1: oklch(20% 0.018 285);
-  --mesh-color-2: oklch(28% 0.035 80);
+  --mesh-color-2: oklch(22% 0.016 80);
   --mesh-color-3: oklch(22% 0.022 285);
   --mesh-color-4: oklch(24% 0.025 160);
 }
@@ -196,45 +213,155 @@ html {
   animation: fade-in-up 0.6s ease-out 0.6s forwards;
 }
 
-/* Hero floating shapes */
-.hero-shape {
-  position: absolute;
+/* ─── Hero: availability eyebrow ─────────────────────────────────────── */
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--amber-text);
+}
+
+.hero-dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  /* Centre on the first line, not the block — the label wraps on
+     narrow screens and a centred dot lands between the two lines. */
+  margin-top: calc((1.45em - 6px) / 2);
   border-radius: 50%;
-  opacity: 0.04;
-  animation: float 20s ease-in-out infinite;
+  background: var(--status-ok);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--status-ok) 22%, transparent);
+  animation: hero-dot-pulse 2.4s ease-in-out infinite;
 }
 
-.hero-shape-1 {
-  width: 400px;
-  height: 400px;
-  background: var(--amber-accent);
-  top: -10%;
-  right: -5%;
-  animation-delay: 0s;
+/* The label is long; below ~380px tighten the tracking so it keeps to
+   one line beside the portrait instead of wrapping under it. */
+@media (max-width: 380px) {
+  .hero-eyebrow {
+    font-size: 0.625rem;
+    letter-spacing: 0.05em;
+  }
 }
 
-.hero-shape-2 {
-  width: 250px;
-  height: 250px;
-  background: var(--primary);
-  bottom: 10%;
-  left: -3%;
-  animation-delay: -7s;
+@keyframes hero-dot-pulse {
+  50% { opacity: 0.45; }
 }
 
-.hero-shape-3 {
-  width: 180px;
-  height: 180px;
-  background: var(--amber-accent);
-  top: 40%;
-  right: 15%;
-  animation-delay: -14s;
+/* ─── Hero: avatar — photo, 4px gap, 1px amber hairline ──────────────── */
+.avatar {
+  position: relative;
+  flex: none;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--foreground) 6%, var(--background));
+  outline: 1px solid color-mix(in oklch, var(--amber-accent) 55%, transparent);
+  outline-offset: 4px;
+  box-shadow: 0 14px 34px -20px color-mix(in oklch, var(--foreground) 55%, transparent);
 }
 
-@keyframes float {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(15px, -20px) scale(1.03); }
-  66% { transform: translate(-10px, 10px) scale(0.97); }
+.avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 50% 22%;
+}
+
+/* The studio background of the photo glows against a dark page */
+.dark .avatar img {
+  filter: brightness(0.86) saturate(0.92);
+}
+
+.avatar--lg { width: 96px; height: 96px; }
+
+/* Smaller circle gets a smaller gap, or the ring eats the face */
+.avatar--sm { width: 56px; height: 56px; outline-offset: 3px; }
+
+/* Narrow phones: shrink the circle so the availability label still
+   fits on one line beside it. */
+@media (max-width: 340px) {
+  .avatar--sm { width: 46px; height: 46px; }
+}
+
+/* ─── Hero: proof grid ───────────────────────────────────────────────── */
+.hero-proof {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.625rem 1.5rem;
+  margin-top: 1.75rem;
+  padding-top: 1.125rem;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: color-mix(in oklch, var(--foreground) 76%, var(--background));
+}
+
+.hero-proof li {
+  display: flex;
+  align-items: center;
+  gap: 0.4375rem;
+}
+
+/* Two columns stop fitting the longest Spanish claim below ~660px */
+@media (max-width: 660px) {
+  .hero-proof {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+}
+
+/* ─── Nav active state ───────────────────────────────────────────────── */
+/* Keyed on aria-current so the build-time route state (home on "/", blog on
+   /blog) and the homepage scroll-spy share one source of truth. The
+   underline is driven here rather than by a Tailwind scale utility, because
+   Tailwind v4 writes to the `scale` property and would win over a
+   transform-based override. */
+[data-testid="main-nav"] a::after {
+  transform: scaleX(0);
+  transition: transform 200ms;
+}
+
+[data-testid="main-nav"] a:hover::after,
+[data-testid="main-nav"] a[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+[data-testid="main-nav"] a[aria-current="page"] {
+  color: var(--foreground);
+}
+
+#mobile-menu a[aria-current="page"] {
+  color: var(--amber-text);
+  font-weight: 500;
+  border-left: 2px solid var(--amber-accent);
+  padding-left: 0.5rem;
+}
+
+/* ─── Section heading rhythm ─────────────────────────────────────────── */
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.section-head h2 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 1.75rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--foreground);
 }
 
 @utility bg-header-gradient {
@@ -262,12 +389,15 @@ html {
     opacity: 1;
     animation: none;
   }
-  .hero-shape {
+  .hero-dot {
     animation: none;
   }
 }
 
-/* Section scroll-triggered fade-in — CSS scroll-driven animations */
+/* Section scroll-triggered fade-in — CSS scroll-driven animations.
+   The range must end on `entry`, not `cover`: on the last section of a page
+   the scroll runs out before `cover 30%` is reached, so it stayed at 74%
+   opacity and its heading read grey against the others. */
 @keyframes section-reveal {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -277,7 +407,7 @@ html {
   animation: section-reveal linear both;
   animation-duration: auto;
   animation-timeline: view();
-  animation-range: entry 0% cover 30%;
+  animation-range: entry 0% entry 40%;
 }
 
 @media (prefers-reduced-motion: reduce) {

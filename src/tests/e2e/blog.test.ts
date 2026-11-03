@@ -179,11 +179,21 @@ describe('Blog — Post Page', () => {
     expect(await postPage.currentPath).toContain('/blog/tag/');
   });
 
-  it('should render the blog nav item as active', async () => {
+  it('should mark the blog nav item as current', async () => {
     const blogNavLink = page.locator('[data-testid="nav-blog"]');
-    const classes = await blogNavLink.getAttribute('class');
-    expect(classes).toContain('text-foreground');
-    expect(classes).not.toContain('text-muted-foreground');
+
+    // The nav no longer flips utility classes to show state — it sets
+    // aria-current and global.css styles from that. Assert the semantics and
+    // the rendered colour. `toContain('text-foreground')` was a false
+    // positive either way, since `hover:text-foreground` is always present.
+    expect(await blogNavLink.getAttribute('aria-current')).toBe('page');
+
+    const blogColour = await blogNavLink.evaluate((el) => getComputedStyle(el).color);
+    const homeColour = await page
+      .locator('[data-testid="nav-home"]')
+      .evaluate((el) => getComputedStyle(el).color);
+
+    expect(blogColour).not.toBe(homeColour);
   });
 });
 
@@ -251,8 +261,7 @@ describe('Blog — Tag Page', () => {
 
   it('should render the blog nav item as active on tag page', async () => {
     const blogNavLink = page.locator('[data-testid="nav-blog"]');
-    const classes = await blogNavLink.getAttribute('class');
-    expect(classes).toContain('text-foreground');
+    expect(await blogNavLink.getAttribute('aria-current')).toBe('page');
   });
 
   it('should work for Spanish locale tag page', async () => {

@@ -1,102 +1,149 @@
-
 ---
 import I18NDebug from "@ariaskit/astro-i18n/I18NDebug.astro";
+import profile from "@/src/assets/profile.webp";
+
+type Out = { key: string; value: string };
 
 interface Props {
     name: string;
-    title: { key: string; value: string };
-    p1: { key: string; value: string };
-    p2: { key: string; value: string };
-    p3: { key: string; value: string };
-    stack?: string[];
-    certs?: string[];
+    title: Out;
+    roleDetail: Out;
+    availability: Out;
+    pitch: Out;
+    pitchResult: Out;
+    proof: Out[];
+    ctaEmail: Out;
+    ctaResume: Out;
+    ctaLinkedin: Out;
+    emailHref: string;
+    resumeHref: string;
+    linkedinHref: string;
+    location: Out;
 }
 
-const { name, title, p1, p2, p3, stack = [], certs = [] } = Astro.props as Props;
+const {
+    name,
+    title,
+    roleDetail,
+    availability,
+    pitch,
+    pitchResult,
+    proof,
+    ctaEmail,
+    ctaResume,
+    ctaLinkedin,
+    emailHref,
+    resumeHref,
+    linkedinHref,
+    location,
+} = Astro.props as Props;
+
+const primaryBtn =
+    "inline-flex items-center gap-2 rounded-md bg-foreground px-4 py-3 text-sm font-medium text-background transition-colors duration-200 hover:bg-foreground/90 active:scale-[0.98]";
+const ghostBtn =
+    "inline-flex items-center gap-2 rounded-md border border-border px-4 py-3 text-sm font-medium text-foreground/80 transition-colors duration-200 hover:border-amber-accent/60 hover:text-foreground active:scale-[0.98]";
+const linkBtn =
+    "inline-flex items-center gap-1.5 px-1.5 py-3 text-sm font-medium text-muted-foreground transition-colors duration-200 hover:text-foreground";
 ---
 
-<section data-testid="hero-section" id={name} class="min-h-[100dvh] flex flex-col justify-center mt-8 mb-16 relative">
-    <div class="hero-shapes pointer-events-none fixed inset-0" aria-hidden="true">
-        <div class="hero-shape hero-shape-1"></div>
-        <div class="hero-shape hero-shape-2"></div>
-        <div class="hero-shape hero-shape-3"></div>
+<section data-testid="hero-section" id={name} class="pt-24 md:pt-32 pb-14 md:pb-20">
+    <div class="flex items-center gap-3 md:gap-4">
+        <p class="hero-eyebrow hero-animate">
+            <span class="hero-dot" aria-hidden="true"></span>
+            <I18NDebug key={availability.key}>{availability.value}</I18NDebug>
+        </p>
+
+        <div class="avatar avatar--sm md:hidden ml-auto hero-animate">
+            <img src={profile.src} width="56" height="56" alt={name} loading="eager" decoding="async" />
+        </div>
     </div>
-    <div class="relative">
-        <div id="hero-glow" class="absolute -inset-32 blur-3xl pointer-events-none opacity-0 transition-opacity duration-500" aria-hidden="true" />
+
+    <div class="mt-4 md:mt-5 flex items-center justify-between gap-6">
         <h1
             data-testid="hero-heading"
             id="hero-heading"
-            class="relative mb-6 md:mb-10 font-serif font-medium text-[2.75rem] md:text-[4.25rem] lg:text-[5rem] leading-[1] tracking-tight hero-animate text-foreground"
+            class="font-serif font-medium text-[2.75rem] md:text-[4rem] leading-[1] tracking-tight text-foreground hero-animate"
         >
             {name}
         </h1>
-    </div>
-    <div class="[&_p]:mb-4 leading-snug">
-        <p class="hero-animate-delay-1">
-            <I18NDebug key={title.key}>
-                <span class="text-foreground/70">{title.value} </span>
-            </I18NDebug>
-            <I18NDebug key={p1.key}>
-                <span class="text-foreground/60">{p1.value}</span>
-            </I18NDebug>
-        </p>
-        <I18NDebug key={p2.key}>
-            <p class="text-foreground/60 hero-animate-delay-2">{p2.value}</p>
-        </I18NDebug>
-        <I18NDebug key={p3.key}>
-            <p class="text-foreground/60 hero-animate-delay-3">{p3.value}</p>
-        </I18NDebug>
-    </div>
-    {
-        stack.length > 0 && (
-            <div class="flex flex-wrap justify-center gap-2 mt-8 hero-animate-delay-4">
-                {stack.map((tech) => (
-                    <span class="inline-flex items-center px-3 py-1 text-xs font-mono border border-border/60 text-muted-foreground rounded-full">
-                        {tech}
-                    </span>
-                ))}
-            </div>
-        )
-    }
-    {
-        certs.length > 0 && (
-            <div class="flex flex-wrap justify-center gap-2 mt-3 hero-animate-delay-4">
-                {certs.map((cert) => (
-                    <span class="inline-flex items-center px-3 py-1 text-xs font-mono border border-border/60 text-muted-foreground rounded-full">
-                        {cert}
-                    </span>
-                ))}
-            </div>
-        )
-    }
-</section>
 
-<script>
-    (function () {
-        var heading = document.getElementById('hero-heading');
-        var glow = document.getElementById('hero-glow');
-        if (!heading || !glow) return;
-        var isHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-        if (!isHover) return;
-        var ticking = false;
-        function update(e) {
-            var rect = heading.getBoundingClientRect();
-            var x = e.clientX - rect.left;
-            var y = e.clientY - rect.top;
-            glow.style.background = 'radial-gradient(circle at ' + x + 'px ' + y + 'px, color-mix(in oklch, var(--foreground) 10%, transparent) 0%, transparent 50%)';
+        <div class="avatar avatar--lg hidden md:block hero-animate">
+            <img src={profile.src} width="96" height="96" alt={name} loading="eager" decoding="async" />
+        </div>
+    </div>
+
+    <p class="mt-5 text-lg md:text-xl font-medium tracking-tight hero-animate-delay-1">
+        <I18NDebug key={title.key}>{title.value}</I18NDebug>
+        <span class="mx-2 text-amber-text" aria-hidden="true">·</span>
+        <span class="font-normal text-muted-foreground">
+            <I18NDebug key={roleDetail.key}>{roleDetail.value}</I18NDebug>
+        </span>
+    </p>
+
+    <p class="mt-5 max-w-[56ch] text-base md:text-lg leading-relaxed text-foreground/80 hero-animate-delay-2">
+        <I18NDebug key={pitch.key}>{pitch.value}</I18NDebug>{' '}
+        <span class="font-medium text-foreground">
+            <I18NDebug key={pitchResult.key}>{pitchResult.value}</I18NDebug>
+        </span>
+    </p>
+
+    <ul class="hero-proof hero-animate-delay-3">
+        {
+            proof.map((item) => (
+                <li>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="shrink-0 text-amber-text"
+                        aria-hidden="true"
+                    >
+                        <path d="M20 6 9 17l-5-5" />
+                    </svg>
+                    <I18NDebug key={item.key}>{item.value}</I18NDebug>
+                </li>
+            ))
         }
-        function onMove(e) {
-            glow.classList.remove('opacity-0');
-            glow.classList.add('opacity-100');
-            if (!ticking) {
-                requestAnimationFrame(function () { update(e); ticking = false; });
-                ticking = true;
-            }
-        }
-        heading.addEventListener('mousemove', onMove);
-        heading.addEventListener('mouseleave', function () {
-            glow.classList.remove('opacity-100');
-            glow.classList.add('opacity-0');
-        });
-    })();
-</script>
+    </ul>
+
+    <div class="mt-6 flex flex-wrap items-center gap-2.5 hero-animate-delay-4">
+        <a href={emailHref} class={primaryBtn}>
+            <I18NDebug key={ctaEmail.key}>{ctaEmail.value}</I18NDebug>
+        </a>
+        <a
+            href={resumeHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            onclick="window.umami?.track('Resume Download')"
+            class={ghostBtn}
+        >
+            <I18NDebug key={ctaResume.key}>{ctaResume.value}</I18NDebug>
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 5v14" />
+                <path d="m19 12-7 7-7-7" />
+            </svg>
+        </a>
+        <a
+            href={linkedinHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            class={linkBtn}
+        >
+            <I18NDebug key={ctaLinkedin.key}>{ctaLinkedin.value}</I18NDebug>
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M7 17 17 7" />
+                <path d="M7 7h10v10" />
+            </svg>
+        </a>
+    </div>
+
+    <p class="mt-5 font-mono text-[0.6875rem] uppercase tracking-[0.08em] text-muted-foreground hero-animate-delay-4">
+        <I18NDebug key={location.key}>{location.value}</I18NDebug>
+    </p>
+</section>

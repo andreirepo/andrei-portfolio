@@ -28,15 +28,19 @@ La suite de tests con la que trabajaba había crecido hasta ~40 archivos de spec
 
 Una herramienta IA sin este contexto escanearía todo el codebase, haría suposiciones incorrectas y produciría código que necesitaría correcciones importantes. El problema no era la IA — era el contexto que faltaba.
 
+*Última actualización: noviembre de 2026. Publicado originalmente en mayo de 2026 — el ecosistema de herramientas ha cambiado desde entonces; ver [Consistencia Multi-Herramienta](#consistencia-multi-herramienta).*
+
 ## Los Bloques de Construcción: Rules, Skills y Memoria
 
-Antes de entrar en la estructura, ayuda entender qué hace cada pieza. Cline tiene tres conceptos nativos para personalizar el comportamiento del agente:
+Antes de entrar en la estructura, ayuda entender qué hace cada pieza. Yo uso tres capas para personalizar el comportamiento del agente:
 
-**[Rules](https://docs.cline.bot/customization/cline-rules)** (`.clinerules`) — un archivo markdown en la raíz de tu proyecto que Cline lee en cada tarea. Piénsalo como las instrucciones permanentes: estándares de código, convenciones de nomenclatura, qué nunca hacer. Cada herramienta de IA tiene su equivalente: `.cursorrules` para Cursor, `.windsurfrules` para Windsurf, `CLAUDE.md` para Claude Code, `copilot-instructions.md` para GitHub Copilot.
+**[Rules](https://docs.cline.bot/customization/cline-rules)** (`AGENTS.md`) — un archivo markdown en la raíz del repo que el agente lee en cada tarea. Piénsalo como las instrucciones permanentes: estándares de código, convenciones de nomenclatura, qué nunca hacer.
+
+Antes esto era un archivo por herramienta: `.clinerules` para Cline, `.cursorrules` para Cursor, `.windsurfrules` para Windsurf. Mantenerlos sincronizados era un trabajo en sí mismo, y los dos formatos de archivo único ya son legacy — tanto Cursor como Windsurf pasaron a reglas basadas en directorios. Todas ellas, más Kilo Code, GitHub Copilot y Codex, leen `AGENTS.md` de forma nativa. Un archivo, todas las herramientas.
 
 **[Skills](https://docs.cline.bot/customization/skills)** — conjuntos de instrucciones modulares para tareas específicas, cada uno almacenado como un archivo `SKILL.md` dentro de un directorio con nombre bajo `.cline/skills/`. Un skill se invoca mediante un slash command (p.ej., `/generate-test`) o se carga automáticamente cuando Cline detecta que es relevante según la descripción del skill. El `SKILL.md` contiene todo: el proceso paso a paso, qué archivos leer, cuándo detenerse y pedir aprobación, qué hacer si algo falla. La diferencia con una rule es el alcance: las rules siempre están activas, los skills se cargan bajo demanda.
 
-**[Archivos de memoria](https://docs.cline.bot/best-practices/memory-bank)** (el "brain") — archivos markdown que almacenan el conocimiento de dominio que el agente debe mantener entre sesiones. A diferencia de las rules (que son instrucciones), los archivos de memoria son hechos: qué hace esta funcionalidad, qué helpers existen, qué causó ese test flaky el mes pasado. Tú los escribes y mantienes — no se generan automáticamente. El agente los lee al inicio de una tarea para ponerse al día instantáneamente.
+**[Archivos de memoria](https://docs.cline.bot/best-practices/memory-bank)** (el "brain") — archivos markdown que almacenan el conocimiento de dominio que el agente debe mantener entre sesiones. Es una convención, no una función nativa: tú apuntas las rules y los skills a esos archivos y el agente los lee. A diferencia de las rules (que son instrucciones), los archivos de memoria son hechos: qué hace esta funcionalidad, qué helpers existen, qué causó ese test flaky el mes pasado. Tú los escribes y mantienes — no se generan automáticamente. El agente los lee al inicio de una tarea para ponerse al día instantáneamente.
 
 ---
 
@@ -47,7 +51,7 @@ Juntas, estas tres piezas convierten una herramienta de IA de propósito general
 Así es como estos conceptos se mapean a una estructura de carpetas concreta:
 
 ```
-.clinerules                           # Rules: estándares de código siempre activos para Cline
+AGENTS.md                             # Rules: estándares siempre activos, leídos por todas
 
 .cline/
 ├── skills/
@@ -159,7 +163,7 @@ Presenta un plan técnico:
 No generes ningún código hasta que el usuario apruebe el plan.
 
 ## Paso 4 — Generación
-- Escribe el archivo de spec siguiendo estrictamente `.clinerules` y `.cline/memory/shared/gotchas.md`
+- Escribe el archivo de spec siguiendo estrictamente `AGENTS.md` y `.cline/memory/shared/gotchas.md`
 - Ejecuta el comando de ejecución de tests local para verificar que pasa
 - Si el test falla, transiciona automáticamente al skill `/debug-test` y vuelve a ejecutar hasta que pase
 ```
@@ -195,22 +199,21 @@ El mismo patrón funciona con Linear, GitHub Issues, o cualquier herramienta que
 
 ## Consistencia Multi-Herramienta
 
-Si tu equipo usa diferentes herramientas IA — Cline, Cursor, Windsurf, GitHub Copilot — cada una tiene su propio formato para reglas de código. Mantener archivos de reglas separados para cada herramienta es una pesadilla de mantenimiento.
+Esta es la parte de la que he cambiado de opinión.
 
-La fuente de verdad es `.clinerules`. Los otros formatos son simplemente copias con nombres de archivo diferentes:
+El consejo original era mantener `.clinerules` como fuente de verdad y copiarlo al formato de cada herramienta con un script. En la práctica no aguanta, por una razón aburrida: las copias se desincronizan. Tenía exactamente dos copias de mis reglas y en un par de meses habían divergido en seis puntos, en ambas direcciones — una había perdido una línea que la otra conservaba, la otra tenía una corrección hecha a mano que nunca volvió a la primera. Nada las mantenía iguales, así que dejaron de serlo.
 
-| Herramienta | Ubicación del archivo de reglas |
-|---|---|
-| Cline | `.clinerules` |
-| Cursor | `.cursor/rules/` (archivos `.mdc` individuales con frontmatter `globs` / `alwaysApply`) |
-| Windsurf | `.windsurfrules` |
-| GitHub Copilot | `.github/copilot-instructions.md` |
+Hay dos enfoques que eliminan el paso de copia.
 
-El enfoque más sencillo es pedirle a tu herramienta IA que genere un script de sincronización — algo como: *"Escribe un script de shell que copie `.clinerules` a las ubicaciones de archivos de reglas para Cursor, Windsurf y GitHub Copilot."* Son unos pocos comandos `cp`. Ejecútalo cuando cambien las reglas y todos se mantienen sincronizados independientemente de qué herramienta usen.
+**Usar el archivo que todas las herramientas ya leen.** `AGENTS.md` es un formato abierto — markdown plano en la raíz del repo, leído de forma nativa por Cursor, Windsurf, Cline, Kilo Code, GitHub Copilot, Codex, opencode y una docena más. No hay un segundo formato que mantener, así que no hay nada que sincronizar.
+
+**Donde una herramienta exija su propio nombre, usa un symlink.** `ln -s AGENTS.md .clinerules` y la herramienta lee exactamente los mismos bytes. Un symlink no puede quedarse obsoleto como una copia, porque *es* el mismo archivo. Es también lo que recomienda la guía de migración de [agents.md](https://agents.md/).
+
+Un script de copia sigue siendo la respuesta correcta en un caso: cuando dos agentes necesitan contenido genuinamente distinto. Eso es un problema real. Simplemente no es el mismo problema que mantener dos archivos idénticos.
 
 ## Lo que Realmente Cambió
 
-| | Antes | Después |
+| Tarea | Antes | Después |
 |---|---|---|
 | Generar un nuevo test | 30–60 min | 10–15 min |
 | Depurar un test flaky | 20–40 min | 5–10 min |

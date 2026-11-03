@@ -4,15 +4,25 @@
     "home": "inicio",
     "projects": "proyectos",
     "experience": "experiencia",
-    "contact": "contacto",
     "resume": "cv",
     "blog": "blog"
   },
   "hero": {
     "title": "Ingeniero QA Senior",
-    "p1": "especializado en automatización de pruebas para plataformas SaaS e iGaming regulado. Construyo flujos de trabajo asistidos por IA que ayudan a los equipos a lanzar software confiable más rápido.",
-    "p2": "Anteriormente en Lottomart y Sketch. Creo que una buena automatización debe ser fácil de usar para todo el equipo, no solo para quien la escribió.",
-    "p3": "Fuera del trabajo, mantengo un home lab propio. Solo confío en lo que sé romper yo mismo."
+    "role_detail": "Automatización de pruebas y calidad de software",
+    "availability": "Abierto a roles senior / lead",
+    "pitch": "Construyo la red de seguridad que permite a los equipos desplegar cada día — suites de Playwright y WebdriverIO, quality gates en CI y flujos asistidos por IA.",
+    "pitch_result": "El resultado: ciclos de release un 60% más rápidos y cero defectos críticos tras el despliegue.",
+    "proof": {
+      "axe": "0 violaciones de axe en este sitio",
+      "ci": "cada despliegue con gate de CI",
+      "istqb": "certificado ISTQB",
+      "aws": "certificado AWS"
+    },
+    "cta_email": "Escríbeme",
+    "cta_resume": "CV",
+    "cta_linkedin": "LinkedIn",
+    "location": "Remoto · España (CET) · Solapamiento UE / UK / US"
   },
   "projects": {
     "title": "proyectos",
@@ -51,8 +61,6 @@
     }
   },
   "contact": {
-    "heading": "conectemos",
-    "description": "Abierto a nuevas oportunidades. Construyamos algo confiable.",
     "email_label": "Email",
     "email_url": "mailto:contact@andreirepo.com",
     "github_label": "GitHub",
@@ -63,8 +71,8 @@
   "blog": {
     "title": "blog",
     "empty": "Aún no hay artículos. Vuelve pronto.",
-    "back": "← Volver al blog",
-    "back_home": "← Volver al inicio",
+    "back": "Volver al blog",
+    "back_home": "Volver al inicio",
     "published": "Publicado",
     "latest_title": "últimas entradas",
     "see_all": "ver todos los artículos",

@@ -23,14 +23,11 @@ const href = `/${lang}/blog/${slug}`;
 <li class="group border border-transparent rounded-lg transition-all duration-200 hover:border-amber-accent/30 hover:bg-muted/20">
     <div class="flex flex-col justify-start p-6">
         <a href={href} class="block">
-            <p class="text-lg font-serif font-medium text-foreground group-hover:text-amber-accent transition-colors duration-200 leading-relaxed mb-3">{title.trim()}</p>
+            <p class="text-lg font-serif font-medium text-foreground group-hover:text-amber-text transition-colors duration-200 leading-relaxed mb-3">{title.trim()}</p>
             <p class="text-foreground/60 text-sm line-clamp-3 mb-4">{description.trim()}</p>
         </a>
-        <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-3 text-xs text-muted-foreground/80">
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-3 text-xs text-muted-foreground">
           <time datetime={pubDate.toISOString()}>{formattedDate}</time>
-          {tags.length > 0 && (
-            <span class="text-muted-foreground/40">·</span>
-          )}
           {tags.map((tag) => (
             <a
               href={tag === activeTag ? `/${lang}/blog` : `/${lang}/blog/tag/${tag}`}
@@ -38,8 +35,8 @@ const href = `/${lang}/blog/${slug}`;
               class:list={[
                 "border rounded px-1.5 py-0.25 transition-colors duration-200",
                 tag === activeTag
-                  ? "border-amber-accent text-amber-accent"
-                  : "border-border hover:border-amber-accent hover:text-amber-accent"
+                  ? "border-amber-accent text-amber-text"
+                  : "border-border hover:border-amber-accent hover:text-amber-text"
               ]}
               aria-label={tag === activeTag ? `Clear filter: ${tag}` : `Filter by ${tag}`}
             >

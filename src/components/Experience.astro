@@ -19,11 +19,13 @@ const { title, jobs } = Astro.props as Props;
 ---
 
     <section data-testid="experience-section" id={title.value.toLowerCase()} class="scroll-mt-24 mt-12 md:mt-16 section-fade-in">
-    <h2 class="text-amber-accent font-serif font-medium tracking-tight mb-4 text-lg md:text-xl">
-        <I18NDebug key={title.key}>
-            {title.value}
-        </I18NDebug>
-    </h2>
+    <div class="section-head">
+        <h2>
+            <I18NDebug key={title.key}>
+                {title.value}
+            </I18NDebug>
+        </h2>
+    </div>
     <ul class="space-y-8">
         {
             jobs.map((job) => (

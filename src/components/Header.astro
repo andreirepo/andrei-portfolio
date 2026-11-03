@@ -1,11 +1,12 @@
 ---
 import I18NDebug from "@ariaskit/astro-i18n/I18NDebug.astro";
 import { cls } from "@/src/lib/utils";
+import { RESUME_HREF } from "@/src/lib/page-helpers";
 
 type Locales = "es" | "en"
 
 interface Props {
-    nav:{path:string;text:string}[];
+    nav:{path:string;text:string;divider?:boolean}[];
     locales: Locales[];
     currentLocale:string;
     resumeLabel?: string;
@@ -16,8 +17,6 @@ interface Props {
 
 const { nav, locales, currentLocale, resumeLabel = "Resume", name, homeLabel = "home", currentPath = "" } = Astro.props as Props
 
-const RESUME_VERSION = "1";
-
 function resolveHref(path: string): string {
     return path.startsWith('/') ? path : `/${currentLocale}/${path}`;
 }
@@ -27,6 +26,31 @@ function isActive(path: string): boolean {
     if (href.includes('#')) return false;
     return currentPath.startsWith(href);
 }
+
+/**
+ * Home needs an exact match: every route under /en starts with /en, so a
+ * prefix check marked "home" as current on /en/blog, /en/blog/<slug> and
+ * every tag page.
+ */
+function isHome(): boolean {
+    return currentPath === `/${currentLocale}` || currentPath === `/${currentLocale}/`;
+}
+
+/** Anchors get a section key so the scroll-spy can track them. */
+function spyKey(path: string): string | undefined {
+    return path.startsWith('#') ? path.slice(1) : undefined;
+}
+
+// Active styling lives in global.css, keyed on aria-current, so the
+// server-rendered route state and the scroll-spy share one source of truth.
+const navLinkClass = cls(
+    "relative transition-all duration-200 text-sm whitespace-nowrap px-2 py-0.5 rounded active:scale-[0.97]",
+    "text-muted-foreground hover:text-foreground",
+    "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-amber-accent after:transition-transform after:duration-200 after:origin-left"
+);
+
+const mobileLinkClass =
+    "text-sm px-2 py-1.5 rounded transition-all duration-200 active:scale-[0.98] text-muted-foreground hover:text-foreground hover:bg-foreground/8";
 ---
 
 <header data-testid="site-header" class="py-3 md:py-5 fixed top-0 left-0 right-0 bg-header-gradient backdrop-blur-xl backdrop-saturate-150 z-40 w-full max-w-[100vw] border-b border-border/40 transition-shadow duration-300">
@@ -39,11 +63,11 @@ function isActive(path: string): boolean {
       <!-- Left: Resume button -->
       <a
         data-testid="resume-button"
-        href={`/assets/AndreiRepoResume.pdf?v=${RESUME_VERSION}`}
+        href={RESUME_HREF}
         target="_blank"
         rel="noopener noreferrer"
         onclick="umami.track('Resume Download')"
-        class="text-xs transition-all duration-200 rounded px-2.5 py-1 flex items-center border border-border/60 text-muted-foreground hover:border-amber-accent hover:text-amber-accent hover:bg-amber-accent/5 active:scale-[0.97] shrink-0"
+        class="text-xs transition-all duration-200 rounded px-2.5 py-1 flex items-center border border-border/60 text-muted-foreground hover:border-amber-accent hover:text-amber-text hover:bg-amber-accent/5 active:scale-[0.97] shrink-0"
       >
         {resumeLabel}
       </a>
@@ -53,29 +77,31 @@ function isActive(path: string): boolean {
         {name && (
           <a
             data-testid="nav-home"
+            data-spy-home
             href={`/${currentLocale}`}
-            class="relative transition-all duration-200 text-sm whitespace-nowrap px-2 py-0.5 rounded active:scale-[0.97] text-muted-foreground hover:text-foreground after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-amber-accent after:scale-x-0 after:origin-left after:transition-transform after:duration-200 hover:after:scale-x-100"
+            aria-current={isHome() ? 'page' : undefined}
+            class={navLinkClass}
           >
             {homeLabel}
           </a>
         )}
         {nav.map((item) => (
+          <>
+            {item.divider && (
+              <span aria-hidden="true" class="h-3 w-px shrink-0 self-center bg-border mx-1.5" />
+            )}
           <I18NDebug key={item.text}>
             <a
               data-testid={`nav-${item.text.toLowerCase()}`}
-              class={cls(
-                "relative transition-all duration-200 text-sm whitespace-nowrap px-2 py-0.5 rounded active:scale-[0.97]",
-                "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-amber-accent after:transition-transform after:duration-200 after:origin-left",
-                isActive(item.path)
-                  ? "text-foreground after:scale-x-100"
-                  : "text-muted-foreground hover:text-foreground after:scale-x-0 hover:after:scale-x-100"
-              )}
+              data-spy={spyKey(item.path)}
+              class={navLinkClass}
               href={resolveHref(item.path)}
               aria-current={isActive(item.path) ? "page" : undefined}
             >
               {item.text}
             </a>
           </I18NDebug>
+          </>
         ))}
       </nav>
 
@@ -141,12 +167,15 @@ function isActive(path: string): boolean {
       id="mobile-menu"
       class="md:hidden overflow-hidden transition-all duration-300 ease-in-out max-h-0 opacity-0"
       aria-hidden="true"
+      inert
     >
       <nav aria-label="Mobile navigation" class="flex flex-col pt-3 pb-2 gap-1 border-t border-border/40 mt-3">
         {name && (
           <a
             href={`/${currentLocale}`}
-            class={cls("text-sm px-2 py-1.5 rounded transition-all duration-200 active:scale-[0.98]", isActive(`/${currentLocale}`) ? "text-amber-accent font-medium border-l-2 border-amber-accent pl-2" : "text-muted-foreground hover:text-foreground hover:bg-foreground/8")}
+            data-spy-home
+            aria-current={isHome() ? 'page' : undefined}
+            class={mobileLinkClass}
           >
             {homeLabel}
           </a>
@@ -154,18 +183,15 @@ function isActive(path: string): boolean {
         {nav.map((item) => (
           <I18NDebug key={item.text}>
             <a
-              class={cls(
-                "text-sm px-2 py-1.5 rounded transition-all duration-200 active:scale-[0.98]",
-                isActive(item.path)
-                  ? "text-amber-accent font-medium border-l-2 border-amber-accent pl-2"
-                  : "text-muted-foreground hover:text-foreground hover:bg-foreground/8"
-              )}
+              class={mobileLinkClass}
+              data-spy={spyKey(item.path)}
               href={resolveHref(item.path)}
               aria-current={isActive(item.path) ? "page" : undefined}
             >
               {item.text}
             </a>
           </I18NDebug>
+          </>
         ))}
       </nav>
     </div>
@@ -206,6 +232,53 @@ function isActive(path: string): boolean {
     });
   }
 
+
+  // ── Scroll spy ────────────────────────────────────────────────
+  // On the homepage the nav items are in-page anchors, so without this the
+  // only item that could ever look current was "home" — it stayed marked
+  // wherever you scrolled. On other routes the anchors point back at the
+  // homepage, so the build-time aria-current is left alone.
+  function initScrollSpy() {
+    const homes = Array.from(document.querySelectorAll('[data-spy-home]'));
+    const items = Array.from(document.querySelectorAll<HTMLElement>('[data-spy]'));
+    if (!homes.length || !items.length) return;
+
+    const ordered = Array.from(new Set(items.map((el) => el.dataset.spy).filter(Boolean)))
+      .map((key) => ({ key: key as string, el: document.getElementById(key as string) }))
+      .filter((s) => s.el)
+      .sort((a, b) => (a.el as HTMLElement).offsetTop - (b.el as HTMLElement).offsetTop);
+
+    if (!ordered.length) return;
+
+    function apply(key: string | null) {
+      homes.forEach((el) => el.removeAttribute('aria-current'));
+      items.forEach((el) => el.removeAttribute('aria-current'));
+      const targets = key ? items.filter((el) => el.dataset.spy === key) : homes;
+      targets.forEach((el) => el.setAttribute('aria-current', 'page'));
+    }
+
+    let ticking = false;
+    function update() {
+      ticking = false;
+      // a section becomes current once its top passes the middle of the viewport
+      const line = window.scrollY + window.innerHeight * 0.5;
+      let active: string | null = null;
+      for (const entry of ordered) {
+        if (line >= (entry.el as HTMLElement).offsetTop) active = entry.key;
+      }
+      apply(active);
+    }
+    function onScroll() {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    update();
+  }
+
   // ── Hamburger menu ────────────────────────────────────────────
   function initMobileMenu() {
     const toggle = document.getElementById('menu-toggle');
@@ -220,6 +293,9 @@ function isActive(path: string): boolean {
       open = state;
       toggle!.setAttribute('aria-expanded', String(state));
       menu!.setAttribute('aria-hidden', String(!state));
+      // `inert` keeps the collapsed menu out of the tab order and the
+      // accessibility tree; aria-hidden alone leaves its links focusable.
+      menu!.toggleAttribute('inert', !state);
       if (state) {
         menu!.classList.remove('max-h-0', 'opacity-0');
         menu!.classList.add('max-h-[999px]', 'opacity-100');
@@ -251,8 +327,10 @@ function isActive(path: string): boolean {
 
   initTheme();
   initMobileMenu();
+  initScrollSpy();
   document.addEventListener('astro:after-swap', () => {
     initTheme();
     initMobileMenu();
+    initScrollSpy();
   });
 </script>
