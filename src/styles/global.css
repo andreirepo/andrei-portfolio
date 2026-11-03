@@ -213,11 +213,12 @@ html {
 /* ─── Hero: availability eyebrow ─────────────────────────────────────── */
 .hero-eyebrow {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.5rem;
   font-family: var(--font-mono);
   font-size: 0.6875rem;
   font-weight: 500;
+  line-height: 1.45;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--amber-text);
@@ -227,10 +228,22 @@ html {
   flex: none;
   width: 6px;
   height: 6px;
+  /* Centre on the first line, not the block — the label wraps on
+     narrow screens and a centred dot lands between the two lines. */
+  margin-top: calc((1.45em - 6px) / 2);
   border-radius: 50%;
   background: var(--status-ok);
   box-shadow: 0 0 0 3px color-mix(in oklch, var(--status-ok) 22%, transparent);
   animation: hero-dot-pulse 2.4s ease-in-out infinite;
+}
+
+/* The label is long; below ~380px tighten the tracking so it keeps to
+   one line beside the portrait instead of wrapping under it. */
+@media (max-width: 380px) {
+  .hero-eyebrow {
+    font-size: 0.625rem;
+    letter-spacing: 0.05em;
+  }
 }
 
 @keyframes hero-dot-pulse {
@@ -266,6 +279,12 @@ html {
 
 /* Smaller circle gets a smaller gap, or the ring eats the face */
 .avatar--sm { width: 56px; height: 56px; outline-offset: 3px; }
+
+/* Narrow phones: shrink the circle so the availability label still
+   fits on one line beside it. */
+@media (max-width: 340px) {
+  .avatar--sm { width: 46px; height: 46px; }
+}
 
 /* ─── Hero: proof grid ───────────────────────────────────────────────── */
 .hero-proof {
