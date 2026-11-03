@@ -11,7 +11,7 @@
   "hero": {
     "title": "Ingeniero QA Senior",
     "role_detail": "Automatización de pruebas y calidad de software",
-    "availability": "Abierto a roles senior / lead de QA",
+    "availability": "Abierto a roles senior / lead",
     "pitch": "Construyo la red de seguridad que permite a los equipos desplegar cada día — suites de Playwright y WebdriverIO, quality gates en CI y flujos asistidos por IA.",
     "pitch_result": "El resultado: ciclos de release un 60% más rápidos y cero defectos críticos tras el despliegue.",
     "proof": {

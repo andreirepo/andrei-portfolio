@@ -295,7 +295,7 @@ html {
   padding-top: 1.125rem;
   border-top: 1px solid var(--border);
   font-family: var(--font-mono);
-  font-size: 0.71875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.04em;
   color: color-mix(in oklch, var(--foreground) 76%, var(--background));
 }
@@ -306,7 +306,8 @@ html {
   gap: 0.4375rem;
 }
 
-@media (max-width: 560px) {
+/* Two columns stop fitting the longest Spanish claim below ~660px */
+@media (max-width: 660px) {
   .hero-proof {
     grid-template-columns: 1fr;
     gap: 0.5rem;
