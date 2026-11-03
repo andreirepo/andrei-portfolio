@@ -26,6 +26,9 @@ export default defineConfig({
     // "/" is a 301 to /en/ (see nginx.conf). Listing a redirect as a page makes
     // crawlers fetch it, follow it, and discard it — a sitemap should only name
     // URLs that return their own content.
-    sitemap({ filter: (page) => page !== "https://andreirepo.com/" }),
+    sitemap({
+      filter: (page) =>
+        page !== "https://andreirepo.com/" && !page.includes("/blog/tag/"),
+    }),
   ],
 });

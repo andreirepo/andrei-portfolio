@@ -25,6 +25,8 @@ interface Props {
     color?: string;
   }[];
   googleSiteVerification?: string;
+  /** Overrides the default "index, follow" — tag pages use noindex. */
+  robots?: string;
   lang: string; 
   alternateLinks?: { href: string; hreflang: string }[]; 
 }
@@ -42,6 +44,7 @@ const {
   loadRSS,
   favicons,
   googleSiteVerification,
+  robots = 'index, follow',
   lang,
   alternateLinks = []
 } = Astro.props as Props;
@@ -111,7 +114,7 @@ const {
 <title>{title.charAt(0).toUpperCase() + title.slice(1)}</title>
 <meta name="title" content={title} />
 <meta name="description" content={description} />
-<meta name="robots" content="index, follow" />
+<meta name="robots" content={robots} />
 
 <meta property="og:type" content={ogType} />
 <meta property="og:url" content={Astro.url} />

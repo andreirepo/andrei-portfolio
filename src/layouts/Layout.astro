@@ -8,10 +8,11 @@ interface Props {
 	locale: string;
 	alternateLinks?: { href: string; hreflang: string }[];
 	ogType?: 'website' | 'article';
+	robots?: string;
 	schema?: Record<string, unknown>;
 }
 
-const { title, description, locale, alternateLinks, ogType = 'website', schema } =
+const { title, description, locale, alternateLinks, ogType = 'website', robots, schema } =
 	Astro.props as Props;
 
 const SITE = Astro.site ?? new URL("https://andreirepo.com/");
@@ -106,6 +107,7 @@ const pageSchema = schema
 			imageAlt="Andrei Repo — Senior QA Engineer, open to senior and lead QA roles"
 			enableClientRouter
 			ogType={ogType}
+			robots={robots}
 			favicons={[
 				{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
 				{ rel: "apple-touch-icon", type: "image/png", href: "/favicon.png" },
