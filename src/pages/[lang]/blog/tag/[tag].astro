@@ -58,7 +58,7 @@ const alternate = [
 >
   <Header nav={nav} locales={["en", "es"]} currentLocale={locale} resumeLabel={t("nav.resume")} name="Andrei Repo" currentPath={Astro.url.pathname} />
 
-  <main id="main-content" class="mt-40 mb-24">
+  <main id="main-content" class="pt-24 md:pt-32">
     <a
       data-testid="back-link"
       href={`/${locale}/blog`}
@@ -68,7 +68,7 @@ const alternate = [
         <path d="m12 19-7-7 7-7"/>
         <path d="M19 12H5"/>
       </svg>
-      {t("blog.back")}
+      <span>{t("blog.back")}</span>
     </a>
 
     <div data-testid="tag-page-header" class="flex items-center gap-3 mb-8">

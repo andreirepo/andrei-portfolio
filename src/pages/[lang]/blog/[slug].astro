@@ -78,7 +78,7 @@ const blogPostingSchema = {
 >
   <Header nav={nav} locales={["en", "es"]} currentLocale={locale} resumeLabel={t("nav.resume")} name="Andrei Repo" currentPath={Astro.url.pathname} />
 
-  <main id="main-content" class="mt-40 mb-24">
+  <main id="main-content" class="pt-24 md:pt-32">
     <a
       data-testid="back-link"
       id="back-link"
@@ -89,7 +89,7 @@ const blogPostingSchema = {
         <path d="m12 19-7-7 7-7"/>
         <path d="M19 12H5"/>
       </svg>
-      {t("blog.back")}
+      <span id="back-label">{t("blog.back")}</span>
     </a>
 
     <script define:vars={{ locale, backHomeLabel: t("blog.back_home") }}>
@@ -104,7 +104,9 @@ const blogPostingSchema = {
           const homePaths = [`/${locale}`, `/${locale}/`];
           if (refUrl.hostname === location.hostname && homePaths.includes(refUrl.pathname)) {
             link.href = `/${locale}`;
-            link.textContent = backHomeLabel;
+            // swap only the label — textContent would remove the arrow icon
+            const label = document.getElementById('back-label');
+            if (label) label.textContent = backHomeLabel;
           }
         } catch (_) {}
       })();

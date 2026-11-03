@@ -71,8 +71,8 @@
   "blog": {
     "title": "blog",
     "empty": "Aún no hay artículos. Vuelve pronto.",
-    "back": "← Volver al blog",
-    "back_home": "← Volver al inicio",
+    "back": "Volver al blog",
+    "back_home": "Volver al inicio",
     "published": "Publicado",
     "latest_title": "últimas entradas",
     "see_all": "ver todos los artículos",

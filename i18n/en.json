@@ -71,8 +71,8 @@
   "blog": {
     "title": "blog",
     "empty": "No posts yet. Check back soon.",
-    "back": "← Back to blog",
-    "back_home": "← Back to home",
+    "back": "Back to blog",
+    "back_home": "Back to home",
     "published": "Published",
     "latest_title": "latest posts",
     "see_all": "see all posts",
