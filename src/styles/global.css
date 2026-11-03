@@ -144,9 +144,11 @@
 
   --status-ok: oklch(78% 0.14 155);
 
-  /* Mesh Gradient Tokens (Dark) */
+  /* Mesh Gradient Tokens (Dark)
+     Kept close to --background: a brighter warm stop here reads as a
+     brown haze across the whole page, not a tint behind the portrait. */
   --mesh-color-1: oklch(20% 0.018 285);
-  --mesh-color-2: oklch(28% 0.035 80);
+  --mesh-color-2: oklch(22% 0.016 80);
   --mesh-color-3: oklch(22% 0.022 285);
   --mesh-color-4: oklch(24% 0.025 160);
 }
