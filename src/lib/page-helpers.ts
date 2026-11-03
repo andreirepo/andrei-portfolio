@@ -11,13 +11,14 @@ export function buildNav(t: T, locale: string, isHome = false) {
     { path: `#${t("nav.projects")}`, text: t("nav.projects") },
     { path: isHome ? `#blog` : `/${locale}/blog`, text: t("nav.blog") },
     { path: `#${t("nav.experience")}`, text: t("nav.experience") },
-    { path: `#${t("nav.contact")}`, text: t("nav.contact") },
   ];
 }
 
 export function buildFooter(t: T) {
   return {
-    id: (t("nav.contact") as string).toLowerCase(),
+    // Fixed id rather than the nav label: the nav no longer has a contact
+    // item, but existing /#contact links should keep resolving.
+    id: "contact",
     email_label: { key: "contact.email_label", value: t("contact.email_label") },
     email_url: { key: "contact.email_url", value: t("contact.email_url") },
     github_label: { key: "contact.github_label", value: t("contact.github_label") },
