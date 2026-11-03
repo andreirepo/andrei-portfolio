@@ -40,6 +40,9 @@
   --color-amber-accent: var(--amber-accent);
   --color-amber-accent-bg: var(--amber-accent-bg);
   --color-amber-accent-bg-hover: var(--amber-accent-bg-hover);
+
+  /* Text-safe amber — see the :root comment */
+  --color-amber-text: var(--amber-text);
   
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
