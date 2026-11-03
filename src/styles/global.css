@@ -367,7 +367,10 @@ html {
   }
 }
 
-/* Section scroll-triggered fade-in — CSS scroll-driven animations */
+/* Section scroll-triggered fade-in — CSS scroll-driven animations.
+   The range must end on `entry`, not `cover`: on the last section of a page
+   the scroll runs out before `cover 30%` is reached, so it stayed at 74%
+   opacity and its heading read grey against the others. */
 @keyframes section-reveal {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -377,7 +380,7 @@ html {
   animation: section-reveal linear both;
   animation-duration: auto;
   animation-timeline: view();
-  animation-range: entry 0% cover 30%;
+  animation-range: entry 0% entry 40%;
 }
 
 @media (prefers-reduced-motion: reduce) {
