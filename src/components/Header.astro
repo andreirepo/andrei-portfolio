@@ -6,7 +6,7 @@ import { RESUME_HREF } from "@/src/lib/page-helpers";
 type Locales = "es" | "en"
 
 interface Props {
-    nav:{path:string;text:string}[];
+    nav:{path:string;text:string;divider?:boolean}[];
     locales: Locales[];
     currentLocale:string;
     resumeLabel?: string;
@@ -75,6 +75,10 @@ function isHome(): boolean {
           </a>
         )}
         {nav.map((item) => (
+          <>
+            {item.divider && (
+              <span aria-hidden="true" class="h-3 w-px shrink-0 self-center bg-border mx-1.5" />
+            )}
           <I18NDebug key={item.text}>
             <a
               data-testid={`nav-${item.text.toLowerCase()}`}
@@ -91,6 +95,7 @@ function isHome(): boolean {
               {item.text}
             </a>
           </I18NDebug>
+          </>
         ))}
       </nav>
 
@@ -183,6 +188,7 @@ function isHome(): boolean {
               {item.text}
             </a>
           </I18NDebug>
+          </>
         ))}
       </nav>
     </div>
