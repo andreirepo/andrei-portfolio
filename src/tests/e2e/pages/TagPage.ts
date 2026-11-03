@@ -10,7 +10,7 @@ export class TagPage extends BasePage {
   }
 
   async goto(locale: 'en' | 'es', tag: string) {
-    await super.goto(`/${locale}/blog/tag/${tag}`);
+    await super.goto(`/${locale}/blog/tag/${tag}/`);
   }
 
   // ── Page elements ─────────────────────────────────────────────────────────

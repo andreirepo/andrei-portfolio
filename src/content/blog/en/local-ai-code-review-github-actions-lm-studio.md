@@ -18,7 +18,7 @@ PR opened → GitHub Actions (self-hosted runner on VM)
               → no: post "AI offline" notice → done
 ```
 
-The self-hosted runner is already on the same VM as the portfolio site (covered in a [previous post](/en/blog/self-hosted-cicd-github-actions-ssh-cloudflare)). LM Studio runs on a separate Windows PC connected via Tailscale.
+The self-hosted runner is already on the same VM as the portfolio site (covered in a [previous post](/en/blog/self-hosted-cicd-github-actions-ssh-cloudflare/)). LM Studio runs on a separate Windows PC connected via Tailscale.
 
 ## Connecting LM Studio over Tailscale
 
@@ -117,4 +117,4 @@ The whole thing runs on hardware I already own, costs nothing per review, and ke
 
 **What's Next**
 
-I've since extended this pattern to full E2E test generation — encoding team knowledge into structured files so an AI agent can generate, debug, and maintain tests with minimal context. [Here's how I built that layer](/en/blog/ai-agentic-setup-e2e-test-automation).
+I've since extended this pattern to full E2E test generation — encoding team knowledge into structured files so an AI agent can generate, debug, and maintain tests with minimal context. [Here's how I built that layer](/en/blog/ai-agentic-setup-e2e-test-automation/).

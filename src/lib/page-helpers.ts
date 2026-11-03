@@ -11,7 +11,7 @@ export function buildNav(t: T, locale: string, isHome = false) {
     { path: `#${t("nav.projects")}`, text: t("nav.projects") },
     { path: `#${t("nav.experience")}`, text: t("nav.experience") },
     // blog is the only destination that leaves the page sections
-    { path: isHome ? `#blog` : `/${locale}/blog`, text: t("nav.blog"), divider: true },
+    { path: isHome ? `#blog` : `/${locale}/blog/`, text: t("nav.blog"), divider: true },
   ];
 }
 

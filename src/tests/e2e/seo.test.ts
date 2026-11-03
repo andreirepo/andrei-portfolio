@@ -140,4 +140,37 @@ describe('Discoverability', () => {
       expect(body).toMatch(/[\w.+-]+@andreirepo\.com/);
     });
   });
+
+  describe('internal links', () => {
+    it('point at canonical URLs that answer without a redirect', async () => {
+      await page.goto(`${BASE_URL}/en/`, { waitUntil: 'domcontentloaded' });
+
+      const hrefs: string[] = await page.$$eval('a[href^="/"]', (as) =>
+        [...new Set(as.map((a) => a.getAttribute('href') ?? ''))],
+      );
+
+      const redirected: string[] = [];
+      for (const href of hrefs) {
+        const res = await fetch(`${BASE_URL}${href}`, { redirect: 'manual' });
+        // A 301 here is the /en -> /en/ hop. Behind Traefik that hop is issued
+        // as http:// (nginx has no idea TLS ended upstream), and a prefetch
+        // following it gets blocked by CSP default-src 'self' — which is how
+        // this surfaced in the console rather than as a slow click.
+        if (res.status !== 200) redirected.push(`${href} -> ${res.status}`);
+      }
+
+      // Astro's preview serves /en directly, so the redirect check above does
+      // not catch a slash-less link on its own. The link string is the thing
+      // that decides it: /en becomes a 301 under nginx, /en/ does not.
+      const slashless = hrefs.filter((href) => {
+        const path = href.split('#')[0].split('?')[0];
+        if (!path || path === '/') return false;
+        if (/\.[a-z0-9]{2,5}$/i.test(path)) return false; // files, not routes
+        return !path.endsWith('/');
+      });
+
+      expect(slashless, 'internal links missing the trailing slash').toEqual([]);
+      expect(redirected, 'internal links that redirect').toEqual([]);
+    });
+  });
 });

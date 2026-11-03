@@ -10,7 +10,7 @@ export class BlogPostPage extends BasePage {
   }
 
   async goto(locale: 'en' | 'es', slug: string) {
-    await super.goto(`/${locale}/blog/${slug}`);
+    await super.goto(`/${locale}/blog/${slug}/`);
   }
 
   // ── Page elements ─────────────────────────────────────────────────────────

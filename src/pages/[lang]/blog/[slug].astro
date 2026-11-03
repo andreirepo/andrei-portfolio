@@ -81,7 +81,7 @@ const blogPostingSchema = {
     <a
       data-testid="back-link"
       id="back-link"
-      href={`/${locale}/blog`}
+      href={`/${locale}/blog/`}
       class="inline-flex items-center gap-1.5 text-xs border border-border/60 rounded px-2.5 py-1 text-muted-foreground hover:border-amber-accent hover:text-amber-text hover:bg-amber-accent/5 transition-all duration-200 mb-8"
     >
       <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -102,7 +102,7 @@ const blogPostingSchema = {
           // If the referrer is the home page for this locale, point back there
           const homePaths = [`/${locale}`, `/${locale}/`];
           if (refUrl.hostname === location.hostname && homePaths.includes(refUrl.pathname)) {
-            link.href = `/${locale}`;
+            link.href = `/${locale}/`;
             // swap only the label — textContent would remove the arrow icon
             const label = document.getElementById('back-label');
             if (label) label.textContent = backHomeLabel;
@@ -127,7 +127,7 @@ const blogPostingSchema = {
         <div class="flex flex-wrap gap-2 mt-4">
           {post.data.tags.map((tag: string) => (
             <a
-              href={`/${locale}/blog/tag/${tag}`}
+              href={`/${locale}/blog/tag/${tag}/`}
               class="text-xs border border-border rounded px-2 py-0.5 text-muted-foreground hover:border-amber-accent hover:text-amber-text transition-colors duration-200"
             >
               #{tag}

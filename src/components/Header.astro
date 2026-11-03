@@ -78,7 +78,7 @@ const mobileLinkClass =
           <a
             data-testid="nav-home"
             data-spy-home
-            href={`/${currentLocale}`}
+            href={`/${currentLocale}/`}
             aria-current={isHome() ? 'page' : undefined}
             class={navLinkClass}
           >
@@ -129,7 +129,7 @@ const mobileLinkClass =
           {locales.map(item =>
             <a
               data-testid={`locale-${item.toLowerCase()}`}
-              href={`/${item.toLowerCase()}`}
+              href={`/${item.toLowerCase()}/`}
               class={cls("uppercase text-sm cursor-pointer transition-all duration-200 px-1 py-0.5 rounded hover:bg-foreground/8", item === currentLocale.toLowerCase() ? "text-foreground" : "text-muted-foreground hover:text-foreground")}
             >
               {item}
@@ -172,7 +172,7 @@ const mobileLinkClass =
       <nav aria-label="Mobile navigation" class="flex flex-col pt-3 pb-2 gap-1 border-t border-border/40 mt-3">
         {name && (
           <a
-            href={`/${currentLocale}`}
+            href={`/${currentLocale}/`}
             data-spy-home
             aria-current={isHome() ? 'page' : undefined}
             class={mobileLinkClass}

@@ -7,7 +7,7 @@ tags: ["github-actions", "ci-cd", "cloudflare", "self-hosted", "docker", "devops
 draft: false
 ---
 
-En el [post anterior](/es/blog/self-hosted-cloudflare-tunnel-traefik) expliqué cómo Cloudflare Tunnel y Traefik sirven este sitio desde un mini PC Lenovo en mi salón sin puertos abiertos. Este post cubre el lado del despliegue — cómo un `git push` a `main` construye una imagen Docker, ejecuta comprobaciones y despliega en esa misma máquina automáticamente.
+En el [post anterior](/es/blog/self-hosted-cloudflare-tunnel-traefik/) expliqué cómo Cloudflare Tunnel y Traefik sirven este sitio desde un mini PC Lenovo en mi salón sin puertos abiertos. Este post cubre el lado del despliegue — cómo un `git push` a `main` construye una imagen Docker, ejecuta comprobaciones y despliega en esa misma máquina automáticamente.
 
 La restricción interesante: el servidor no tiene puertos abiertos. Ni siquiera SSH. ¿Cómo llega entonces GitHub Actions a él?
 

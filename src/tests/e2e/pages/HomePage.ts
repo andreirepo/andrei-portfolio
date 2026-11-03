@@ -10,7 +10,7 @@ export class HomePage extends BasePage {
   }
 
   async goto(locale: 'en' | 'es' = 'en') {
-    await super.goto(`/${locale}`);
+    await super.goto(`/${locale}/`);
   }
 
   // ── Hero ──────────────────────────────────────────────────────────────────

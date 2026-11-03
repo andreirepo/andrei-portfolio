@@ -206,4 +206,4 @@ The system isn't magic — it's structured context. The AI tools were already ca
 
 If your test suite has grown to the point where onboarding takes weeks and flaky tests take hours to debug, the bottleneck probably isn't the AI tool. It's the missing context layer.
 
-**See also:** [How I set up local AI code reviews on GitHub PRs](/en/blog/local-ai-code-review-github-actions-lm-studio) — the same self-hosted AI infrastructure, applied to pull requests instead of test generation.
+**See also:** [How I set up local AI code reviews on GitHub PRs](/en/blog/local-ai-code-review-github-actions-lm-studio/) — the same self-hosted AI infrastructure, applied to pull requests instead of test generation.

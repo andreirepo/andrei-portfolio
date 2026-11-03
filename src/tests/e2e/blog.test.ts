@@ -140,10 +140,10 @@ describe('Blog — Post Page', () => {
 
   it('should navigate back to blog index when back link is clicked', async () => {
     await Promise.all([
-      page.waitForURL(`${BASE_URL}/en/blog`),
+      page.waitForURL(`${BASE_URL}/en/blog/`),
       postPage.backLink.click(),
     ]);
-    expect(await postPage.currentPath).toBe('/en/blog');
+    expect(await postPage.currentPath).toBe('/en/blog/');
   });
 
   it('should update back link to point to home when navigated from home via link click', async () => {
@@ -162,7 +162,7 @@ describe('Blog — Post Page', () => {
 
       const href = await postPage.backLink.getAttribute('href');
       const text = await postPage.backLink.textContent();
-      expect(href).toBe('/en');
+      expect(href).toBe('/en/');
       expect(text?.toLowerCase()).toContain('home');
     } else {
       await postPage.goto('en', TEST_SLUG);
@@ -242,10 +242,10 @@ describe('Blog — Tag Page', () => {
 
   it('should navigate back to blog index when back link is clicked', async () => {
     await Promise.all([
-      page.waitForURL(`${BASE_URL}/en/blog`),
+      page.waitForURL(`${BASE_URL}/en/blog/`),
       tagPage.backLink.click(),
     ]);
-    expect(await tagPage.currentPath).toBe('/en/blog');
+    expect(await tagPage.currentPath).toBe('/en/blog/');
   });
 
   it('should render post links that navigate to post pages', async () => {
