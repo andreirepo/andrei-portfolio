@@ -45,8 +45,9 @@ const nav = buildNav(t, locale);
 const footerContent = buildFooter(t);
 
 const alternate = [
-  { href: `/en/blog/tag/${tag}`, hreflang: "en" },
-  { href: `/es/blog/tag/${tag}`, hreflang: "es" },
+  { href: `/en/blog/tag/${tag}/`, hreflang: "en" },
+  { href: `/es/blog/tag/${tag}/`, hreflang: "es" },
+  { href: `/en/blog/tag/${tag}/`, hreflang: "x-default" },
 ];
 ---
 

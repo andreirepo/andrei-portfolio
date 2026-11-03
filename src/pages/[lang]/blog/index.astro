@@ -32,8 +32,9 @@ posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 const nav = buildNav(t, locale);
 
 const alternate = [
-  { href: "/es/blog", hreflang: "es" },
-  { href: "/en/blog", hreflang: "en" },
+  { href: "/es/blog/", hreflang: "es" },
+  { href: "/en/blog/", hreflang: "en" },
+  { href: "/en/blog/", hreflang: "x-default" },
 ];
 
 const footerContent = buildFooter(t);
