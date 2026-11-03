@@ -26,6 +26,15 @@ function isActive(path: string): boolean {
     if (href.includes('#')) return false;
     return currentPath.startsWith(href);
 }
+
+/**
+ * Home needs an exact match: every route under /en starts with /en, so a
+ * prefix check marked "home" as current on /en/blog, /en/blog/<slug> and
+ * every tag page.
+ */
+function isHome(): boolean {
+    return currentPath === `/${currentLocale}` || currentPath === `/${currentLocale}/`;
+}
 ---
 
 <header data-testid="site-header" class="py-3 md:py-5 fixed top-0 left-0 right-0 bg-header-gradient backdrop-blur-xl backdrop-saturate-150 z-40 w-full max-w-[100vw] border-b border-border/40 transition-shadow duration-300">
@@ -53,7 +62,14 @@ function isActive(path: string): boolean {
           <a
             data-testid="nav-home"
             href={`/${currentLocale}`}
-            class="relative transition-all duration-200 text-sm whitespace-nowrap px-2 py-0.5 rounded active:scale-[0.97] text-muted-foreground hover:text-foreground after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-amber-accent after:scale-x-0 after:origin-left after:transition-transform after:duration-200 hover:after:scale-x-100"
+            aria-current={isHome() ? 'page' : undefined}
+            class={cls(
+              "relative transition-all duration-200 text-sm whitespace-nowrap px-2 py-0.5 rounded active:scale-[0.97]",
+              "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-amber-accent after:transition-transform after:duration-200 after:origin-left",
+              isHome()
+                ? "text-foreground after:scale-x-100"
+                : "text-muted-foreground hover:text-foreground after:scale-x-0 hover:after:scale-x-100"
+            )}
           >
             {homeLabel}
           </a>
@@ -146,7 +162,8 @@ function isActive(path: string): boolean {
         {name && (
           <a
             href={`/${currentLocale}`}
-            class={cls("text-sm px-2 py-1.5 rounded transition-all duration-200 active:scale-[0.98]", isActive(`/${currentLocale}`) ? "text-amber-text font-medium border-l-2 border-amber-accent pl-2" : "text-muted-foreground hover:text-foreground hover:bg-foreground/8")}
+            aria-current={isHome() ? 'page' : undefined}
+            class={cls("text-sm px-2 py-1.5 rounded transition-all duration-200 active:scale-[0.98]", isHome() ? "text-amber-text font-medium border-l-2 border-amber-accent pl-2" : "text-muted-foreground hover:text-foreground hover:bg-foreground/8")}
           >
             {homeLabel}
           </a>

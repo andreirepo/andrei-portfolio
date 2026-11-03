@@ -9,8 +9,8 @@ export const RESUME_HREF = `/assets/AndreiRepoResume.pdf?v=${RESUME_VERSION}`;
 export function buildNav(t: T, locale: string, isHome = false) {
   return [
     { path: `#${t("nav.projects")}`, text: t("nav.projects") },
-    { path: isHome ? `#blog` : `/${locale}/blog`, text: t("nav.blog") },
     { path: `#${t("nav.experience")}`, text: t("nav.experience") },
+    { path: isHome ? `#blog` : `/${locale}/blog`, text: t("nav.blog") },
   ];
 }
 
