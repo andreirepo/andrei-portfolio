@@ -35,6 +35,22 @@ function isActive(path: string): boolean {
 function isHome(): boolean {
     return currentPath === `/${currentLocale}` || currentPath === `/${currentLocale}/`;
 }
+
+/** Anchors get a section key so the scroll-spy can track them. */
+function spyKey(path: string): string | undefined {
+    return path.startsWith('#') ? path.slice(1) : undefined;
+}
+
+// Active styling lives in global.css, keyed on aria-current, so the
+// server-rendered route state and the scroll-spy share one source of truth.
+const navLinkClass = cls(
+    "relative transition-all duration-200 text-sm whitespace-nowrap px-2 py-0.5 rounded active:scale-[0.97]",
+    "text-muted-foreground hover:text-foreground",
+    "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-amber-accent after:transition-transform after:duration-200 after:origin-left"
+);
+
+const mobileLinkClass =
+    "text-sm px-2 py-1.5 rounded transition-all duration-200 active:scale-[0.98] text-muted-foreground hover:text-foreground hover:bg-foreground/8";
 ---
 
 <header data-testid="site-header" class="py-3 md:py-5 fixed top-0 left-0 right-0 bg-header-gradient backdrop-blur-xl backdrop-saturate-150 z-40 w-full max-w-[100vw] border-b border-border/40 transition-shadow duration-300">
@@ -61,15 +77,10 @@ function isHome(): boolean {
         {name && (
           <a
             data-testid="nav-home"
+            data-spy-home
             href={`/${currentLocale}`}
             aria-current={isHome() ? 'page' : undefined}
-            class={cls(
-              "relative transition-all duration-200 text-sm whitespace-nowrap px-2 py-0.5 rounded active:scale-[0.97]",
-              "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-amber-accent after:transition-transform after:duration-200 after:origin-left",
-              isHome()
-                ? "text-foreground after:scale-x-100"
-                : "text-muted-foreground hover:text-foreground after:scale-x-0 hover:after:scale-x-100"
-            )}
+            class={navLinkClass}
           >
             {homeLabel}
           </a>
@@ -82,13 +93,8 @@ function isHome(): boolean {
           <I18NDebug key={item.text}>
             <a
               data-testid={`nav-${item.text.toLowerCase()}`}
-              class={cls(
-                "relative transition-all duration-200 text-sm whitespace-nowrap px-2 py-0.5 rounded active:scale-[0.97]",
-                "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-amber-accent after:transition-transform after:duration-200 after:origin-left",
-                isActive(item.path)
-                  ? "text-foreground after:scale-x-100"
-                  : "text-muted-foreground hover:text-foreground after:scale-x-0 hover:after:scale-x-100"
-              )}
+              data-spy={spyKey(item.path)}
+              class={navLinkClass}
               href={resolveHref(item.path)}
               aria-current={isActive(item.path) ? "page" : undefined}
             >
@@ -167,8 +173,9 @@ function isHome(): boolean {
         {name && (
           <a
             href={`/${currentLocale}`}
+            data-spy-home
             aria-current={isHome() ? 'page' : undefined}
-            class={cls("text-sm px-2 py-1.5 rounded transition-all duration-200 active:scale-[0.98]", isHome() ? "text-amber-text font-medium border-l-2 border-amber-accent pl-2" : "text-muted-foreground hover:text-foreground hover:bg-foreground/8")}
+            class={mobileLinkClass}
           >
             {homeLabel}
           </a>
@@ -176,12 +183,8 @@ function isHome(): boolean {
         {nav.map((item) => (
           <I18NDebug key={item.text}>
             <a
-              class={cls(
-                "text-sm px-2 py-1.5 rounded transition-all duration-200 active:scale-[0.98]",
-                isActive(item.path)
-                  ? "text-amber-text font-medium border-l-2 border-amber-accent pl-2"
-                  : "text-muted-foreground hover:text-foreground hover:bg-foreground/8"
-              )}
+              class={mobileLinkClass}
+              data-spy={spyKey(item.path)}
               href={resolveHref(item.path)}
               aria-current={isActive(item.path) ? "page" : undefined}
             >
@@ -227,6 +230,53 @@ function isHome(): boolean {
       localStorage.setItem('theme', next ? 'dark' : 'light');
       applyTheme(next);
     });
+  }
+
+
+  // ── Scroll spy ────────────────────────────────────────────────
+  // On the homepage the nav items are in-page anchors, so without this the
+  // only item that could ever look current was "home" — it stayed marked
+  // wherever you scrolled. On other routes the anchors point back at the
+  // homepage, so the build-time aria-current is left alone.
+  function initScrollSpy() {
+    const homes = Array.from(document.querySelectorAll('[data-spy-home]'));
+    const items = Array.from(document.querySelectorAll<HTMLElement>('[data-spy]'));
+    if (!homes.length || !items.length) return;
+
+    const ordered = Array.from(new Set(items.map((el) => el.dataset.spy).filter(Boolean)))
+      .map((key) => ({ key: key as string, el: document.getElementById(key as string) }))
+      .filter((s) => s.el)
+      .sort((a, b) => (a.el as HTMLElement).offsetTop - (b.el as HTMLElement).offsetTop);
+
+    if (!ordered.length) return;
+
+    function apply(key: string | null) {
+      homes.forEach((el) => el.removeAttribute('aria-current'));
+      items.forEach((el) => el.removeAttribute('aria-current'));
+      const targets = key ? items.filter((el) => el.dataset.spy === key) : homes;
+      targets.forEach((el) => el.setAttribute('aria-current', 'page'));
+    }
+
+    let ticking = false;
+    function update() {
+      ticking = false;
+      // a section becomes current once its top passes the middle of the viewport
+      const line = window.scrollY + window.innerHeight * 0.5;
+      let active: string | null = null;
+      for (const entry of ordered) {
+        if (line >= (entry.el as HTMLElement).offsetTop) active = entry.key;
+      }
+      apply(active);
+    }
+    function onScroll() {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    update();
   }
 
   // ── Hamburger menu ────────────────────────────────────────────
@@ -277,8 +327,10 @@ function isHome(): boolean {
 
   initTheme();
   initMobileMenu();
+  initScrollSpy();
   document.addEventListener('astro:after-swap', () => {
     initTheme();
     initMobileMenu();
+    initScrollSpy();
   });
 </script>

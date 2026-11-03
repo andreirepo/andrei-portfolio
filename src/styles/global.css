@@ -317,6 +317,33 @@ html {
   }
 }
 
+/* ─── Nav active state ───────────────────────────────────────────────── */
+/* Keyed on aria-current so the build-time route state (home on "/", blog on
+   /blog) and the homepage scroll-spy share one source of truth. The
+   underline is driven here rather than by a Tailwind scale utility, because
+   Tailwind v4 writes to the `scale` property and would win over a
+   transform-based override. */
+[data-testid="main-nav"] a::after {
+  transform: scaleX(0);
+  transition: transform 200ms;
+}
+
+[data-testid="main-nav"] a:hover::after,
+[data-testid="main-nav"] a[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+[data-testid="main-nav"] a[aria-current="page"] {
+  color: var(--foreground);
+}
+
+#mobile-menu a[aria-current="page"] {
+  color: var(--amber-text);
+  font-weight: 500;
+  border-left: 2px solid var(--amber-accent);
+  padding-left: 0.5rem;
+}
+
 /* ─── Section heading rhythm ─────────────────────────────────────────── */
 .section-head {
   display: flex;
