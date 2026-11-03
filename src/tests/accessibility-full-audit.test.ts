@@ -27,8 +27,6 @@ const NEUTRALISE = `
   .section-fade-in { animation: none !important; opacity: 1 !important; transform: none !important; }
   [class*="hero-animate"] { animation: none !important; opacity: 1 !important; transform: none !important; }
   .animate-ping { animation: none !important; }
-  /* the ping ring overlays the badge text, which makes axe bail on geometry */
-  .ci-status-ping { display: none !important; }
   #scroll-top { display: none !important; }
 `;
 
