@@ -37,6 +37,11 @@
       "description": "Plataforma full-stack segura en AWS, containerizada con Docker y Traefik, con CI/CD en GitHub Actions y quality gates con Playwright cubriendo flujos críticos de usuario.",
       "link": "https://github.com/andreirepo/todo-app",
       "demo": "https://andreirepo.com/apps/todo"
+    },
+    "item_3": {
+      "name": "declara720",
+      "description": "Generador y validador del fichero del Modelo 720 (bloque de valores) que corre entero en el navegador, sin servidor ni cuentas. Formato de 500 caracteres reconstruido desde una presentación aceptada por la AEAT y verificado byte a byte, con 55 tests y previews en cada PR.",
+      "demo": "https://declara720.com"
     }
   },
   "experience": {

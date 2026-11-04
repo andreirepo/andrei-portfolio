@@ -52,6 +52,15 @@ Docker, AWS, Terraform.
 - [Local AI Code Review in GitHub Actions with LM Studio](https://andreirepo.com/en/blog/local-ai-code-review-github-actions-lm-studio/)
 - [Email Forwarding with AWS SES, S3 and Lambda](https://andreirepo.com/en/blog/email-forwarding-aws-ses-s3-lambda/)
 
+## Projects
+
+- [declara720](https://declara720.com): browser-only generator and validator for
+  the Spanish Modelo 720 fixed-width file (securities block). The 500-character
+  record format was reverse-engineered from an accepted AEAT filing and verified
+  byte for byte; no server, no accounts, no telemetry.
+- [Task Management Platform](https://andreirepo.com/apps/todo/): full-stack app
+  on AWS, Docker and Traefik, with Playwright quality gates in CI.
+
 ## Notes
 
 - The site is a static Astro build; all content above is present in the HTML

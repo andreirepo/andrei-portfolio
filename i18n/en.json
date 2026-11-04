@@ -37,6 +37,11 @@
       "description": "Secure full-stack platform on AWS, containerized with Docker and Traefik, with GitHub Actions CI/CD and Playwright quality gates covering critical user flows.",
       "link": "https://github.com/andreirepo/todo-app",
       "demo": "https://andreirepo.com/apps/todo"
+    },
+    "item_3": {
+      "name": "declara720",
+      "description": "Generator and validator for the Modelo 720 fixed-width file (securities block), running entirely in the browser with no server or accounts. The 500-character record format was reconstructed from an accepted AEAT filing and verified byte for byte, with 55 tests and a preview deployment on every PR.",
+      "demo": "https://declara720.com"
     }
   },
   "experience": {
