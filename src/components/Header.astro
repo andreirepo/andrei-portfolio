@@ -1,5 +1,7 @@
 ---
 import I18NDebug from "@ariaskit/astro-i18n/I18NDebug.astro";
+import { useI18n } from "@ariaskit/astro-i18n";
+import { type LocaleSchema } from "@/src/types";
 import { cls } from "@/src/lib/utils";
 import { RESUME_HREF } from "@/src/lib/page-helpers";
 
@@ -9,13 +11,20 @@ interface Props {
     nav:{path:string;text:string;divider?:boolean}[];
     locales: Locales[];
     currentLocale:string;
-    resumeLabel?: string;
     name?: string;
-    homeLabel?: string;
     currentPath?: string;
 }
 
-const { nav, locales, currentLocale, resumeLabel = "Resume", name, homeLabel = "home", currentPath = "" } = Astro.props as Props
+const { nav, locales, currentLocale, name, currentPath = "" } = Astro.props as Props
+
+/**
+ * Resolved here, not passed in. Both were props with English defaults ("home",
+ * "Resume"), and any page that forgot to pass them silently rendered English
+ * inside a Spanish page. Two pages did exactly that.
+ */
+const { t } = useI18n<LocaleSchema>({ ssg: { astro: Astro } });
+const homeLabel = t("nav.home");
+const resumeLabel = t("nav.resume");
 
 function resolveHref(path: string): string {
     return path.startsWith('/') ? path : `/${currentLocale}/${path}`;

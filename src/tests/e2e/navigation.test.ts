@@ -128,6 +128,34 @@ describe('Navigation E2E', () => {
     });
   });
 
+  /**
+   * The home label used to be a prop with an English default ("home"). Every
+   * page except the homepage forgot to pass it, so Spanish blog posts showed
+   * "home" in an otherwise Spanish menu. It is resolved inside the header now;
+   * this walks every page type to keep it that way.
+   */
+  describe('Navigation — Home label on every route', () => {
+    const rutas: Array<[string, string]> = [
+      ['/en/', 'Home'],
+      ['/en/blog/', 'Home'],
+      ['/en/blog/ai-agentic-setup-e2e-test-automation/', 'Home'],
+      ['/en/blog/tag/testing/', 'Home'],
+      ['/es/', 'Inicio'],
+      ['/es/blog/', 'Inicio'],
+      ['/es/blog/ai-agentic-setup-e2e-test-automation/', 'Inicio'],
+      ['/es/blog/tag/testing/', 'Inicio'],
+    ];
+
+    for (const [ruta, etiqueta] of rutas) {
+      it(`should say "${etiqueta}" on ${ruta}`, async () => {
+        await page.goto(`${BASE_URL}${ruta}`, { waitUntil: 'networkidle' });
+        const home = page.locator('[data-testid="nav-home"]');
+        expect(await home.count()).toBeGreaterThan(0);
+        expect((await home.first().innerText()).trim()).toBe(etiqueta);
+      });
+    }
+  });
+
   describe('Navigation — Theme Toggle', () => {
     it('should toggle dark mode when theme button is clicked', async () => {
       const initialDark = await homePage.isDarkMode();
