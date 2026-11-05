@@ -1,13 +1,13 @@
 ---
 title: "From Two Runner Containers to Ephemeral Pods: Actions Runner Controller on a 4-Core Homelab"
-description: "Replacing two always-on GitHub runner containers — and the personal access token in their environment — with ephemeral pods on k3s. Measured on a 4-core Proxmox host, including the two addresses the migration broke."
+description: "Replacing two always-on GitHub runner containers (and the personal access token in their environment) with ephemeral pods on k3s. Measured on a 4-core Proxmox host, including the two addresses the migration broke."
 pubDate: 2026-11-05
 author: "Andrei Repo"
 tags: ["github-actions", "arc", "k3s", "kubernetes", "self-hosted", "devops"]
 draft: false
 ---
 
-Since this site got CI, it has run on two `myoung34/github-runner` containers on the dev VM. They worked. They were also always on, shared a mounted `docker.sock`, and carried a personal access token in their environment — a token with `repo` and `workflow` scope, sitting in a container that any job could read.
+Since this site got CI, it has run on two `myoung34/github-runner` containers on the dev VM. They worked. They were also always on, shared a mounted `docker.sock`, and carried a personal access token in their environment: a token with `repo` and `workflow` scope, sitting in a container that any job could read.
 
 That last part is the reason I finally did something about it. Not the container count, not the RAM. A long-lived credential that can push to every repository I own, in plain text, inside a process that runs code from the internet.
 
@@ -17,7 +17,7 @@ This is the replacement: Actions Runner Controller on a single-node k3s cluster,
 
 Three things, in the order they actually mattered to me:
 
-- **Isolation.** A container runner persists between jobs. Workspace leftovers, cached credentials, a poisoned `node_modules` — all of it survives from one run to the next. A pod is created for a job and deleted after it, so there is nothing to poison.
+- **Isolation.** A container runner persists between jobs. Workspace leftovers, cached credentials, a poisoned `node_modules`: all of it survives from one run to the next. A pod is created for a job and deleted after it, so there is nothing to poison.
 - **No long-lived credential.** ARC authenticates as a **GitHub App** and mints short-lived registration tokens. The GitHub App's private key stays in one Kubernetes secret, not in two container environments.
 - **Scale to zero.** Two containers were idle 23 hours a day. The scale set sits at zero runners and zero pods until a job is queued.
 
@@ -62,7 +62,7 @@ curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--disable traefik \
   --write-kubeconfig-mode 600" sh -
 ```
 
-No Traefik because there is no ingress to serve — runners only make outbound connections. No servicelb for the same reason. What remains is k3s itself (~600 MB), cert-manager (ARC needs it for the listener's TLS assets) and the controller.
+No Traefik because there is no ingress to serve: runners only make outbound connections. No servicelb for the same reason. What remains is k3s itself (~600 MB), cert-manager (ARC needs it for the listener's TLS assets) and the controller.
 
 ## Authenticating With a GitHub App
 
@@ -81,7 +81,7 @@ kubectl -n arc-runners create secret generic arc-homelab-github-app \
 
 The key goes through stdin and into the secret. It never appears on a command line, in a log, or in this repository.
 
-One structural limitation that a personal GitHub account hits immediately: **organisation runner groups do not exist for user accounts**, so a scale set is scoped to exactly one repository. Every repository that needs one means another scale set. They cost nothing while idle — each listener is a small pod — but it is one Helm release per repository to keep in sync.
+One structural limitation that a personal GitHub account hits immediately: **organisation runner groups do not exist for user accounts**, so a scale set is scoped to exactly one repository. Every repository that needs one means another scale set. They cost nothing while idle, each listener is a small pod, but it is one Helm release per repository to keep in sync.
 
 ## The Scale Set
 
@@ -108,7 +108,7 @@ template:
             memory: 2Gi
 ```
 
-`minRunners: 0` is the setting that makes this worth doing — no pods and no RAM until a job arrives. `maxRunners: 2` is what fits: two runners of 512 Mi (2 Gi limit) alongside k3s, cert-manager, the controller and two listeners, inside 3 GB.
+`minRunners: 0` is the setting that makes this worth doing: no pods and no RAM until a job arrives. `maxRunners: 2` is what fits: two runners of 512 Mi (2 Gi limit) alongside k3s, cert-manager, the controller and two listeners, inside 3 GB.
 
 ## Watching It Work
 
@@ -129,7 +129,7 @@ Four shards against `maxRunners: 2` means two run and two wait, which is the poi
 
 The second scale set, on a warm cluster, measured from a throwaway pull request:
 
-| | |
+| Measurement | Result |
 |---|---|
 | pull request opened → job finished | **17 s** |
 | time in queue | **7 s** |
@@ -140,7 +140,7 @@ The comparison that matters is not runner speed. The same repository's GitHub-ho
 
 ## What It Costs When Idle
 
-| | |
+| Item | Idle cost |
 |---|---|
 | Cluster idle (k3s, cert-manager, controller, 2 listeners) | **~900 MB** |
 | Runner pods when idle | **0** |
@@ -157,10 +157,10 @@ Moving the portfolio's jobs from the container to pods surfaced the same problem
 
 | Job | Was pointing at | Symptom |
 |---|---|---|
-| AI review → LM Studio on the gaming PC | a Tailscale IP of a machine offline for 70 days | `curl` timed out, review silently skipped |
-| deploy → the server over SSH | a Tailscale IP | `ssh: connect to host … port 22: Connection timed out` |
+| AI review → LM Studio | Tailscale IP of a PC offline for 70 days | `curl` timed out, review skipped |
+| deploy → server, SSH | a Tailscale IP | `ssh: connect to host … port 22: Connection timed out` |
 
-The second one failed a real deployment on `main`, which triggered the rollback job — which failed the same way. Nothing broke, because the previous image kept serving, but it is exactly the failure that only shows up in production.
+The second one failed a real deployment on `main`, which triggered the rollback job, and that failed the same way. Nothing broke, because the previous image kept serving, but it is exactly the failure that only shows up in production.
 
 Both fixed by pointing the secrets at LAN addresses, which also happens to be faster.
 
@@ -168,7 +168,7 @@ Both fixed by pointing the secrets at LAN addresses, which also happens to be fa
 
 Neither of these had anything to do with ARC, and both would have stayed invisible behind a green check.
 
-**The review was asking for a model that does not exist.** The payload said `qwen/qwen3-14b`; LM Studio serves `qwen3-14b` and answers `400`. The workflow ran `curl -sf`, which turns any HTTP error into a non-zero exit, which the script turned into `review_failed=true` — and nothing was posted. Green job, no review.
+**The review was asking for a model that does not exist.** The payload said `qwen/qwen3-14b`; LM Studio serves `qwen3-14b` and answers `400`. The workflow ran `curl -sf`, which turns any HTTP error into a non-zero exit, which the script turned into `review_failed=true`, and nothing was posted. Green job, no review.
 
 **The review never refreshed.** The availability check carried `if: steps.check-existing.outputs.exists == 'false'`, so once a comment existed the entire review was skipped, including the "update the existing comment" branch a few steps later. That branch was unreachable code. Every push after the first was a ten-second no-op that reported success.
 
@@ -178,11 +178,11 @@ I only found them because I read the log of a job that had "succeeded". That is 
 
 The point was never to self-host everything. One repository kept `ubuntu-latest`: a private project whose job installs Node, pnpm and Chromium, then builds and runs a Playwright suite.
 
-- **It needs a build environment, not a runner.** The ARC image is the agent: `git`, `curl`, `jq`, `python3`, `tar`, `unzip`, `sudo` — and no Node, no pnpm, no Chromium. It would need a custom image built and kept current.
+- **It needs a build environment, not a runner.** The ARC image is the agent: `git`, `curl`, `jq`, `python3`, `tar`, `unzip`, `sudo`, and no Node, no pnpm, no Chromium. It would need a custom image built and kept current.
 - **RAM is the real constraint.** Chromium plus a Vite build peaks above 2 GB. On a 3 GB cluster with 2.1 GB free at idle, it would pass on a quiet afternoon and fail on a bad one.
 - **Leaving it costs nothing.** About 100 minutes a month against 2,000 free private-repository minutes.
 
-The test I now apply to anything else I am tempted to move: self-host when the job needs *your* network, *your* hardware or *your* data. The AI review qualifies — it talks to a model on the LAN, which GitHub-hosted runners cannot reach at all. A build, generally, does not.
+The test I now apply to anything else I am tempted to move: self-host when the job needs *your* network, *your* hardware or *your* data. The AI review qualifies: it talks to a model on the LAN, which GitHub-hosted runners cannot reach at all. A build, generally, does not.
 
 ## The Last Container
 
@@ -197,14 +197,14 @@ That was the last thing holding a personal access token.
 - **Listeners are bare pods, not deployments.** `kubectl logs deploy/…-listener` returns NotFound and looks like a broken install.
 - **Expect one `autoscalinglisteners … already exists` reconcile error** per new scale set. It is a race in the controller, it appears once, and the listener comes up anyway.
 - **A classic PAT cannot manage App installations.** Adding a repository to an installation returns 403 or 404 for a personal token; only an OAuth token or the App's own JWT can. That click belongs in the UI.
-- **Public repository, self-hosted runner is a known footgun.** Anyone can fork it and open a pull request. The job carries `if: github.event.pull_request.head.repo.full_name == github.repository` so fork PRs skip the self-hosted job entirely, and the runners are ephemeral pods with no Docker socket and no host mounts — nothing survives to poison the next run.
+- **Public repository, self-hosted runner is a known footgun.** Anyone can fork it and open a pull request. The job carries `if: github.event.pull_request.head.repo.full_name == github.repository` so fork PRs skip the self-hosted job entirely, and the runners are ephemeral pods with no Docker socket and no host mounts, nothing survives to poison the next run.
 
 ## The Result
 
-Two scale sets, idle at zero pods and about 900 MB for the whole cluster. Deploys, health checks and the AI review run as ephemeral pods that disappear when they finish. No container runner, and no personal access token anywhere in the pipeline — authentication is a GitHub App whose key lives in one Kubernetes secret.
+Two scale sets, idle at zero pods and about 900 MB for the whole cluster. Deploys, health checks and the AI review run as ephemeral pods that disappear when they finish. No container runner, and no personal access token anywhere in the pipeline. Authentication is a GitHub App whose key lives in one Kubernetes secret.
 
 The honest summary: it took an afternoon, most of it on things this post lists as gotchas, and the two failures that mattered were in the workflow I thought was already fine.
 
 **What's Next**
 
-The cluster has room for one more idea: the AI review currently runs on a 14B model on a gaming PC that has to be on. Moving that model into the cluster is a different problem — GPU passthrough on a host with no GPU — so for now the workflow's fallback stays, and a review that cannot happen says so and exits cleanly.
+The cluster has room for one more idea: the AI review currently runs on a 14B model on a gaming PC that has to be on. Moving that model into the cluster is a different problem (GPU passthrough on a host with no GPU), so for now the workflow's fallback stays, and a review that cannot happen says so and exits cleanly.

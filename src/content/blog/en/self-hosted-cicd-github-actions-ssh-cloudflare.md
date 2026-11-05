@@ -1,13 +1,13 @@
 ---
 title: "Zero-Exposure CI/CD: GitHub Actions, Self-Hosted Runner, and SSH over Cloudflare Tunnel"
-description: "How I deploy this portfolio from a GitHub push to a home server in my living room — using a self-hosted runner and SSH tunnelled through Cloudflare, with no open ports anywhere."
+description: "How I deploy this portfolio from a GitHub push to a home server in my living room, using a self-hosted runner and SSH tunnelled through Cloudflare, with no open ports anywhere."
 pubDate: 2025-04-01
 author: "Andrei Repo"
 tags: ["github-actions", "ci-cd", "cloudflare", "self-hosted", "docker", "devops"]
 draft: false
 ---
 
-In the [previous post](/en/blog/self-hosted-cloudflare-tunnel-traefik/) I covered how Cloudflare Tunnel and Traefik serve this site from a Lenovo mini PC in my living room with no open ports. This post covers the deployment side — how a `git push` to `main` builds a Docker image, runs checks, and deploys to that same machine automatically.
+In the [previous post](/en/blog/self-hosted-cloudflare-tunnel-traefik/) I covered how Cloudflare Tunnel and Traefik serve this site from a Lenovo mini PC in my living room with no open ports. This post covers the deployment side, how a `git push` to `main` builds a Docker image, runs checks, and deploys to that same machine automatically.
 
 The interesting constraint: the server has no open ports. Not even SSH. So how does GitHub Actions reach it?
 
@@ -19,13 +19,13 @@ git push → GitHub Actions → self-hosted runner (Docker) → docker compose p
                          runs on the same VM as the site
 ```
 
-The key insight: the GitHub Actions runner runs *on the server itself*, as a Docker container. It doesn't need inbound connectivity — it polls GitHub for jobs over an outbound HTTPS connection, the same way `cloudflared` works.
+The key insight: the GitHub Actions runner runs *on the server itself*, as a Docker container. It doesn't need inbound connectivity: it polls GitHub for jobs over an outbound HTTPS connection, the same way `cloudflared` works.
 
-For file syncing and remote commands during deploy, SSH goes through Cloudflare Tunnel — again, outbound only.
+For file syncing and remote commands during deploy, SSH goes through Cloudflare Tunnel, again outbound only.
 
 ## Self-Hosted GitHub Runner
 
-The runner is a Docker container on the same VM. Rather than hardcoding it into a `docker-compose.yml`, I use a small script that spins up an ephemeral runner per repository — it self-cleans after each job and can be reused across any repo in the homelab.
+The runner is a Docker container on the same VM. Rather than hardcoding it into a `docker-compose.yml`, I use a small script that spins up an ephemeral runner per repository. It self-cleans after each job and can be reused across any repo in the homelab.
 
 ```bash
 #!/bin/bash
@@ -63,11 +63,11 @@ GITHUB_TOKEN=your_token REPO_URL="https://github.com/andreirepo/andrei-portfolio
 
 A few things worth noting about this setup:
 
-**`EPHEMERAL=true`** — the runner deregisters itself from GitHub after completing one job and the container exits. A fresh container is started for the next run. This avoids state accumulation between jobs and is the pattern GitHub recommends for self-hosted runners.
+**`EPHEMERAL=true`**: the runner deregisters itself from GitHub after completing one job and the container exits. A fresh container is started for the next run. This avoids state accumulation between jobs and is the pattern GitHub recommends for self-hosted runners.
 
-**`DISABLE_AUTO_UPDATE=true`** — prevents the runner from trying to update itself mid-job, which can cause unexpected failures.
+**`DISABLE_AUTO_UPDATE=true`**: prevents the runner from trying to update itself mid-job, which can cause unexpected failures.
 
-**Docker socket mount** — `/var/run/docker.sock` gives the runner direct access to Docker on the host, so `docker compose pull` and `docker compose up` in the workflow run against the actual server.
+**Docker socket mount**: `/var/run/docker.sock` gives the runner direct access to Docker on the host, so `docker compose pull` and `docker compose up` in the workflow run against the actual server.
 
 The runner registers itself with GitHub on startup using a Personal Access Token (classic, `repo` scope). You can verify it appeared at `github.com/{user}/{repo}/settings/actions/runners`.
 
@@ -91,19 +91,19 @@ In the Cloudflare Zero Trust dashboard, add a private network route or a public 
       StrictHostKeyChecking no" > ~/.ssh/config
 ```
 
-Since the runner is already on the same machine, in practice the SSH hop is local — but this pattern also works if you ever run the workflow on GitHub-hosted runners, since the tunnel handles the routing either way.
+Since the runner is already on the same machine, the SSH hop is local in practice, but this pattern also works if you ever run the workflow on GitHub-hosted runners, since the tunnel handles the routing either way.
 
 ## The Full Pipeline
 
 The workflow has four jobs:
 
-**1. build-and-test** — installs dependencies, builds the Astro site, runs type checks, uploads the `dist/` artifact.
+**1. build-and-test**: installs dependencies, builds the Astro site, runs type checks, uploads the `dist/` artifact.
 
-**2. build-and-push-image** — builds the Docker image and pushes it to GitHub Container Registry (`ghcr.io`) with tags for the branch name, commit SHA, and `latest`.
+**2. build-and-push-image**: builds the Docker image and pushes it to GitHub Container Registry (`ghcr.io`) with tags for the branch name, commit SHA, and `latest`.
 
-**3. deploy** — SSHs into the server, syncs files with `rsync`, pulls the new image, and restarts the container with `--force-recreate` to ensure the new image is always used.
+**3. deploy**: SSHs into the server, syncs files with `rsync`, pulls the new image, and restarts the container with `--force-recreate` to ensure the new image is always used.
 
-**4. health-check** — waits 20 seconds, then hits `https://andreirepo.com` to confirm the site is up. On success, purges the Cloudflare cache so visitors see the new version immediately. On failure, the rollback job triggers.
+**4. health-check**: waits 20 seconds, then hits `https://andreirepo.com` to confirm the site is up. On success, purges the Cloudflare cache so visitors see the new version immediately. On failure, the rollback job triggers.
 
 ```yaml
 - name: Docker Compose Up
@@ -127,18 +127,18 @@ The workflow has four jobs:
 
 A few reasons:
 
-**No open ports** — the runner polls GitHub, so no inbound connectivity needed. Fits perfectly with the zero-open-ports philosophy.
+**No open ports**: the runner polls GitHub, so no inbound connectivity needed. Fits perfectly with the zero-open-ports philosophy.
 
-**Speed** — the runner is on the same machine as the deployment target. `docker compose pull` pulls from GHCR to localhost, which is fast. No SSH latency for the heavy operations.
+**Speed**: the runner is on the same machine as the deployment target. `docker compose pull` pulls from GHCR to localhost, which is fast. No SSH latency for the heavy operations.
 
-**Cost** — GitHub-hosted runners have a free tier limit. A self-hosted runner has no usage limits.
+**Cost**: GitHub-hosted runners have a free tier limit. A self-hosted runner has no usage limits.
 
-**Docker socket access** — the runner can run Docker commands directly, which simplifies the deploy step significantly.
+**Docker socket access**: the runner can run Docker commands directly, which simplifies the deploy step significantly.
 
 ## The Bigger Picture
 
-This whole setup — Proxmox, VMs, Cloudflare Tunnel, Traefik, self-hosted runners — started as a learning project. I've been running the Lenovo M910q for about three years, using it for QA experiments (Jenkins, single-node Kubernetes), media management (Plex, Immich), and now as a proper home lab with a full development and deployment cycle.
+This whole setup (Proxmox, VMs, Cloudflare Tunnel, Traefik, self-hosted runners) started as a learning project. I've been running the Lenovo M910q for about three years, using it for QA experiments (Jenkins, single-node Kubernetes), media management (Plex, Immich), and now as a proper home lab with a full development and deployment cycle.
 
 The goal was to understand every layer of the stack: how traffic flows from a user's browser to a running container, how a code change becomes a deployed update, and how to do all of it without paying for cloud infrastructure or exposing my home network.
 
-It's been working reliably for months. The only thing I'd change is moving secrets management to something like Vault — but that's a project for another weekend.
+It's been working reliably for months. The only thing I'd change is moving secrets management to something like Vault, but that's a project for another weekend.

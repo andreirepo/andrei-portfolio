@@ -1,6 +1,6 @@
 ---
 title: "Self-Hosting Without Opening Ports: Cloudflare Tunnel + Traefik"
-description: "How I serve this portfolio and other services from a Lenovo mini PC in my living room — no open ports, no static IP, with automatic HTTPS and Cloudflare's DDoS protection."
+description: "How I serve this portfolio and other services from a Lenovo mini PC in my living room: no open ports, no static IP, automatic HTTPS and Cloudflare's DDoS protection."
 pubDate: 2025-03-28
 author: "Andrei Repo"
 tags: ["cloudflare", "traefik", "docker", "self-hosted", "networking"]
@@ -24,7 +24,7 @@ Cloudflare Tunnel solves all of this.
 
 ## How Cloudflare Tunnel Works
 
-Instead of your server accepting inbound connections, `cloudflared` (running as a Docker container) opens an outbound connection to Cloudflare's edge. All traffic flows through that tunnel — your server never needs to accept a connection from the outside world.
+Instead of your server accepting inbound connections, `cloudflared` (running as a Docker container) opens an outbound connection to Cloudflare's edge. All traffic flows through that tunnel. Your server never needs to accept a connection from the outside world.
 
 ```
 Internet → Cloudflare Edge → cloudflared tunnel → Traefik → containers
@@ -36,9 +36,9 @@ No open ports. No exposed IP. Cloudflare sits in front of everything and handles
 
 Everything runs on a dedicated Linux VM on Proxmox (more on the Proxmox setup in another post):
 
-- **Traefik** — reverse proxy, routes traffic to containers by hostname
-- **cloudflared** — Cloudflare Tunnel client, connects the VM to Cloudflare's edge
-- **Docker** — all services run as containers on a shared network
+- **Traefik** is the reverse proxy, routing traffic to containers by hostname
+- **cloudflared** is the Cloudflare Tunnel client, connecting the VM to Cloudflare's edge
+- **Docker** runs every service as a container on a shared network
 
 ## Setting Up the Tunnel
 
@@ -61,7 +61,7 @@ In the Cloudflare dashboard, configure the tunnel's public hostname to point to 
 - **Public hostname**: `andreirepo.com`
 - **Service**: `http://traefik:80`
 
-Cloudflare handles HTTPS externally. Traffic arrives at Traefik over plain HTTP inside the tunnel — which is fine since it never leaves the private network.
+Cloudflare handles HTTPS externally. Traffic arrives at Traefik over plain HTTP inside the tunnel, which is fine since it never leaves the private network.
 
 ## Traefik Configuration
 
@@ -83,25 +83,25 @@ networks:
     external: true
 ```
 
-Adding a new service is just a matter of adding labels — no nginx config files, no manual routing rules.
+Adding a new service is just a matter of adding labels: no nginx config files, no manual routing rules.
 
 ## Umami Analytics
 
 Because everything is on the same Docker network, adding [Umami](https://umami.is) for self-hosted analytics was straightforward. Umami runs as two containers (app + Postgres), both on `traefik-net`, with a Traefik label pointing `analytics.andreirepo.com` at the Umami container.
 
-The portfolio site sends analytics events to `analytics.andreirepo.com` — which goes through Cloudflare Tunnel just like the main site. No third-party analytics, no data leaving my infrastructure, and the script is served from my own domain so it's less likely to be blocked by ad blockers.
+The portfolio site sends analytics events to `analytics.andreirepo.com`, which goes through Cloudflare Tunnel just like the main site. No third-party analytics, no data leaving my infrastructure, and the script is served from my own domain so it's less likely to be blocked by ad blockers.
 
 ## Benefits in Practice
 
-**No open ports** — my router has zero port forwarding rules. The only outbound connection is the tunnel.
+**No open ports**: my router has zero port forwarding rules. The only outbound connection is the tunnel.
 
-**No static IP needed** — the tunnel reconnects automatically if my IP changes. I've had zero downtime from IP changes in months of running this.
+**No static IP needed**: the tunnel reconnects automatically if my IP changes. I've had zero downtime from IP changes in months of running this.
 
-**Free DDoS protection** — Cloudflare absorbs traffic spikes before they reach my home network.
+**Free DDoS protection**: Cloudflare absorbs traffic spikes before they reach my home network.
 
-**Easy service expansion** — adding a new subdomain is two steps: add Docker labels to the container, add a public hostname in the Cloudflare tunnel config. Done.
+**Easy service expansion**: adding a new subdomain takes two steps. Add Docker labels to the container, then add a public hostname in the Cloudflare tunnel config. Done.
 
-**Cost** — Cloudflare Tunnel is free on the Zero Trust free tier (up to 50 users). The only cost is the domain itself.
+**Cost**: Cloudflare Tunnel is free on the Zero Trust free tier (up to 50 users). The only cost is the domain itself.
 
 ## The Trade-offs
 
@@ -115,4 +115,4 @@ For a personal portfolio and home lab, these are acceptable trade-offs. For anyt
 
 ## What's Next
 
-In the next post I'll cover the CI/CD side — how I use a self-hosted GitHub Actions runner and SSH over Cloudflare Tunnel to deploy directly to this machine from a GitHub push, without ever exposing an SSH port to the internet.
+In the next post I'll cover the CI/CD side: how I use a self-hosted GitHub Actions runner and SSH over Cloudflare Tunnel to deploy directly to this machine from a GitHub push, without ever exposing an SSH port to the internet.

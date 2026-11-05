@@ -17,7 +17,7 @@ La idea es simple: SES recibe el correo en `contact@andreirepo.com`, almacena el
 Remitente → SES (regla de recepción) → S3 bucket → Lambda → SES (envío) → Gmail
 ```
 
-Todo configurado desde la consola de AWS — sin Terraform, sin CDK.
+Todo configurado desde la consola de AWS: sin Terraform, sin CDK.
 
 ## Configurar SES
 
@@ -70,7 +70,7 @@ La Lambda necesita un rol IAM con `s3:GetObject` en el bucket de entrada y permi
 
 ## La Parte Difícil: HTML e Imágenes
 
-Aquí es donde pasé más tiempo. La primera versión reenviaba los correos como texto plano — HTML en bruto apareciendo en Gmail, sin imágenes, con el diseño roto.
+Aquí es donde pasé más tiempo. La primera versión reenviaba los correos como texto plano: HTML en bruto apareciendo en Gmail, sin imágenes, con el diseño roto.
 
 La causa raíz fueron dos cosas:
 
@@ -80,7 +80,7 @@ El módulo `email` de Python tiene múltiples políticas de análisis. Sin `poli
 
 **2. Imágenes incrustadas (referencias CID)**
 
-Los correos con imágenes embebidas usan referencias `Content-ID` (`cid:image001.jpg`). Al reenviar un mensaje en bruto, esas referencias CID se mantienen pero Gmail no puede resolverlas desde la copia reenviada. No hay una solución limpia para esto — las imágenes deben estar alojadas externamente o el cliente de correo necesita los adjuntos originales. Para la mayoría de correos transaccionales y de contacto no es un problema, pero los boletines con imágenes embebidas seguirán viéndose mal.
+Los correos con imágenes embebidas usan referencias `Content-ID` (`cid:image001.jpg`). Al reenviar un mensaje en bruto, esas referencias CID se mantienen pero Gmail no puede resolverlas desde la copia reenviada. No hay una solución limpia para esto, las imágenes deben estar alojadas externamente o el cliente de correo necesita los adjuntos originales. Para la mayoría de correos transaccionales y de contacto no es un problema, pero los boletines con imágenes embebidas seguirán viéndose mal.
 
 Para correos HTML con imágenes externas (el estándar `<img src="https://...">`) todo funciona bien una vez que usas `policy.default`.
 
@@ -117,6 +117,6 @@ SES también necesita permiso para escribir en el bucket S3. Añade esto a la po
 
 ## Resultado
 
-Lleva funcionando aproximadamente un mes sin ningún problema. Los correos llegan a Gmail en pocos segundos, el HTML se renderiza correctamente y mi dirección real permanece privada. El coste total en AWS es prácticamente cero — el nivel gratuito de SES cubre 1.000 mensajes entrantes al mes, el nivel gratuito de Lambda es más que suficiente, y S3 cuesta fracciones de céntimo.
+Lleva funcionando aproximadamente un mes sin ningún problema. Los correos llegan a Gmail en pocos segundos, el HTML se renderiza correctamente y mi dirección real permanece privada. El coste total en AWS es prácticamente cero: el nivel gratuito de SES cubre 1.000 mensajes entrantes al mes, el nivel gratuito de Lambda es más que suficiente, y S3 cuesta fracciones de céntimo.
 
 La única limitación es el problema de las imágenes CID mencionado anteriormente, pero para un formulario de contacto de portfolio no es una preocupación.

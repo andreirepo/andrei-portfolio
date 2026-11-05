@@ -1,13 +1,13 @@
 ---
 title: "From Two Runner Containers to Ephemeral Pods: Actions Runner Controller on a 4-Core Homelab"
-description: "Replacing two always-on GitHub runner containers — and the personal access token in their environment — with ephemeral pods on k3s. Measured on a 4-core Proxmox host, including the two addresses the migration broke."
+description: "Replacing two always-on GitHub runner containers (and the personal access token in their environment) with ephemeral pods on k3s. Measured on a 4-core Proxmox host, including the two addresses the migration broke."
 pubDate: 2026-11-05
 author: "Andrei Repo"
 tags: ["github-actions", "arc", "k3s", "kubernetes", "self-hosted", "devops"]
 draft: false
 ---
 
-Desde que este sitio tiene CI, ha corrido en dos contenedores `myoung34/github-runner` en la VM de desarrollo. Funcionaban. También estaban siempre encendidos, compartían un `docker.sock` montado y llevaban un token de acceso personal en su entorno — un token con permisos `repo` y `workflow`, dentro de un contenedor que cualquier job podía leer.
+Desde que este sitio tiene CI, ha corrido en dos contenedores `myoung34/github-runner` en la VM de desarrollo. Funcionaban. También estaban siempre encendidos, compartían un `docker.sock` montado y llevaban un token de acceso personal en su entorno: un token con permisos `repo` y `workflow`, dentro de un contenedor que cualquier job podía leer.
 
 Esa última parte es la razón por la que por fin hice algo al respecto. No el número de contenedores, no la RAM. Una credencial de larga vida que puede hacer push a todos mis repositorios, en texto plano, dentro de un proceso que ejecuta código de internet.
 
@@ -81,7 +81,7 @@ kubectl -n arc-runners create secret generic arc-homelab-github-app \
 
 La clave pasa por stdin hacia el secreto. Nunca aparece en una línea de comandos, en un log ni en este repositorio.
 
-Una limitación estructural con la que choca cualquiera que use una cuenta personal de GitHub: **los runner groups de organización no existen para cuentas de usuario**, así que un scale set está limitado a exactamente un repositorio. Cada repositorio que lo necesite significa otro scale set. No cuestan nada ociosos —cada listener es un pod pequeño— pero es un release de Helm por repositorio que mantener sincronizado.
+Una limitación estructural con la que choca cualquiera que use una cuenta personal de GitHub: **los runner groups de organización no existen para cuentas de usuario**, así que un scale set está limitado a exactamente un repositorio. Cada repositorio que lo necesite significa otro scale set. No cuestan nada ociosos (cada listener es un pod pequeño) pero es un release de Helm por repositorio que mantener sincronizado.
 
 ## El scale set
 
@@ -129,7 +129,7 @@ Cuatro shards contra `maxRunners: 2` significa que dos corren y dos esperan, que
 
 El segundo scale set, con el clúster caliente, medido desde un pull request desechable:
 
-| | |
+| Medición | Resultado |
 |---|---|
 | pull request abierto → job terminado | **17 s** |
 | tiempo en cola | **7 s** |
@@ -140,7 +140,7 @@ La comparación que importa no es la velocidad del runner. Los jobs del mismo re
 
 ## Lo que cuesta ocioso
 
-| | |
+| Elemento | Coste ocioso |
 |---|---|
 | Clúster ocioso (k3s, cert-manager, controller, 2 listeners) | **~900 MB** |
 | Pods de runner ociosos | **0** |
@@ -157,8 +157,8 @@ Mover los jobs del portfolio del contenedor a pods sacó el mismo problema dos v
 
 | Job | Apuntaba a | Síntoma |
 |---|---|---|
-| revisión con IA → LM Studio en el PC gaming | una IP de Tailscale de una máquina apagada desde hace 70 días | `curl` expiraba, la revisión se saltaba en silencio |
-| deploy → el servidor por SSH | una IP de Tailscale | `ssh: connect to host … port 22: Connection timed out` |
+| revisión con IA → LM Studio | IP de Tailscale de un PC apagado 70 días | `curl` expiraba, revisión omitida |
+| deploy → servidor, SSH | una IP de Tailscale | `ssh: connect to host … port 22: Connection timed out` |
 
 El segundo tumbó un despliegue real en `main`, que a su vez disparó el job de rollback… que falló igual. No se rompió nada, porque la imagen anterior seguía sirviendo, pero es exactamente el fallo que solo aparece en producción.
 
@@ -207,4 +207,4 @@ El resumen honesto: llevó una tarde, la mayor parte en las cosas que este post 
 
 **Qué viene**
 
-Al clúster le queda sitio para una idea más: la revisión con IA corre hoy sobre un modelo de 14B en un PC gaming que tiene que estar encendido. Mover ese modelo al clúster es otro problema —passthrough de GPU en un host sin GPU— así que por ahora el fallback del workflow se queda, y una revisión que no puede ocurrir lo dice y termina limpiamente.
+Al clúster le queda sitio para una idea más: la revisión con IA corre hoy sobre un modelo de 14B en un PC gaming que tiene que estar encendido. Mover ese modelo al clúster es otro problema (passthrough de GPU en un host sin GPU), así que por ahora el fallback del workflow se queda, y una revisión que no puede ocurrir lo dice y termina limpiamente.
