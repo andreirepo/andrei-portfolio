@@ -17,7 +17,7 @@ The idea is simple: SES receives mail at `contact@andreirepo.com`, stores the ra
 Sender → SES (receive rule) → S3 bucket → Lambda → SES (send) → Gmail
 ```
 
-All set up through the AWS console — no Terraform, no CDK.
+All set up through the AWS console: no Terraform, no CDK.
 
 ## Setting Up SES
 
@@ -70,7 +70,7 @@ The Lambda needs an IAM role with `s3:GetObject` on the inbox bucket and `ses:Se
 
 ## The Hard Part: HTML and Images
 
-This is where I spent most of my time. The first version was forwarding emails as plain text — raw HTML showing up in Gmail, no images, broken layout.
+This is where I spent most of my time. The first version was forwarding emails as plain text: raw HTML showing up in Gmail, no images, broken layout.
 
 The root cause was two things:
 
@@ -80,7 +80,7 @@ Python's `email` module has multiple parsing policies. Without `policy.default`,
 
 **2. Inline images (CID references)**
 
-Emails with embedded images use `Content-ID` references (`cid:image001.jpg`). When you forward a raw message, those CID references stay intact but Gmail can't resolve them from the forwarded copy. There's no clean fix for this — the images need to be either hosted externally or the email client needs the original attachments. For most transactional and contact emails this isn't an issue, but newsletters with embedded images will still look broken.
+Emails with embedded images use `Content-ID` references (`cid:image001.jpg`). When you forward a raw message, those CID references stay intact but Gmail can't resolve them from the forwarded copy. There's no clean fix for this: the images need to be either hosted externally or the email client needs the original attachments. For most transactional and contact emails this isn't an issue, but newsletters with embedded images will still look broken.
 
 For HTML emails with external images (standard `<img src="https://...">`) everything works fine once you use `policy.default`.
 
@@ -117,6 +117,6 @@ SES also needs permission to write to the S3 bucket. Add this to the bucket poli
 
 ## Result
 
-It's been running for about a month with zero issues. Emails arrive in Gmail within a few seconds, HTML renders correctly, and my real address stays private. Total AWS cost is effectively zero — SES free tier covers 1,000 inbound messages per month, Lambda free tier is more than enough, and S3 costs fractions of a cent.
+It's been running for about a month with zero issues. Emails arrive in Gmail within a few seconds, HTML renders correctly, and my real address stays private. Total AWS cost is effectively zero: SES free tier covers 1,000 inbound messages per month, Lambda free tier is more than enough, and S3 costs fractions of a cent.
 
 The only limitation is the CID image issue mentioned above, but for a portfolio contact form that's not a concern.

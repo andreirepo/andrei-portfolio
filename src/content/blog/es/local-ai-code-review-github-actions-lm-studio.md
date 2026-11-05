@@ -1,13 +1,13 @@
 ---
 title: "Local AI Code Reviews on GitHub PRs with LM Studio and GitHub Actions"
-description: "How I set up automated PR code reviews using a locally running Qwen2.5 Coder model via LM Studio, Tailscale, and a self-hosted GitHub Actions runner — with a graceful fallback when the PC is off."
+description: "How I set up automated PR code reviews using a locally running Qwen2.5 Coder model via LM Studio, Tailscale, and a self-hosted GitHub Actions runner, with a graceful fallback when the PC is off."
 pubDate: 2025-04-12
 author: "Andrei Repo"
 tags: ["github-actions", "ai", "lm-studio", "tailscale", "self-hosted", "devops"]
 draft: false
 ---
 
-Quería revisiones automáticas de código en los pull requests sin enviar mi código a una API de terceros. Ya ejecuto LM Studio en mi PC gaming con Windows con `qwen/qwen2.5-coder-14b` y `google/gemma-4-26b-a4b` cargados, y la VM de mi home lab está conectada a la misma red Tailscale. Montarlo todo llevó menos de una hora — una vez que descubrí por qué el Firewall de Windows estaba bloqueando todo silenciosamente.
+Quería revisiones automáticas de código en los pull requests sin enviar mi código a una API de terceros. Ya ejecuto LM Studio en mi PC gaming con Windows con `qwen/qwen2.5-coder-14b` y `google/gemma-4-26b-a4b` cargados, y la VM de mi home lab está conectada a la misma red Tailscale. Montarlo todo llevó menos de una hora, una vez que descubrí por qué el Firewall de Windows estaba bloqueando todo silenciosamente.
 
 **Actualización (noviembre de 2026).** Tres cosas de abajo están desactualizadas, y dos eran bugs más que decisiones. El runner ya no es un contenedor en la VM: estos jobs corren ahora como pods efímeros en el clúster k3s del homelab, que cuento en [From Two Runner Containers to Ephemeral Pods](/es/blog/actions-runner-controller-homelab/). La dirección de Tailscale de los ejemplos (`100.115.80.116`) pertenecía a un PC que ya se reemplazó, y el clúster no puede enrutar a Tailscale, así que el endpoint es ahora una dirección de la LAN. Y el nombre del modelo está mal: LM Studio sirve `qwen3-14b`, mientras que pedir `qwen/qwen3-14b` devuelve `400`, que `curl -sf` convertía en una revisión saltada en silencio.
 
@@ -26,7 +26,7 @@ El runner self-hosted ya está en la misma VM que el sitio del portfolio (explic
 
 LM Studio tiene un toggle "Serve on Local Network" en la pestaña Developer. Al activarlo, se enlaza a `0.0.0.0:1234`, haciéndolo accesible via la IP de Tailscale.
 
-El problema: cuando Windows ejecutó LM Studio por primera vez y mostró el aviso del firewall, debí hacer clic en la opción incorrecta. Windows creó silenciosamente dos reglas de **bloqueo** para `lm studio.exe` que anulaban todo lo demás — incluyendo las reglas de Allow que añadí manualmente después.
+El problema: cuando Windows ejecutó LM Studio por primera vez y mostró el aviso del firewall, debí hacer clic en la opción incorrecta. Windows creó silenciosamente dos reglas de **bloqueo** para `lm studio.exe` que anulaban todo lo demás, incluyendo las reglas de Allow que añadí manualmente después.
 
 La solución fue eliminar esas reglas de bloqueo:
 
@@ -43,7 +43,7 @@ curl http://100.115.80.116:1234/v1/models
 
 ## El Workflow de GitHub Actions
 
-El workflow se activa en cada PR abierto o actualizado contra `main`. La decisión de diseño clave fue hacer la revisión de IA completamente opcional — si LM Studio está apagado, el workflow sigue pasando y solo deja un aviso breve.
+El workflow se activa en cada PR abierto o actualizado contra `main`. La decisión de diseño clave fue hacer la revisión de IA completamente opcional: si LM Studio está apagado, el workflow sigue pasando y solo deja un aviso breve.
 
 ```yaml
 - name: Comprobar disponibilidad de LM Studio
@@ -107,12 +107,12 @@ await github.rest.issues.createComment({
 
 ## ¿Por Qué Qwen2.5 Coder 14B?
 
-Tengo dos modelos cargados: `qwen/qwen2.5-coder-14b` y `google/gemma-4-26b-a4b`. Qwen Coder está específicamente entrenado en código y da feedback técnico más preciso — entiende patrones específicos de cada lenguaje, detecta bugs potenciales con más fiabilidad y produce comentarios de revisión estructurados. Gemma 4 es un modelo general potente, pero para revisión de código gana un modelo especializado en código.
+Tengo dos modelos cargados: `qwen/qwen2.5-coder-14b` y `google/gemma-4-26b-a4b`. Qwen Coder está específicamente entrenado en código y da feedback técnico más preciso: entiende patrones específicos de cada lenguaje, detecta bugs potenciales con más fiabilidad y produce comentarios de revisión estructurados. Gemma 4 es un modelo general potente, pero para revisión de código gana un modelo especializado en código.
 
-El tamaño 14B es un punto óptimo — suficientemente rápido para revisar un diff típico de PR en menos de un minuto en una GPU gaming, y suficientemente capaz para detectar problemas reales.
+El tamaño 14B es un punto óptimo: suficientemente rápido para revisar un diff típico de PR en menos de un minuto en una GPU gaming, y suficientemente capaz para detectar problemas reales.
 
 ## El Resultado
 
-Cada PR recibe ahora un comentario de revisión automático en 1-2 minutos (dependiendo del tamaño del diff y la carga de la GPU). Cuando mi PC gaming está apagado, el workflow publica un aviso de una línea y termina limpiamente — sin checks fallidos, sin PRs bloqueados.
+Cada PR recibe ahora un comentario de revisión automático en 1-2 minutos (dependiendo del tamaño del diff y la carga de la GPU). Cuando mi PC gaming está apagado, el workflow publica un aviso de una línea y termina limpiamente, sin checks fallidos, sin PRs bloqueados.
 
 Todo corre en hardware que ya tengo, no cuesta nada por revisión, y mantiene el código completamente en mi propia infraestructura.
