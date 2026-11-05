@@ -1,0 +1,9 @@
+# actionlint validates `runs-on` against the labels GitHub documents, so any
+# self-hosted label has to be declared here or every workflow that targets one
+# reads as "label ... is unknown".
+#
+# arc-portfolio is the Actions Runner Controller scale set described in
+# andreirepo/homelab (k8s/arc/values-scale-set-portfolio.yaml).
+self-hosted-runner:
+  labels:
+    - arc-portfolio
