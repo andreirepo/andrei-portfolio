@@ -7,7 +7,7 @@ tags: ["github-actions", "arc", "k3s", "kubernetes", "self-hosted", "devops"]
 draft: false
 ---
 
-Durante dos años mi CI corrió en dos contenedores `myoung34/github-runner` en la VM de desarrollo. Funcionaban. También estaban siempre encendidos, compartían un `docker.sock` montado y llevaban un token de acceso personal en su entorno — un token con permisos `repo` y `workflow`, dentro de un contenedor que cualquier job podía leer.
+Desde que este sitio tiene CI, ha corrido en dos contenedores `myoung34/github-runner` en la VM de desarrollo. Funcionaban. También estaban siempre encendidos, compartían un `docker.sock` montado y llevaban un token de acceso personal en su entorno — un token con permisos `repo` y `workflow`, dentro de un contenedor que cualquier job podía leer.
 
 Esa última parte es la razón por la que por fin hice algo al respecto. No el número de contenedores, no la RAM. Una credencial de larga vida que puede hacer push a todos mis repositorios, en texto plano, dentro de un proceso que ejecuta código de internet.
 
@@ -81,7 +81,7 @@ kubectl -n arc-runners create secret generic arc-homelab-github-app \
 
 La clave pasa por stdin hacia el secreto. Nunca aparece en una línea de comandos, en un log ni en este repositorio.
 
-Una limitación estructural con la que choca cualquiera que use una cuenta personal de GitHub: **los runner groups de organización no existen para cuentas de usuario**, así que un scale set está limitado a exactamente un repositorio. Tres repositorios significan tres scale sets. No cuestan nada ociosos —cada listener es un pod pequeño— pero son tres releases de Helm que mantener sincronizadas.
+Una limitación estructural con la que choca cualquiera que use una cuenta personal de GitHub: **los runner groups de organización no existen para cuentas de usuario**, así que un scale set está limitado a exactamente un repositorio. Cada repositorio que lo necesite significa otro scale set. No cuestan nada ociosos —cada listener es un pod pequeño— pero es un release de Helm por repositorio que mantener sincronizado.
 
 ## El scale set
 

@@ -7,7 +7,7 @@ tags: ["github-actions", "arc", "k3s", "kubernetes", "self-hosted", "devops"]
 draft: false
 ---
 
-For two years my CI ran on two `myoung34/github-runner` containers on the dev VM. They worked. They were also always on, shared a mounted `docker.sock`, and carried a personal access token in their environment — a token with `repo` and `workflow` scope, sitting in a container that any job could read.
+Since this site got CI, it has run on two `myoung34/github-runner` containers on the dev VM. They worked. They were also always on, shared a mounted `docker.sock`, and carried a personal access token in their environment — a token with `repo` and `workflow` scope, sitting in a container that any job could read.
 
 That last part is the reason I finally did something about it. Not the container count, not the RAM. A long-lived credential that can push to every repository I own, in plain text, inside a process that runs code from the internet.
 
@@ -81,7 +81,7 @@ kubectl -n arc-runners create secret generic arc-homelab-github-app \
 
 The key goes through stdin and into the secret. It never appears on a command line, in a log, or in this repository.
 
-One structural limitation that a personal GitHub account hits immediately: **organisation runner groups do not exist for user accounts**, so a scale set is scoped to exactly one repository. Three repositories means three scale sets. They cost nothing while idle — each listener is a small pod — but it is three Helm releases to keep in sync.
+One structural limitation that a personal GitHub account hits immediately: **organisation runner groups do not exist for user accounts**, so a scale set is scoped to exactly one repository. Every repository that needs one means another scale set. They cost nothing while idle — each listener is a small pod — but it is one Helm release per repository to keep in sync.
 
 ## The Scale Set
 
