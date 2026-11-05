@@ -49,7 +49,9 @@ jobs:
 
       - name: Check LM Studio availability
         id: lmstudio-check
-        if: steps.check-existing.outputs.exists == 'false'
+        # Runs on every push, not just the first: with the old condition a
+        # review that already existed made this step — and therefore the
+        # review and the "update comment" branch — permanently unreachable.
         run: |
           if curl -sf --max-time 5 ${{ secrets.LMSTUDIO_URL }}/v1/models > /dev/null 2>&1; then
             echo "available=true" >> $GITHUB_OUTPUT
