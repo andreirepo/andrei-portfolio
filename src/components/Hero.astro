@@ -113,9 +113,12 @@ const linkBtn =
     </ul>
 
     <div class="mt-6 flex flex-wrap items-center gap-2.5 hero-animate-delay-4">
-        <a href={emailHref} class={primaryBtn}>
+        {/* Cloudflare rewrites mailto: links into /cdn-cgi/l/email-protection,
+            a relay that needs JavaScript and, behind a strict CSP, often just
+            does not open the mail client. These markers opt this link out. */}
+        <!--email_off--><a data-testid="hero-cta-email" href={emailHref} class={primaryBtn}>
             <I18NDebug key={ctaEmail.key}>{ctaEmail.value}</I18NDebug>
-        </a>
+        </a><!--/email_off-->
         <a
             href={resumeHref}
             target="_blank"

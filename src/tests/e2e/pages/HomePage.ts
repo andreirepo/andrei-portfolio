@@ -23,6 +23,11 @@ export class HomePage extends BasePage {
     return this.page.locator('[data-testid="hero-heading"]');
   }
 
+  /** The primary "contact" call to action. */
+  get heroCtaEmail() {
+    return this.page.locator('[data-testid="hero-cta-email"]');
+  }
+
   // ── Sections ──────────────────────────────────────────────────────────────
 
   get skillsSection() {
