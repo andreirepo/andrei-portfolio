@@ -49,7 +49,7 @@ jobs:
 
       - name: Check LM Studio availability
         id: lmstudio-check
-        # Runs on every push, not only the first: with the old condition a
+        # Runs on every push, not just the first: with the old condition a
         # review that already existed made this step — and therefore the
         # review and the "update comment" branch — permanently unreachable.
         run: |
