@@ -1,11 +1,11 @@
 {
   "description": "Senior QA Engineer specialising in test automation for SaaS and regulated iGaming. I build AI-augmented workflows that help teams ship reliable software faster.",
   "nav": {
-    "home": "home",
-    "projects": "projects",
-    "experience": "experience",
+    "home": "Home",
+    "projects": "Projects",
+    "experience": "Experience",
     "resume": "resume",
-    "blog": "blog"
+    "blog": "Blog"
   },
   "hero": {
     "title": "Senior QA Engineer",
@@ -25,7 +25,7 @@
     "location": "Remote · Spain (CET) · EU / UK / US overlap"
   },
   "projects": {
-    "title": "projects",
+    "title": "Projects",
     "item_1": {
       "name": "This Portfolio",
       "description": "Bilingual Astro site with a custom i18n system, self-hosted CI/CD via GitHub Actions and Cloudflare Tunnel, local AI code reviews on every PR, automated WCAG accessibility tests, and Docker deployment — zero open ports.",
@@ -45,7 +45,7 @@
     }
   },
   "experience": {
-    "title": "experience",
+    "title": "Experience",
     "item_1": {
       "period": "2026 — Present",
       "role": "QA Automation Engineer",
@@ -79,7 +79,7 @@
     "back": "Back to blog",
     "back_home": "Back to home",
     "published": "Published",
-    "latest_title": "latest posts",
+    "latest_title": "Latest posts",
     "see_all": "see all posts",
     "tag_description_prefix": "Posts tagged",
     "tag_post_singular": "post",
