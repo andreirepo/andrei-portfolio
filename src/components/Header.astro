@@ -60,18 +60,6 @@ const mobileLinkClass =
     <!-- Single row: resume left | controls+hamburger right (mobile) -->
     <div class="flex items-center justify-between">
 
-      <!-- Left: Resume button -->
-      <a
-        data-testid="resume-button"
-        href={RESUME_HREF}
-        target="_blank"
-        rel="noopener noreferrer"
-        onclick="umami.track('Resume Download')"
-        class="text-xs transition-all duration-200 rounded px-2.5 py-1 flex items-center border border-border/60 text-muted-foreground hover:border-amber-accent hover:text-amber-text hover:bg-amber-accent/5 active:scale-[0.97] shrink-0"
-      >
-        {resumeLabel}
-      </a>
-
       <!-- Center: nav links (desktop only) -->
       <nav data-testid="main-nav" class="hidden md:flex items-center gap-x-1 flex-1 justify-center" aria-label="Main navigation">
         {name && (
@@ -105,8 +93,23 @@ const mobileLinkClass =
         ))}
       </nav>
 
-      <!-- Right: controls -->
-      <div class="flex items-center gap-2 shrink-0">
+      <!-- Right: controls. The resume lives here, not in the top-left corner:
+           that slot is for identity, and a lone chip there read as a leftover.
+           ml-auto because on mobile the nav is hidden and justify-between has
+           nothing left to push against. -->
+      <div class="flex items-center gap-2 shrink-0 ml-auto">
+
+        <a
+          data-testid="resume-button"
+          href={RESUME_HREF}
+          target="_blank"
+          rel="noopener noreferrer"
+          onclick="window.umami?.track('Resume Download')"
+          class="text-xs transition-all duration-200 rounded px-2.5 py-1 flex items-center border border-border/60 text-muted-foreground hover:border-amber-accent hover:text-amber-text hover:bg-amber-accent/5 active:scale-[0.97] shrink-0"
+        >
+          {resumeLabel}
+        </a>
+
 
         <!-- Theme toggle -->
         <button

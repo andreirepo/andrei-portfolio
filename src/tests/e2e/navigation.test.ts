@@ -61,6 +61,30 @@ describe('Navigation E2E', () => {
       expect(rel).toContain('noopener');
     });
 
+    /**
+     * Cloudflare's Email Address Obfuscation rewrites every mailto: into
+     * /cdn-cgi/l/email-protection, a relay page that needs JavaScript and does
+     * not open the mail client. The contact button was "not working" for
+     * exactly this reason, so the link and its opt-out markers are asserted.
+     */
+    it('should render the hero contact button as a real mailto link', async () => {
+      const href = await homePage.heroCtaEmail.getAttribute('href');
+      expect(href).toBe('mailto:contact@andreirepo.com');
+      expect(href).not.toContain('/cdn-cgi/');
+    });
+
+    it('should opt the contact link out of Cloudflare email obfuscation', async () => {
+      const html = await page.content();
+      expect(html).toContain('<!--email_off-->');
+      expect(html).toContain('<!--/email_off-->');
+    });
+
+    it('should render the footer email as a real mailto link too', async () => {
+      await homePage.footer.scrollIntoViewIfNeeded();
+      const href = await page.locator('[data-testid="footer-email"]').getAttribute('href');
+      expect(href).toBe('mailto:contact@andreirepo.com');
+    });
+
     it('should render locale switcher links for en and es', async () => {
       expect(await homePage.localeLink('en').isVisible()).toBe(true);
       expect(await homePage.localeLink('es').isVisible()).toBe(true);
