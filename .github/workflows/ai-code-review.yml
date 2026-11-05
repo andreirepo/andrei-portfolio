@@ -11,8 +11,12 @@ concurrency:
 
 jobs:
   ai-review:
-    runs-on: self-hosted
-    timeout-minutes: 5
+    # Runs on the ARC scale set (ephemeral pod in the homelab k3s cluster).
+    # Pull requests from forks are skipped: their code would otherwise execute
+    # on home infrastructure.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: arc-portfolio
+    timeout-minutes: 10
     permissions:
       pull-requests: write
       contents: read
@@ -73,7 +77,7 @@ jobs:
           PAYLOAD=$(jq -n \
             --arg diff "$DIFF" \
             '{
-              model: "qwen/qwen3-14b",
+              model: "qwen3-14b",
               messages: [
                 {
                   role: "system",
