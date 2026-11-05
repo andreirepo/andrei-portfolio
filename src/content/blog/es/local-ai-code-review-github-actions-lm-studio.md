@@ -9,6 +9,8 @@ draft: false
 
 Quería revisiones automáticas de código en los pull requests sin enviar mi código a una API de terceros. Ya ejecuto LM Studio en mi PC gaming con Windows con `qwen/qwen2.5-coder-14b` y `google/gemma-4-26b-a4b` cargados, y la VM de mi home lab está conectada a la misma red Tailscale. Montarlo todo llevó menos de una hora — una vez que descubrí por qué el Firewall de Windows estaba bloqueando todo silenciosamente.
 
+**Actualización (noviembre de 2026).** Tres cosas de abajo están desactualizadas, y dos eran bugs más que decisiones. El runner ya no es un contenedor en la VM: estos jobs corren ahora como pods efímeros en el clúster k3s del homelab, que cuento en [From Two Runner Containers to Ephemeral Pods](/es/blog/actions-runner-controller-homelab/). La dirección de Tailscale de los ejemplos (`100.115.80.116`) pertenecía a un PC que ya se reemplazó, y el clúster no puede enrutar a Tailscale, así que el endpoint es ahora una dirección de la LAN. Y el nombre del modelo está mal: LM Studio sirve `qwen3-14b`, mientras que pedir `qwen/qwen3-14b` devuelve `400`, que `curl -sf` convertía en una revisión saltada en silencio.
+
 ## La Arquitectura
 
 ```

@@ -9,6 +9,8 @@ draft: false
 
 I wanted automated code reviews on pull requests without sending my code to a third-party API. I already run LM Studio on my Windows gaming PC with both `qwen/qwen2.5-coder-14b` and `google/gemma-4-26b-a4b` loaded, and my home lab VM is connected to the same Tailscale network. Putting it together took less than an hour — once I figured out why Windows Firewall was silently blocking everything.
 
+**Update (November 2026).** Three things below are out of date, and two of them were bugs rather than decisions. The runner is no longer a container on the VM: these jobs now run as ephemeral pods in the homelab k3s cluster, covered in [From Two Runner Containers to Ephemeral Pods](/en/blog/actions-runner-controller-homelab/). The Tailscale address in the examples (`100.115.80.116`) belonged to a PC that has since been replaced, and the cluster cannot route to Tailscale at all — the endpoint is a LAN address now. And the model name is wrong: LM Studio currently serves `qwen3-14b`, while asking for `qwen/qwen3-14b` returns `400`, which `curl -sf` turned into a review that was silently skipped.
+
 ## The Architecture
 
 ```
