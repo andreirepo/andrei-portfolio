@@ -30,8 +30,7 @@
     "item_1": {
       "name": "This Portfolio",
       "description": "Bilingual Astro site with a custom i18n system, self-hosted CI/CD via GitHub Actions and Cloudflare Tunnel, local AI code reviews on every PR, automated WCAG accessibility tests, and Docker deployment — zero open ports.",
-      "link": "https://github.com/andreirepo/andrei-portfolio",
-      "demo": "https://andreirepo.com"
+      "link": "https://github.com/andreirepo/andrei-portfolio"
     },
     "item_2": {
       "name": "Task Management Platform",
@@ -88,17 +87,5 @@
     "tag_post_singular": "post",
     "tag_post_plural": "posts",
     "language_note": "All posts are in English."
-  },
-  "evidence": {
-    "title": "How I work",
-    "lead": "Tests before touching anything. Every change to this site goes through CI, an automated code review and a deployment with automatic rollback. The screenshot is the repository's real history, not a mock-up.",
-    "stat1_value": "226",
-    "stat1_label": "CI runs",
-    "stat2_value": "153",
-    "stat2_label": "automated tests",
-    "stat3_value": "0",
-    "stat3_label": "axe violations",
-    "caption": "GitHub Actions history for this portfolio's repository.",
-    "alt": "List of GitHub Actions runs with every check passing"
   }
 }
