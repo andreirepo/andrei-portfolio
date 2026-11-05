@@ -7,6 +7,8 @@ interface Props {
   title: string;
   seeAllLabel: string;
   seeAllHref: string;
+  /** Small print under the title, e.g. that the posts are in English. */
+  note?: string;
   limit?: number;
 }
 
@@ -15,6 +17,7 @@ const {
   title,
   seeAllLabel,
   seeAllHref,
+  note,
   limit = 2,
 } = Astro.props as Props;
 
@@ -35,7 +38,10 @@ const latest = posts.slice(0, limit);
 {latest.length > 0 && (
   <section data-testid="latest-posts-section" id="blog" class="scroll-mt-24 mt-12 md:mt-16 section-fade-in">
     <div class="section-head">
-      <h2>{title}</h2>
+      <h2>
+        {title}
+        {note && <span class="block mt-1 font-sans text-xs font-normal text-muted-foreground">{note}</span>}
+      </h2>
       <a
         data-testid="see-all-posts-link"
         href={seeAllHref}

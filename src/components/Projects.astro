@@ -4,6 +4,9 @@ type Item = {
     description: string;
     link?: string;
     demo?: string;
+    /** 16:9 WebP captured from the live product. */
+    image?: string;
+    alt?: string;
 };
 
 interface Props {
@@ -14,7 +17,7 @@ interface Props {
 const { title, projects } = Astro.props as Props;
 ---
 
-<section id={title.value.toLowerCase()} class="scroll-mt-24 mt-12 md:mt-16 section-fade-in">
+<section data-testid="projects-section" id={title.value.toLowerCase()} class="scroll-mt-24 mt-12 md:mt-16 section-fade-in">
     <div class="section-head">
         <h2>{title.value}</h2>
     </div>
@@ -23,6 +26,26 @@ const { title, projects } = Astro.props as Props;
         {
             projects.map((project) => (
                 <li class="group">
+                    {project.image && (
+                        <a
+                            href={project.demo ?? project.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="block mb-4 overflow-hidden rounded-lg border border-border/60 transition-colors duration-200 hover:border-amber-accent/60"
+                            tabindex="-1"
+                            aria-hidden="true"
+                        >
+                            <img
+                                src={project.image}
+                                alt={project.alt ?? project.name}
+                                width="800"
+                                height="450"
+                                loading="lazy"
+                                decoding="async"
+                                class="w-full aspect-video object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
+                            />
+                        </a>
+                    )}
                     <span class="font-serif font-medium text-lg">{project.name}</span>
                     <div class="flex gap-3 mt-3 mb-3">
                         {project.link && (

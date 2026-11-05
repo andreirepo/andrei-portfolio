@@ -355,6 +355,51 @@ html {
   border-top: 1px solid var(--border);
 }
 
+.evidence-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.evidence-stats li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.evidence-value {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--foreground);
+}
+
+.evidence-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  color: var(--muted-foreground);
+}
+
+@media (max-width: 520px) {
+  .evidence-stats { grid-template-columns: 1fr; gap: 0.5rem; }
+  .evidence-stats li { flex-direction: row; align-items: baseline; gap: 0.625rem; }
+  .evidence-value { font-size: 1.25rem; }
+}
+
+/* On a phone the heading and its button do not fit side by side. */
+@media (max-width: 520px) {
+  .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.625rem;
+  }
+}
+
 .section-head h2 {
   font-family: var(--font-serif);
   font-weight: 500;

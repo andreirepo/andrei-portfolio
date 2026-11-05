@@ -12,6 +12,7 @@ import { type LocaleSchema } from "@/src/types";
 import Header from "@/src/components/Header.astro";
 import Hero from "@/src/components/Hero.astro";
 import Projects from "@/src/components/Projects.astro";
+import Evidence from "@/src/components/Evidence.astro";
 import Experience from "@/src/components/Experience.astro";
 import LatestPosts from "@/src/components/LatestPosts.astro";
 import Footer from "@/src/components/Footer.astro";
@@ -39,6 +40,8 @@ const heroProps = {
     { key: "hero.proof.aws", value: t("hero.proof.aws") },
   ],
   ctaEmail: { key: "hero.cta_email", value: t("hero.cta_email") },
+  ctaCal: { key: "hero.cta_cal", value: t("hero.cta_cal") },
+  calHref: t("contact.cal_url"),
   ctaResume: { key: "hero.cta_resume", value: t("hero.cta_resume") },
   ctaLinkedin: { key: "hero.cta_linkedin", value: t("hero.cta_linkedin") },
   location: { key: "hero.location", value: t("hero.location") },
@@ -53,18 +56,24 @@ const projects = [
     description: t("projects.item_1.description"),
     link: t("projects.item_1.link"),
     demo: t("projects.item_1.demo"),
+    image: "/projects/portfolio.webp",
+    alt: t("projects.shot_of").replace("{name}", t("projects.item_1.name")),
   },
   {
     name: t("projects.item_2.name"),
     description: t("projects.item_2.description"),
     link: t("projects.item_2.link"),
     demo: t("projects.item_2.demo"),
+    image: "/projects/todo.webp",
+    alt: t("projects.shot_of").replace("{name}", t("projects.item_2.name")),
   },
   {
     // Repository is private, so the card links to the live app only.
     name: t("projects.item_3.name"),
     description: t("projects.item_3.description"),
     demo: t("projects.item_3.demo"),
+    image: "/projects/declara720.webp",
+    alt: t("projects.shot_of").replace("{name}", t("projects.item_3.name")),
   },
 ];
 
@@ -173,12 +182,27 @@ const footerContent = buildFooter(t);
   <main id="main-content">
     <Hero {...heroProps} />
     <Projects {...projectsProps} />
+
+    <Evidence
+      title={t("evidence.title")}
+      lead={t("evidence.lead")}
+      stats={[
+        { value: t("evidence.stat1_value"), label: t("evidence.stat1_label") },
+        { value: t("evidence.stat2_value"), label: t("evidence.stat2_label") },
+        { value: t("evidence.stat3_value"), label: t("evidence.stat3_label") },
+      ]}
+      image="/evidence/ci.webp"
+      alt={t("evidence.alt")}
+      caption={t("evidence.caption")}
+    />
+
     <Experience {...experienceData} />
     <LatestPosts
       lang={locale}
       title={t("blog.latest_title")}
       seeAllLabel={t("blog.see_all")}
       seeAllHref={`/${locale}/blog/`}
+      note={locale === "es" ? t("blog.language_note") : undefined}
     />
   </main>
 

@@ -22,7 +22,8 @@
     "cta_email": "Escríbeme",
     "cta_resume": "CV",
     "cta_linkedin": "LinkedIn",
-    "location": "Remoto · España (CET) · Solapamiento UE / UK / US"
+    "location": "Remoto · España (CET) · Solapamiento UE / UK / US · Disponible ya",
+    "cta_cal": "Reservar 15 min"
   },
   "projects": {
     "title": "Proyectos",
@@ -42,7 +43,8 @@
       "name": "declara720",
       "description": "Generador y validador del fichero del Modelo 720 (bloque de valores) que corre entero en el navegador, sin servidor ni cuentas. Formato de 500 caracteres reconstruido desde una presentación aceptada por la AEAT y verificado byte a byte, con 55 tests y previews en cada PR.",
       "demo": "https://declara720.com"
-    }
+    },
+    "shot_of": "Captura de {name}"
   },
   "experience": {
     "title": "Experiencia",
@@ -71,10 +73,11 @@
     "github_label": "GitHub",
     "github_url": "https://github.com/andreirepo",
     "linkedin_label": "LinkedIn",
-    "linkedin_url": "https://linkedin.com/in/andreirepo"
+    "linkedin_url": "https://linkedin.com/in/andreirepo",
+    "cal_url": "https://cal.com/andrei-repo-g1rtie/15min"
   },
   "blog": {
-    "title": "blog",
+    "title": "Blog",
     "empty": "Aún no hay artículos. Vuelve pronto.",
     "back": "Volver al blog",
     "back_home": "Volver al inicio",
@@ -83,6 +86,19 @@
     "see_all": "ver todos los artículos",
     "tag_description_prefix": "Artículos etiquetados con",
     "tag_post_singular": "artículo",
-    "tag_post_plural": "artículos"
+    "tag_post_plural": "artículos",
+    "language_note": "Los artículos están en inglés."
+  },
+  "evidence": {
+    "title": "Cómo trabajo",
+    "lead": "Tests antes de tocar nada. Cada cambio de este sitio pasa por integración continua, una revisión automática de código y un despliegue con vuelta atrás. La captura es el historial real del repositorio, no un montaje.",
+    "stat1_value": "226",
+    "stat1_label": "ejecuciones de CI",
+    "stat2_value": "153",
+    "stat2_label": "pruebas automatizadas",
+    "stat3_value": "0",
+    "stat3_label": "violaciones axe",
+    "caption": "Historial de GitHub Actions del repositorio de este portfolio.",
+    "alt": "Lista de ejecuciones de GitHub Actions con todas las comprobaciones en verde"
   }
 }
