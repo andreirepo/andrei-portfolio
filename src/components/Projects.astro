@@ -25,13 +25,13 @@ const { title, projects } = Astro.props as Props;
     <ul class="space-y-10">
         {
             projects.map((project) => (
-                <li class="group">
+                <li class="group project">
                     {project.image && (
                         <a
                             href={project.demo ?? project.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="block mb-4 overflow-hidden rounded-lg border border-border/60 transition-colors duration-200 hover:border-amber-accent/60"
+                            class="project-media block overflow-hidden rounded-lg border border-border/60 transition-colors duration-200 hover:border-amber-accent/60"
                             tabindex="-1"
                             aria-hidden="true"
                         >
@@ -46,6 +46,7 @@ const { title, projects } = Astro.props as Props;
                             />
                         </a>
                     )}
+                    <div class="project-body">
                     <span class="font-serif font-medium text-lg">{project.name}</span>
                     <div class="flex gap-3 mt-3 mb-3">
                         {project.link && (
@@ -81,6 +82,7 @@ const { title, projects } = Astro.props as Props;
                     <p class="text-foreground/60 text-body leading-relaxed">
                         {project.description}
                     </p>
+                    </div>
                 </li>
             ))
         }

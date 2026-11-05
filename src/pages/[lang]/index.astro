@@ -12,7 +12,6 @@ import { type LocaleSchema } from "@/src/types";
 import Header from "@/src/components/Header.astro";
 import Hero from "@/src/components/Hero.astro";
 import Projects from "@/src/components/Projects.astro";
-import Evidence from "@/src/components/Evidence.astro";
 import Experience from "@/src/components/Experience.astro";
 import LatestPosts from "@/src/components/LatestPosts.astro";
 import Footer from "@/src/components/Footer.astro";
@@ -55,7 +54,6 @@ const projects = [
     name: t("projects.item_1.name"),
     description: t("projects.item_1.description"),
     link: t("projects.item_1.link"),
-    demo: t("projects.item_1.demo"),
     image: "/projects/portfolio.webp",
     alt: t("projects.shot_of").replace("{name}", t("projects.item_1.name")),
   },
@@ -182,19 +180,6 @@ const footerContent = buildFooter(t);
   <main id="main-content">
     <Hero {...heroProps} />
     <Projects {...projectsProps} />
-
-    <Evidence
-      title={t("evidence.title")}
-      lead={t("evidence.lead")}
-      stats={[
-        { value: t("evidence.stat1_value"), label: t("evidence.stat1_label") },
-        { value: t("evidence.stat2_value"), label: t("evidence.stat2_label") },
-        { value: t("evidence.stat3_value"), label: t("evidence.stat3_label") },
-      ]}
-      image="/evidence/ci.webp"
-      alt={t("evidence.alt")}
-      caption={t("evidence.caption")}
-    />
 
     <Experience {...experienceData} />
     <LatestPosts

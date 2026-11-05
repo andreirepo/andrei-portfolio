@@ -122,15 +122,6 @@ describe('Navigation E2E', () => {
       expect(cargadas).toBe(true);
     });
 
-    it('should show the evidence section with its numbers and the CI screenshot', async () => {
-      const seccion = homePage.evidenceSection;
-      expect(await seccion.count()).toBe(1);
-      expect(await seccion.locator('li').count()).toBe(3);
-      const img = seccion.locator('img');
-      expect(await img.count()).toBe(1);
-      expect(await img.getAttribute('src')).toContain('ci.webp');
-    });
-
     it('should render locale switcher links for en and es', async () => {
       expect(await homePage.localeLink('en').isVisible()).toBe(true);
       expect(await homePage.localeLink('es').isVisible()).toBe(true);
