@@ -7,7 +7,7 @@ tags: ["accessibility", "testing", "axe-core", "ci-cd", "tailwindcss"]
 draft: false
 ---
 
-Recibí un informe de accesibilidad automatizado que señalaba una violación grave en este sitio: más de 40 elementos que no cumplían los requisitos de contraste de color de WCAG 2 AA. El informe tenía razón. Cada encabezado de sección, enlace de navegación, descripción de habilidad, tarjeta de blog y texto del pie de página se renderizaba con `opacity-50` u `opacity-70` — un patrón que visualmente parece correcto a primera vista, pero que no supera el umbral de relación de contraste de 4.5:1 que exige WCAG para texto normal.
+Recibí un informe de accesibilidad automatizado que señalaba una violación grave en este sitio: más de 40 elementos que no cumplían los requisitos de contraste de color de WCAG 2 AA. El informe tenía razón. Cada encabezado de sección, enlace de navegación, descripción de habilidad, tarjeta de blog y texto del pie de página se renderizaba con `opacity-50` u `opacity-70`, un patrón que visualmente parece correcto a primera vista, pero que no supera el umbral de relación de contraste de 4.5:1 que exige WCAG para texto normal.
 
 Este artículo explica cómo lo abordé como un problema de QA: explorar la condición del bug, escribir tests que demuestren que existe, corregirlo y luego bloquearlo para que no pueda volver.
 
@@ -16,10 +16,10 @@ Este artículo explica cómo lo abordé como un problema de QA: explorar la cond
 La causa raíz era simple. Todo el sitio usaba las utilidades de opacidad de Tailwind para crear jerarquía visual:
 
 ```html
-<!-- Enlace de navegación — parece atenuado, pero falla el contraste -->
+<!-- Enlace de navegación: parece atenuado, pero falla el contraste -->
 <a class="opacity-50 hover:opacity-100">blog</a>
 
-<!-- Descripción de habilidad — texto pequeño + opacidad = doble fallo -->
+<!-- Descripción de habilidad: texto pequeño + opacidad = doble fallo -->
 <p class="text-[0.88rem] opacity-50">Flujos Web Estables</p>
 ```
 
@@ -47,7 +47,7 @@ it('debería encontrar violaciones de contraste en el código sin corregir', asy
   const violations = await getViolations(page);
   const contrastViolations = violations.filter(v => v.id === 'color-contrast');
 
-  // ESPERADO: Este test DEBE FALLAR en código sin corregir — el fallo confirma que el bug existe
+  // ESPERADO: Este test DEBE FALLAR en código sin corregir; el fallo confirma que el bug existe
   expect(contrastViolations.length).toBeGreaterThan(0);
 });
 ```
@@ -86,7 +86,7 @@ Añadí la propiedad CSS personalizada `--muted-foreground` a `global.css` y ree
 --muted-foreground: oklch(62% 0.02 285);  /* modo oscuro */
 ```
 
-Los cambios en los componentes fueron mecánicos — encontrar cada `opacity-50` y reemplazarlo con `text-muted-foreground`:
+Los cambios en los componentes fueron mecánicos: encontrar cada `opacity-50` y reemplazarlo con `text-muted-foreground`:
 
 ```html
 <!-- Antes -->
@@ -114,7 +114,7 @@ El color de acento verde (`text-green-500`) necesitó tratamiento aparte. Sobre 
 
 ## Verificando la Corrección
 
-Tras la corrección, volví a ejecutar el mismo test de exploración. Las aserciones ahora estaban invertidas — el test confirma que el bug *ha desaparecido*:
+Tras la corrección, volví a ejecutar el mismo test de exploración. Las aserciones ahora estaban invertidas: el test confirma que el bug *ha desaparecido*:
 
 ```
 [Modo Claro /en] axe-core encontró 0 violaciones de contraste ✓
@@ -127,7 +127,7 @@ Cero violaciones en las cuatro combinaciones de ruta y tema.
 
 ## Bloqueando la Regresión: Guard en CI
 
-La parte más importante no es la corrección — es asegurarse de que se mantenga. Convertí el test de exploración en un guard de regresión y lo añadí al pipeline de CI:
+La parte más importante no es la corrección: es asegurarse de que se mantenga. Convertí el test de exploración en un guard de regresión y lo añadí al pipeline de CI:
 
 ```typescript
 describe('Guard de Regresión: Sin Elementos con Opacidad en Texto', () => {
@@ -151,7 +151,7 @@ El pipeline de CI ahora tiene un job dedicado `accessibility-audit` que ejecuta 
 
 ## Lo que Aprendí
 
-**La opacidad no es una estrategia segura para el contraste.** Reduce la relación de contraste efectiva proporcionalmente. Si tu texto base es 14:1 contra el fondo, `opacity-50` lo baja a ~7:1 — aún aprobando. Pero si tu base es 4.5:1 (el mínimo), `opacity-50` lo baja a ~2.25:1, que falla. El problema se agrava con tamaños de fuente pequeños.
+**La opacidad no es una estrategia segura para el contraste.** Reduce la relación de contraste efectiva proporcionalmente. Si tu texto base es 14:1 contra el fondo, `opacity-50` lo baja a ~7:1, aún aprobando. Pero si tu base es 4.5:1 (el mínimo), `opacity-50` lo baja a ~2.25:1, que falla. El problema se agrava con tamaños de fuente pequeños.
 
 **Los tokens de color semánticos son la herramienta correcta.** Un token `text-muted-foreground` definido para cumplir los requisitos de contraste a nivel de sistema de diseño es mucho más robusto que ajustes de opacidad por elemento. El token se puede ajustar una vez y aplicar en todas partes.
 

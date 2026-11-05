@@ -1,15 +1,15 @@
 ---
 title: "Local AI Code Reviews on GitHub PRs with LM Studio and GitHub Actions"
-description: "How I set up automated PR code reviews using a locally running Qwen2.5 Coder model via LM Studio, Tailscale, and a self-hosted GitHub Actions runner — with a graceful fallback when the PC is off."
+description: "How I set up automated PR code reviews using a locally running Qwen2.5 Coder model via LM Studio, Tailscale, and a self-hosted GitHub Actions runner, with a graceful fallback when the PC is off."
 pubDate: 2025-04-12
 author: "Andrei Repo"
 tags: ["github-actions", "ai", "lm-studio", "tailscale", "self-hosted", "devops"]
 draft: false
 ---
 
-I wanted automated code reviews on pull requests without sending my code to a third-party API. I already run LM Studio on my Windows gaming PC with both `qwen/qwen2.5-coder-14b` and `google/gemma-4-26b-a4b` loaded, and my home lab VM is connected to the same Tailscale network. Putting it together took less than an hour — once I figured out why Windows Firewall was silently blocking everything.
+I wanted automated code reviews on pull requests without sending my code to a third-party API. I already run LM Studio on my Windows gaming PC with both `qwen/qwen2.5-coder-14b` and `google/gemma-4-26b-a4b` loaded, and my home lab VM is connected to the same Tailscale network. Putting it together took less than an hour, once I figured out why Windows Firewall was silently blocking everything.
 
-**Update (November 2026).** Three things below are out of date, and two of them were bugs rather than decisions. The runner is no longer a container on the VM: these jobs now run as ephemeral pods in the homelab k3s cluster, covered in [From Two Runner Containers to Ephemeral Pods](/en/blog/actions-runner-controller-homelab/). The Tailscale address in the examples (`100.115.80.116`) belonged to a PC that has since been replaced, and the cluster cannot route to Tailscale at all — the endpoint is a LAN address now. And the model name is wrong: LM Studio currently serves `qwen3-14b`, while asking for `qwen/qwen3-14b` returns `400`, which `curl -sf` turned into a review that was silently skipped.
+**Update (November 2026).** Three things below are out of date, and two of them were bugs rather than decisions. The runner is no longer a container on the VM: these jobs now run as ephemeral pods in the homelab k3s cluster, covered in [From Two Runner Containers to Ephemeral Pods](/en/blog/actions-runner-controller-homelab/). The Tailscale address in the examples (`100.115.80.116`) belonged to a PC that has since been replaced, and the cluster cannot route to Tailscale at all, the endpoint is a LAN address now. And the model name is wrong: LM Studio currently serves `qwen3-14b`, while asking for `qwen/qwen3-14b` returns `400`, which `curl -sf` turned into a review that was silently skipped.
 
 ## The Architecture
 
@@ -26,7 +26,7 @@ The self-hosted runner is already on the same VM as the portfolio site (covered 
 
 LM Studio has a "Serve on Local Network" toggle in the Developer tab. Enable it and it binds to `0.0.0.0:1234`, making it reachable via the Tailscale IP.
 
-The catch: when Windows first ran LM Studio and showed the firewall prompt, I must have clicked the wrong option. Windows silently created two **Block** rules for `lm studio.exe` that overrode everything else — including the Allow rules I added manually later.
+The catch: when Windows first ran LM Studio and showed the firewall prompt, I must have clicked the wrong option. Windows silently created two **Block** rules for `lm studio.exe` that overrode everything else, including the Allow rules I added manually later.
 
 The fix was removing those block rules:
 
@@ -43,7 +43,7 @@ curl http://100.115.80.116:1234/v1/models
 
 ## The GitHub Actions Workflow
 
-The workflow triggers on every PR opened or updated against `main`. The key design decision was making the AI review completely optional — if LM Studio is off, the workflow still passes and just leaves a short notice.
+The workflow triggers on every PR opened or updated against `main`. The key design decision was making the AI review completely optional: if LM Studio is off, the workflow still passes and just leaves a short notice.
 
 ```yaml
 - name: Check LM Studio availability
@@ -107,16 +107,16 @@ await github.rest.issues.createComment({
 
 ## Why Qwen2.5 Coder 14B?
 
-I have two models loaded: `qwen/qwen2.5-coder-14b` and `google/gemma-4-26b-a4b`. Qwen Coder is specifically trained on code and gives more precise technical feedback — it understands language-specific patterns, spots potential bugs more reliably, and produces structured review comments. Gemma 4 is a strong general model but for code review, a purpose-built coder model wins.
+I have two models loaded: `qwen/qwen2.5-coder-14b` and `google/gemma-4-26b-a4b`. Qwen Coder is specifically trained on code and gives more precise technical feedback: it understands language-specific patterns, spots potential bugs more reliably, and produces structured review comments. Gemma 4 is a strong general model but for code review, a purpose-built coder model wins.
 
-The 14B size is a sweet spot — fast enough to review a typical PR diff in under a minute on a gaming GPU, while being capable enough to catch real issues.
+The 14B size is a sweet spot: fast enough to review a typical PR diff in under a minute on a gaming GPU, while being capable enough to catch real issues.
 
 ## The Result
 
-Every PR now gets an automated review comment within 1–2 minutes (depending on diff size and GPU load). When my gaming PC is off, the workflow posts a one-line notice and exits cleanly — no failed checks, no blocked PRs.
+Every PR now gets an automated review comment within 1–2 minutes (depending on diff size and GPU load). When my gaming PC is off, the workflow posts a one-line notice and exits cleanly. No failed checks, no blocked PRs.
 
 The whole thing runs on hardware I already own, costs nothing per review, and keeps the code entirely on my own infrastructure.
 
 **What's Next**
 
-I've since extended this pattern to full E2E test generation — encoding team knowledge into structured files so an AI agent can generate, debug, and maintain tests with minimal context. [Here's how I built that layer](/en/blog/ai-agentic-setup-e2e-test-automation/).
+I've since extended this pattern to full E2E test generation, encoding team knowledge into structured files so an AI agent can generate, debug, and maintain tests with minimal context. [Here's how I built that layer](/en/blog/ai-agentic-setup-e2e-test-automation/).

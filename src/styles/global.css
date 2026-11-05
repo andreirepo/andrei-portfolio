@@ -504,3 +504,40 @@ html {
     animation: none;
   }
 }
+/* Blog tables. Astro renders GFM tables as bare <table> elements, and the post
+   container clips overflow, so an unstyled table loses its borders and a wide
+   one loses whole columns on a phone. Style them here, and let the table scroll
+   inside its own box instead of overflowing the page. */
+[data-testid="post-content"] table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 1.75rem 0;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+[data-testid="post-content"] thead {
+  border-bottom: 1px solid var(--border);
+}
+
+[data-testid="post-content"] th {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--foreground);
+}
+
+[data-testid="post-content"] td {
+  padding: 0.5rem 0.75rem;
+  vertical-align: top;
+  color: var(--muted-foreground);
+  border-top: 1px solid color-mix(in oklch, var(--border) 55%, transparent);
+}
+
+[data-testid="post-content"] tbody tr:first-child td {
+  border-top: 0;
+}
