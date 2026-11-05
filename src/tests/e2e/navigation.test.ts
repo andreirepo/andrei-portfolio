@@ -85,6 +85,26 @@ describe('Navigation E2E', () => {
       expect(href).toBe('mailto:contact@andreirepo.com');
     });
 
+    /**
+     * Labels are capitalised for display, but the anchors are built from
+     * `title.toLowerCase()`. Capitalising the label without lowercasing the
+     * path leaves a nav that scrolls nowhere, so the pair is asserted.
+     */
+    it('should capitalise the nav labels and keep their anchors resolving', async () => {
+      const enlaces = page.locator('[data-testid="main-nav"] a');
+      const etiquetas = await enlaces.allInnerTexts();
+      expect(etiquetas).toEqual(['Home', 'Projects', 'Experience', 'Blog']);
+
+      const anchors = (await enlaces.evaluateAll((as) => as.map((a) => a.getAttribute('href') ?? '')))
+        .filter((href) => href.includes('#'))
+        .map((href) => href.split('#')[1]);
+
+      expect(anchors).toEqual(['projects', 'experience', 'blog']);
+      for (const id of anchors) {
+        expect(await page.locator(`[id="${id}"]`).count()).toBe(1);
+      }
+    });
+
     it('should render locale switcher links for en and es', async () => {
       expect(await homePage.localeLink('en').isVisible()).toBe(true);
       expect(await homePage.localeLink('es').isVisible()).toBe(true);

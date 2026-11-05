@@ -173,13 +173,13 @@ const footerContent = buildFooter(t);
   <main id="main-content">
     <Hero {...heroProps} />
     <Projects {...projectsProps} />
+    <Experience {...experienceData} />
     <LatestPosts
       lang={locale}
       title={t("blog.latest_title")}
       seeAllLabel={t("blog.see_all")}
       seeAllHref={`/${locale}/blog/`}
     />
-    <Experience {...experienceData} />
   </main>
 
   <Footer {...footerContent} />
