@@ -1,0 +1,25 @@
+name: ARC probe
+
+# Throwaway: proves the arc-portfolio scale set boots a pod and runs a job.
+# Removed in the same pull request that closes it.
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: arc-portfolio
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Where am I
+        run: |
+          echo "runner: ${RUNNER_NAME}"
+          echo "pod:    $(hostname)"
+          echo "cpus:   $(nproc)"
+          echo "node:   $(node --version 2>/dev/null || echo 'no node')"
+          echo "pnpm:   $(pnpm --version 2>/dev/null || echo 'no pnpm')"
+          npx --yes cowsay@1.6.0 "hello from 192.168.18.70" 2>/dev/null || echo "no cowsay, no matter"
