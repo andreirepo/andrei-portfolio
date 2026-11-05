@@ -28,6 +28,19 @@ export class HomePage extends BasePage {
     return this.page.locator('[data-testid="hero-cta-email"]');
   }
 
+  /** Booking link: the lowest-friction way to reach him. */
+  get heroCtaCal() {
+    return this.page.locator('[data-testid="hero-cta-cal"]');
+  }
+
+  get projectImages() {
+    return this.page.locator('[data-testid="projects-section"] img');
+  }
+
+  get evidenceSection() {
+    return this.page.locator('[data-testid="evidence-section"]');
+  }
+
   // ── Sections ──────────────────────────────────────────────────────────────
 
   get skillsSection() {

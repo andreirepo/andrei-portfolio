@@ -105,6 +105,32 @@ describe('Navigation E2E', () => {
       }
     });
 
+    it('should offer a 15-minute booking link as the primary CTA', async () => {
+      const href = await homePage.heroCtaCal.getAttribute('href');
+      expect(href).toBe('https://cal.com/andrei-repo-g1rtie/15min');
+      expect(await homePage.heroCtaCal.getAttribute('target')).toBe('_blank');
+    });
+
+    it('should show a screenshot for every project', async () => {
+      const imagenes = homePage.projectImages;
+      expect(await imagenes.count()).toBe(3);
+      const alts = await imagenes.evaluateAll((imgs) => imgs.map((i) => i.getAttribute('alt') ?? ''));
+      for (const alt of alts) expect(alt.length).toBeGreaterThan(0);
+      const cargadas = await imagenes.evaluateAll((imgs) =>
+        imgs.every((i) => (i as HTMLImageElement).complete && (i as HTMLImageElement).naturalWidth > 0),
+      );
+      expect(cargadas).toBe(true);
+    });
+
+    it('should show the evidence section with its numbers and the CI screenshot', async () => {
+      const seccion = homePage.evidenceSection;
+      expect(await seccion.count()).toBe(1);
+      expect(await seccion.locator('li').count()).toBe(3);
+      const img = seccion.locator('img');
+      expect(await img.count()).toBe(1);
+      expect(await img.getAttribute('src')).toContain('ci.webp');
+    });
+
     it('should render locale switcher links for en and es', async () => {
       expect(await homePage.localeLink('en').isVisible()).toBe(true);
       expect(await homePage.localeLink('es').isVisible()).toBe(true);

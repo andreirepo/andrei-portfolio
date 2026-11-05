@@ -13,6 +13,8 @@ interface Props {
     pitchResult: Out;
     proof: Out[];
     ctaEmail: Out;
+    ctaCal: Out;
+    calHref: string;
     ctaResume: Out;
     ctaLinkedin: Out;
     emailHref: string;
@@ -30,6 +32,8 @@ const {
     pitchResult,
     proof,
     ctaEmail,
+    ctaCal,
+    calHref,
     ctaResume,
     ctaLinkedin,
     emailHref,
@@ -113,10 +117,25 @@ const linkBtn =
     </ul>
 
     <div class="mt-6 flex flex-wrap items-center gap-2.5 hero-animate-delay-4">
+        {/* A scheduler is a lower-friction action than composing an email,
+            so it gets the primary treatment and the inbox goes second. */}
+        <a
+            data-testid="hero-cta-cal"
+            href={calHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            class={primaryBtn}
+        >
+            <I18NDebug key={ctaCal.key}>{ctaCal.value}</I18NDebug>
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M7 17 17 7" />
+                <path d="M7 7h10v10" />
+            </svg>
+        </a>
         {/* Cloudflare rewrites mailto: links into /cdn-cgi/l/email-protection,
             a relay that needs JavaScript and, behind a strict CSP, often just
             does not open the mail client. These markers opt this link out. */}
-        <!--email_off--><a data-testid="hero-cta-email" href={emailHref} class={primaryBtn}>
+        <!--email_off--><a data-testid="hero-cta-email" href={emailHref} class={ghostBtn}>
             <I18NDebug key={ctaEmail.key}>{ctaEmail.value}</I18NDebug>
         </a><!--/email_off-->
         <a
