@@ -245,12 +245,20 @@ jobs:
 
   deploy:
     needs: [build-and-push-image]
-    runs-on: self-hosted
-    timeout-minutes: 5
+    # ARC scale set: an ephemeral pod in the homelab k3s cluster. The runner
+    # image ships ssh, scp and ssh-keyscan but not rsync, hence the install step.
+    runs-on: arc-portfolio
+    timeout-minutes: 10
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Install rsync
+        # ghcr.io/actions/actions-runner has git, ssh and curl, but no rsync.
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends rsync
 
       - name: Setup SSH key
         uses: webfactory/ssh-agent@v0.9.0
@@ -285,8 +293,8 @@ jobs:
 
   health-check:
     needs: deploy
-    runs-on: self-hosted
-    timeout-minutes: 5
+    runs-on: arc-portfolio
+    timeout-minutes: 10
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Wait for service to be ready
@@ -313,8 +321,8 @@ jobs:
 
   rollback:
     needs: [health-check, build-and-push-image]
-    runs-on: self-hosted
-    timeout-minutes: 5
+    runs-on: arc-portfolio
+    timeout-minutes: 10
     # Deploys are gated to main; rollback must be too. With a bare
     # `if: failure()`, a failed PR build satisfies the condition — any failed
     # ancestor job does — and the job runs on the runner inside the homelab.
