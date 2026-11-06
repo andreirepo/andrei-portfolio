@@ -14,6 +14,7 @@ interface Props {
     proof: Out[];
     ctaEmail: Out;
     ctaCal: Out;
+    ctaCalNote: Out;
     calHref: string;
     ctaResume: Out;
     ctaLinkedin: Out;
@@ -33,6 +34,7 @@ const {
     proof,
     ctaEmail,
     ctaCal,
+    ctaCalNote,
     calHref,
     ctaResume,
     ctaLinkedin,
@@ -165,7 +167,11 @@ const linkBtn =
         </a>
     </div>
 
-    <p class="mt-5 font-mono text-[0.6875rem] uppercase tracking-[0.08em] text-muted-foreground hero-animate-delay-4">
+    <p class="mt-3 text-xs text-muted-foreground hero-animate-delay-4 leading-relaxed">
+        <I18NDebug key={ctaCalNote.key}>{ctaCalNote.value}</I18NDebug>
+    </p>
+
+    <p class="mt-4 font-mono text-[0.6875rem] uppercase tracking-[0.08em] text-muted-foreground hero-animate-delay-4">
         <I18NDebug key={location.key}>{location.value}</I18NDebug>
     </p>
 </section>

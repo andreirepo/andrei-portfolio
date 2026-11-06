@@ -3,7 +3,6 @@
   "nav": {
     "home": "Inicio",
     "projects": "Proyectos",
-    "experience": "Experiencia",
     "resume": "CV",
     "blog": "Blog"
   },
@@ -11,7 +10,7 @@
     "title": "Ingeniero QA Senior",
     "role_detail": "Automatización de pruebas y calidad de software",
     "availability": "Abierto a roles senior / lead",
-    "pitch": "Construyo la red de seguridad que permite a los equipos desplegar cada día — suites de Playwright y WebdriverIO, quality gates en CI y flujos asistidos por IA.",
+    "pitch": "Construyo la red de seguridad que permite a los equipos desplegar cada día: suites de Playwright y WebdriverIO, quality gates en CI y flujos asistidos por IA.",
     "pitch_result": "El resultado: ciclos de release un 60% más rápidos y cero defectos críticos tras el despliegue.",
     "proof": {
       "axe": "0 violaciones de axe en este sitio",
@@ -23,13 +22,14 @@
     "cta_resume": "CV",
     "cta_linkedin": "LinkedIn",
     "location": "Remoto · España (CET) · Solapamiento UE / UK / US · Disponible ya",
-    "cta_cal": "Reservar 15 min"
+    "cta_cal": "Reserva 15 min para hablar del puesto",
+    "cta_cal_note": "Para recruiters y hiring managers · vídeo o teléfono"
   },
   "projects": {
     "title": "Proyectos",
     "item_1": {
       "name": "Este Portfolio",
-      "description": "Sitio Astro bilingüe con sistema i18n propio, CI/CD self-hosted via GitHub Actions y Cloudflare Tunnel, revisiones de código con IA local en cada PR, tests de accesibilidad WCAG automatizados y despliegue con Docker — sin puertos abiertos.",
+      "description": "Sitio Astro bilingüe con sistema i18n propio, CI/CD self-hosted via GitHub Actions y Cloudflare Tunnel, revisiones de código con IA local en cada PR, tests de accesibilidad WCAG automatizados y despliegue con Docker, sin puertos abiertos.",
       "link": "https://github.com/andreirepo/andrei-portfolio"
     },
     "item_2": {
@@ -44,27 +44,6 @@
       "demo": "https://declara720.com"
     },
     "shot_of": "Captura de {name}"
-  },
-  "experience": {
-    "title": "Experiencia",
-    "item_1": {
-      "period": "2026 — Presente",
-      "role": "Ingeniero QA Automation",
-      "company": "Open Assessment Technologies",
-      "description": "Mantengo y optimizo suites de pruebas Cypress en codebases legacy y modernos, gestiono CI/CD en GitHub Actions con test parallelization, y colaboro con equipos multifuncionales para ejecutar suites de regresión y gestionar riesgos de release."
-    },
-    "item_2": {
-      "period": "2025 — 2026",
-      "role": "Ingeniero QA",
-      "company": "Lottomart",
-      "description": "Mantengo suites de pruebas WebdriverIO en pipelines CI/CD, reduciendo ciclos de regresión y mejorando la confianza en cada release."
-    },
-    "item_3": {
-      "period": "2021 — 2025",
-      "role": "Ingeniero QA",
-      "company": "Sketch",
-      "description": "Lideré el cambio de Cypress a Playwright para hacer las pruebas más estables y cubrir más flujos de usuario, mientras ayudaba a los equipos a adoptar el nuevo framework."
-    }
   },
   "contact": {
     "email_label": "Email",

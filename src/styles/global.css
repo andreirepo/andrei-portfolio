@@ -454,17 +454,7 @@ html {
 @utility bg-header-gradient {
   background-color: color-mix(in oklch, var(--background) 65%, transparent);
 }
- 
-/* Experience timeline grid */
-.experience-grid {
-  grid-template-columns: 9rem 1fr;
-}
 
-@media (max-width: 768px) {
-  .experience-grid {
-    grid-template-columns: 1fr;
-  }
-}
  
 /* Reduced motion: skip animations */
 @media (prefers-reduced-motion: reduce) {

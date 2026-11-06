@@ -12,7 +12,6 @@ import { type LocaleSchema } from "@/src/types";
 import Header from "@/src/components/Header.astro";
 import Hero from "@/src/components/Hero.astro";
 import Projects from "@/src/components/Projects.astro";
-import Experience from "@/src/components/Experience.astro";
 import LatestPosts from "@/src/components/LatestPosts.astro";
 import Footer from "@/src/components/Footer.astro";
 import { buildNav, buildFooter, RESUME_HREF } from "@/src/lib/page-helpers";
@@ -40,6 +39,7 @@ const heroProps = {
   ],
   ctaEmail: { key: "hero.cta_email", value: t("hero.cta_email") },
   ctaCal: { key: "hero.cta_cal", value: t("hero.cta_cal") },
+  ctaCalNote: { key: "hero.cta_cal_note", value: t("hero.cta_cal_note") },
   calHref: t("contact.cal_url"),
   ctaResume: { key: "hero.cta_resume", value: t("hero.cta_resume") },
   ctaLinkedin: { key: "hero.cta_linkedin", value: t("hero.cta_linkedin") },
@@ -80,69 +80,6 @@ const projectsProps = {
   projects,
 };
 
-const experienceData = {
-  title: {
-    key: "experience.title",
-    value: t("experience.title"),
-  },
-  jobs: [
-    {
-      period: {
-        key: "experience.item_1.period",
-        value: t("experience.item_1.period"),
-      },
-      role: {
-        key: "experience.item_1.role",
-        value: t("experience.item_1.role"),
-      },
-      company: {
-        key: "experience.item_1.company",
-        value: t("experience.item_1.company"),
-      },
-      description: {
-        key: "experience.item_1.description",
-        value: t("experience.item_1.description"),
-      },
-    },
-    {
-      period: {
-        key: "experience.item_2.period",
-        value: t("experience.item_2.period"),
-      },
-      role: {
-        key: "experience.item_2.role",
-        value: t("experience.item_2.role"),
-      },
-      company: {
-        key: "experience.item_2.company",
-        value: t("experience.item_2.company"),
-      },
-      description: {
-        key: "experience.item_2.description",
-        value: t("experience.item_2.description"),
-      },
-    },
-    {
-      period: {
-        key: "experience.item_3.period",
-        value: t("experience.item_3.period"),
-      },
-      role: {
-        key: "experience.item_3.role",
-        value: t("experience.item_3.role"),
-      },
-      company: {
-        key: "experience.item_3.company",
-        value: t("experience.item_3.company"),
-      },
-      description: {
-        key: "experience.item_3.description",
-        value: t("experience.item_3.description"),
-      },
-    }
-  ],
-};
-
 const alternate = [
   { href: "/es/", hreflang: "es" },
   { href: "/en/", hreflang: "en" },
@@ -181,7 +118,6 @@ const footerContent = buildFooter(t);
     <Hero {...heroProps} />
     <Projects {...projectsProps} />
 
-    <Experience {...experienceData} />
     <LatestPosts
       lang={locale}
       title={t("blog.latest_title")}
