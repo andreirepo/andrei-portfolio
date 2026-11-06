@@ -3,7 +3,6 @@
   "nav": {
     "home": "Home",
     "projects": "Projects",
-    "experience": "Experience",
     "resume": "Résumé",
     "blog": "Blog"
   },
@@ -11,7 +10,7 @@
     "title": "Senior QA Engineer",
     "role_detail": "Test automation & quality engineering",
     "availability": "Open to senior / lead QA roles",
-    "pitch": "I build the safety net that lets teams ship every day — Playwright and WebdriverIO suites, CI gates, and AI-assisted workflows.",
+    "pitch": "I build the safety net that lets teams ship every day: Playwright and WebdriverIO suites, CI gates, and AI-assisted workflows.",
     "pitch_result": "The result is 60% faster release cycles with zero critical post-release defects.",
     "proof": {
       "axe": "0 axe violations on this site",
@@ -23,13 +22,14 @@
     "cta_resume": "Résumé",
     "cta_linkedin": "LinkedIn",
     "location": "Remote · Spain (CET) · EU / UK / US overlap · Available now",
-    "cta_cal": "Book 15 min"
+    "cta_cal": "Book a 15-min call about a role",
+    "cta_cal_note": "For recruiters and hiring managers · video or phone"
   },
   "projects": {
     "title": "Projects",
     "item_1": {
       "name": "This Portfolio",
-      "description": "Bilingual Astro site with a custom i18n system, self-hosted CI/CD via GitHub Actions and Cloudflare Tunnel, local AI code reviews on every PR, automated WCAG accessibility tests, and Docker deployment — zero open ports.",
+      "description": "Bilingual Astro site with a custom i18n system, self-hosted CI/CD via GitHub Actions and Cloudflare Tunnel, local AI code reviews on every PR, automated WCAG accessibility tests, and Docker deployment, with zero open ports.",
       "link": "https://github.com/andreirepo/andrei-portfolio"
     },
     "item_2": {
@@ -44,27 +44,6 @@
       "demo": "https://declara720.com"
     },
     "shot_of": "Screenshot of {name}"
-  },
-  "experience": {
-    "title": "Experience",
-    "item_1": {
-      "period": "2026 — Present",
-      "role": "QA Automation Engineer",
-      "company": "Open Assessment Technologies",
-      "description": "Maintain and optimize Cypress test suites across legacy and modern codebases, manage GitHub Actions CI/CD with test parallelization, and partner with cross-functional teams to execute regression suites and manage release risks."
-    },
-    "item_2": {
-      "period": "2025 — 2026",
-      "role": "QA Engineer",
-      "company": "Lottomart",
-      "description": "Maintaining WebdriverIO test suites across CI/CD pipelines, reducing regression cycles and improving release confidence."
-    },
-    "item_3": {
-      "period": "2021 — 2025",
-      "role": "QA Engineer",
-      "company": "Sketch",
-      "description": "Led the switch from Cypress to Playwright to make tests more stable and cover more user workflows, while helping teams adopt the new framework."
-    }
   },
   "contact": {
     "email_label": "Email",

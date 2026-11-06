@@ -281,27 +281,27 @@ describe('Preservation Properties: Baseline Behavior for Non-Buggy Elements', ()
 
   describe('Property 4: Layout Preservation', () => {
     /**
-     * Verify Experience section layout exists
+     * The home page keeps its own structure after the container changes.
      */
-    it('should preserve experience section layout structure', async () => {
+    it('should preserve the home page layout structure', async () => {
       const page = await browser.newPage();
       await page.goto(`${BASE_URL}/en`, { waitUntil: 'networkidle' });
       await waitForPageReady(page);
 
-      const experienceSection = await page.evaluate(() => {
+      const pageLayout = await page.evaluate(() => {
         const section = document.querySelector('section');
         if (!section) return null;
 
         // Look for experience-related content
-        const hasHeading = !!section.querySelector('h2, h3, h4');
+        const hasHeading = !!section.querySelector('h1, h2, h3, h4');
         return {
           exists: !!section,
           hasHeading,
         };
       });
 
-      // Verify experience section exists
-      expect(experienceSection?.exists).toBe(true);
+      expect(pageLayout?.exists).toBe(true);
+      expect(pageLayout?.hasHeading).toBe(true);
 
       await page.close();
     });

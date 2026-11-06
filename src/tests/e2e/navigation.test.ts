@@ -93,13 +93,13 @@ describe('Navigation E2E', () => {
     it('should capitalise the nav labels and keep their anchors resolving', async () => {
       const enlaces = page.locator('[data-testid="main-nav"] a');
       const etiquetas = await enlaces.allInnerTexts();
-      expect(etiquetas).toEqual(['Home', 'Projects', 'Experience', 'Blog']);
+      expect(etiquetas).toEqual(['Home', 'Projects', 'Blog']);
 
       const anchors = (await enlaces.evaluateAll((as) => as.map((a) => a.getAttribute('href') ?? '')))
         .filter((href) => href.includes('#'))
         .map((href) => href.split('#')[1]);
 
-      expect(anchors).toEqual(['projects', 'experience', 'blog']);
+      expect(anchors).toEqual(['projects', 'blog']);
       for (const id of anchors) {
         expect(await page.locator(`[id="${id}"]`).count()).toBe(1);
       }
@@ -218,9 +218,9 @@ describe('Navigation E2E', () => {
       expect(text?.trim().length).toBeGreaterThan(0);
     });
 
-    it('should render the experience section with at least one entry', async () => {
-      const count = await homePage.experienceItems.count();
-      expect(count).toBeGreaterThan(0);
+    it('should not render a separate experience section', async () => {
+      // The timeline moved to the résumé: the page goes hero → work → writing.
+      expect(await page.locator('[data-testid="experience-section"]').count()).toBe(0);
     });
 
     it('should render the latest posts section with post links', async () => {

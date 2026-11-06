@@ -9,10 +9,9 @@ export const RESUME_HREF = `/assets/AndreiRepoResume.pdf?v=${RESUME_VERSION}`;
 export function buildNav(t: T, locale: string, isHome = false) {
   // Labels are capitalised for display; the anchors stay lowercase because the
   // section ids are `title.value.toLowerCase()`.
-  const anchor = (key: "nav.projects" | "nav.experience") => `#${t(key).toLowerCase()}`;
+  const anchor = (key: "nav.projects") => `#${t(key).toLowerCase()}`;
   return [
     { path: anchor("nav.projects"), text: t("nav.projects") },
-    { path: anchor("nav.experience"), text: t("nav.experience") },
     // blog is the only destination that leaves the page sections
     { path: isHome ? `#blog` : `/${locale}/blog/`, text: t("nav.blog"), divider: true },
   ];

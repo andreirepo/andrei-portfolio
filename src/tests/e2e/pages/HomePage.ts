@@ -44,10 +44,6 @@ export class HomePage extends BasePage {
     return this.page.locator('[data-testid="skills-section"]');
   }
 
-  get experienceSection() {
-    return this.page.locator('[data-testid="experience-section"]');
-  }
-
   get blogSection() {
     return this.page.locator('[data-testid="latest-posts-section"]');
   }
@@ -66,11 +62,5 @@ export class HomePage extends BasePage {
 
   get skillCards() {
     return this.page.locator('[data-testid="skill-card"]');
-  }
-
-  // ── Experience ────────────────────────────────────────────────────────────
-
-  get experienceItems() {
-    return this.page.locator('[data-testid="experience-item"]');
   }
 }
