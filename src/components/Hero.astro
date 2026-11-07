@@ -5,14 +5,14 @@ import I18NDebug from "@ariaskit/astro-i18n/I18NDebug.astro";
  * fills ~80% of the frame. The uncropped shot is a wide studio frame, so a
  * circle taken from it showed mostly wall and a 50px face.
  */
-import profile144 from "@/src/assets/profile-144.webp";
-import profile288 from "@/src/assets/profile-288.webp";
-import profile432 from "@/src/assets/profile-432.webp";
+import profile160 from "@/src/assets/profile-160.webp";
+import profile320 from "@/src/assets/profile-320.webp";
+import profile480 from "@/src/assets/profile-480.webp";
 
-const profileSrc = profile288.src;
-const profileSrcSet = `${profile144.src} 144w, ${profile288.src} 288w, ${profile432.src} 432w`;
-// 144 CSS on desktop, 64 on phones; the browser picks 144/288/432 from that.
-const profileSizes = "(min-width: 768px) 144px, 64px";
+const profileSrc = profile320.src;
+const profileSrcSet = `${profile160.src} 160w, ${profile320.src} 320w, ${profile480.src} 480w`;
+// 160 CSS on desktop, 64 on phones; the browser picks 160/320/480 from that.
+const profileSizes = "(min-width: 768px) 160px, 64px";
 
 type Out = { key: string; value: string };
 
@@ -85,14 +85,16 @@ const linkBtn =
         </div>
     </div>
 
-    {/* The portrait sits next to the name, not at the far edge of the column:
-        justify-between left 277px of empty space between them, which read as
-        distance rather than as composition. */}
-    <div class="mt-4 md:mt-5 flex items-center gap-7 md:gap-8">
+    {/* The name and the portrait share one row that fills the column: at 4rem
+        the name stopped at 363px and left 277px of empty space before the
+        portrait, which read as distance. At 5.5rem it is 500px wide, the
+        portrait closes the row at the column's right edge, and the two are
+        read as one block. */}
+    <div class="mt-4 md:mt-5 flex flex-wrap items-center justify-between gap-6">
         <h1
             data-testid="hero-heading"
             id="hero-heading"
-            class="font-serif font-medium text-[2.75rem] md:text-[4rem] leading-[1] tracking-tight text-foreground hero-animate"
+            class="font-serif font-medium text-[2.75rem] md:text-[5.5rem] leading-[1] tracking-tight text-foreground hero-animate"
         >
             {name}
         </h1>
@@ -102,8 +104,8 @@ const linkBtn =
                 src={profileSrc}
                 srcset={profileSrcSet}
                 sizes={profileSizes}
-                width="144"
-                height="144"
+                width="160"
+                height="160"
                 alt={name}
                 loading="eager"
                 decoding="async"

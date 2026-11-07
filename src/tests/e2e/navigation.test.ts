@@ -173,30 +173,37 @@ describe('Navigation E2E', () => {
   });
 
   /**
-   * The portrait used to be pinned to the right edge by justify-between: 277px
-   * between the name and the face, which read as distance rather than
-   * composition. It sits next to the name now, and the sizes 144/288/432 feed
-   * a 144px circle at 1x, 2x and 3x.
+   * The name and the portrait share one row that fills the column. The
+   * failure this pins: a 4rem name stopped at 363px and left a 277px void
+   * before a 128px portrait, which read as a badge in the corner.
    */
-  describe('Hero — portrait', () => {
-    it('should keep the portrait next to the name, not at the column edge', async () => {
+  describe('Hero — name and portrait', () => {
+    it('should fill the row: wide name, portrait on the column edge', async () => {
       const nombre = await page.locator('#hero-heading').boundingBox();
       const retrato = await page.locator('.avatar--lg').boundingBox();
+      const columna = await page.locator('[data-testid="hero-section"]').boundingBox();
       expect(nombre).not.toBeNull();
       expect(retrato).not.toBeNull();
 
+      // The name carries most of the row on its own.
+      expect(nombre!.width).toBeGreaterThan(columna!.width * 0.6);
+
+      // The portrait closes the row at the column's right edge.
+      expect(Math.abs(columna!.x + columna!.width - (retrato!.x + retrato!.width))).toBeLessThanOrEqual(2);
+
+      // And the gap between them is a breath, not a void.
       const hueco = Math.round(retrato!.x - (nombre!.x + nombre!.width));
-      expect(hueco).toBeGreaterThanOrEqual(0);
-      expect(hueco).toBeLessThan(48);
+      expect(hueco).toBeGreaterThan(48);
+      expect(hueco).toBeLessThan(200);
     });
 
     it('should offer the portrait at three densities', async () => {
       const img = page.locator('.avatar--lg img');
       const srcset = (await img.getAttribute('srcset')) ?? '';
       expect(srcset.split(',').length).toBe(3);
-      expect(srcset).toContain('144w');
-      expect(srcset).toContain('432w');
-      expect((await img.getAttribute('sizes')) ?? '').toContain('144px');
+      expect(srcset).toContain('160w');
+      expect(srcset).toContain('480w');
+      expect((await img.getAttribute('sizes')) ?? '').toContain('160px');
     });
   });
 
