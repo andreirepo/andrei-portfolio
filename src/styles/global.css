@@ -278,10 +278,11 @@ html {
   filter: brightness(0.86) saturate(0.92);
 }
 
-/* 128px: at 96 the circle read as a badge next to a 64px heading in a 768px
-   column. It is a portrait, so it should hold the same optical weight as the
-   name rather than sit in the corner of it. */
-.avatar--lg { width: 128px; height: 128px; }
+/* 144px, and next to the name rather than at the column's edge: at 96 the
+   circle read as a badge, and at 128 pinned to the far right it read as a
+   badge with a 277px gap. The asset is cropped to the face, so the circle
+   shows a portrait instead of a room. */
+.avatar--lg { width: 144px; height: 144px; }
 
 /* Smaller circle gets a smaller gap, or the ring eats the face */
 .avatar--sm { width: 64px; height: 64px; outline-offset: 3px; }

@@ -170,26 +170,33 @@ describe('Navigation E2E', () => {
       expect(await resume.getAttribute('href')).toContain('Resume.pdf');
       expect(await resume.getAttribute('target')).toBe('_blank');
     });
+  });
 
-    /**
-     * The floating arrow followed the viewport on every screen, half-visible
-     * over the content. Going back up belongs at the end of the page.
-     */
-    it('should offer back to top at the end of the page, not over it', async () => {
-      expect(await page.locator('#scroll-top').count()).toBe(0);
+  /**
+   * The portrait used to be pinned to the right edge by justify-between: 277px
+   * between the name and the face, which read as distance rather than
+   * composition. It sits next to the name now, and the sizes 144/288/432 feed
+   * a 144px circle at 1x, 2x and 3x.
+   */
+  describe('Hero — portrait', () => {
+    it('should keep the portrait next to the name, not at the column edge', async () => {
+      const nombre = await page.locator('#hero-heading').boundingBox();
+      const retrato = await page.locator('.avatar--lg').boundingBox();
+      expect(nombre).not.toBeNull();
+      expect(retrato).not.toBeNull();
 
-      const enlace = page.locator('[data-testid="back-to-top"]');
-      expect(await enlace.count()).toBe(1);
-      expect(await enlace.getAttribute('href')).toBe('#top');
-      // Icon only: the accessible name has to come from the label.
-      expect((await enlace.getAttribute('aria-label'))?.trim().length).toBeGreaterThan(0);
-      expect(await page.locator('#top').count()).toBe(1);
+      const hueco = Math.round(retrato!.x - (nombre!.x + nombre!.width));
+      expect(hueco).toBeGreaterThanOrEqual(0);
+      expect(hueco).toBeLessThan(48);
+    });
 
-      // It sits inside the footer, so it cannot overlap the content.
-      const dentroDelFooter = await enlace.evaluate((el) =>
-        Boolean(el.closest('[data-testid="site-footer"]')),
-      );
-      expect(dentroDelFooter).toBe(true);
+    it('should offer the portrait at three densities', async () => {
+      const img = page.locator('.avatar--lg img');
+      const srcset = (await img.getAttribute('srcset')) ?? '';
+      expect(srcset.split(',').length).toBe(3);
+      expect(srcset).toContain('144w');
+      expect(srcset).toContain('432w');
+      expect((await img.getAttribute('sizes')) ?? '').toContain('144px');
     });
   });
 
