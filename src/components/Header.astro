@@ -52,25 +52,27 @@ function spyKey(path: string): string | undefined {
 
 // Active styling lives in global.css, keyed on aria-current, so the
 // server-rendered route state and the scroll-spy share one source of truth.
+// px-1.5 on phones, px-2 from md: three short labels plus the theme and
+// language controls have to share 320px on the narrowest supported screen.
+// Measured in Spanish, the longest locale: 39px of slack left over.
 const navLinkClass = cls(
-    "relative transition-all duration-200 text-sm whitespace-nowrap px-2 py-0.5 rounded active:scale-[0.97]",
+    "relative transition-all duration-200 text-[0.8125rem] md:text-sm whitespace-nowrap px-1.5 md:px-2 py-1 rounded active:scale-[0.97]",
     "text-muted-foreground hover:text-foreground",
     "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-amber-accent after:transition-transform after:duration-200 after:origin-left"
 );
-
-const mobileLinkClass =
-    "text-sm px-2 py-1.5 rounded transition-all duration-200 active:scale-[0.98] text-muted-foreground hover:text-foreground hover:bg-foreground/8";
 ---
 
 <header data-testid="site-header" class="py-3 md:py-5 fixed top-0 left-0 right-0 bg-header-gradient backdrop-blur-xl backdrop-saturate-150 z-40 w-full max-w-[100vw] border-b border-border/40 transition-shadow duration-300">
   <div class="w-full max-w-3xl mx-auto px-5 md:px-0">
 
-    <!-- Single row: resume left | nav center | controls right (desktop) -->
-    <!-- Single row: resume left | controls+hamburger right (mobile) -->
+    <!-- One row, every screen: three labels fit beside the theme and language
+         controls down to 320px, so the hamburger and its dropdown are gone.
+         The nav is the same element at every width, which also means the
+         scroll-spy and the active underline cannot drift apart. -->
     <div class="flex items-center justify-between">
 
-      <!-- Center: nav links (desktop only) -->
-      <nav data-testid="main-nav" class="hidden md:flex items-center gap-x-1 flex-1 justify-start" aria-label="Main navigation">
+      <!-- Nav links -->
+      <nav data-testid="main-nav" class="flex items-center gap-x-1 flex-1 justify-start min-w-0" aria-label="Main navigation">
         {name && (
           <a
             data-testid="nav-home"
@@ -102,11 +104,12 @@ const mobileLinkClass =
         ))}
       </nav>
 
-      <!-- Right: controls. The resume lives here, not in the top-left corner:
-           that slot is for identity, and a lone chip there read as a leftover.
-           ml-auto because on mobile the nav is hidden and justify-between has
-           nothing left to push against. -->
-      <div class="flex items-center gap-2 shrink-0 ml-auto">
+      <!-- Right: controls. The resume lives here on desktop, not in the
+           top-left corner: that slot is for identity, and a lone chip there
+           read as a leftover. On phones it would push the nav off the row, so
+           it lives in the hero (where the call to action is) and in the footer
+           (where it is reachable from every page). -->
+      <div class="flex items-center gap-1.5 md:gap-2 shrink-0">
 
         <a
           data-testid="resume-button"
@@ -114,7 +117,7 @@ const mobileLinkClass =
           target="_blank"
           rel="noopener noreferrer"
           onclick="window.umami?.track('Resume Download')"
-          class="text-xs transition-all duration-200 rounded px-2.5 py-1 flex items-center border border-border/60 text-muted-foreground hover:border-amber-accent hover:text-amber-text hover:bg-amber-accent/5 active:scale-[0.97] shrink-0"
+          class="hidden md:inline-flex text-xs transition-all duration-200 rounded px-2.5 py-1 items-center border border-border/60 text-muted-foreground hover:border-amber-accent hover:text-amber-text hover:bg-amber-accent/5 active:scale-[0.97] shrink-0"
         >
           {resumeLabel}
         </a>
@@ -142,7 +145,7 @@ const mobileLinkClass =
             <a
               data-testid={`locale-${item.toLowerCase()}`}
               href={`/${item.toLowerCase()}/`}
-              class={cls("uppercase text-sm cursor-pointer transition-all duration-200 px-1 py-0.5 rounded hover:bg-foreground/8", item === currentLocale.toLowerCase() ? "text-foreground" : "text-muted-foreground hover:text-foreground")}
+              class={cls("uppercase text-[0.8125rem] md:text-sm cursor-pointer transition-all duration-200 px-1 py-1 rounded hover:bg-foreground/8", item === currentLocale.toLowerCase() ? "text-foreground" : "text-muted-foreground hover:text-foreground")}
             >
               {item}
             </a>
@@ -150,62 +153,7 @@ const mobileLinkClass =
           )}
         </div>
 
-        <!-- Hamburger (mobile only) -->
-        <button
-          id="menu-toggle"
-          aria-label="Toggle menu"
-          aria-expanded="false"
-          aria-controls="mobile-menu"
-          class="md:hidden flex items-center justify-center w-7 h-7 rounded text-muted-foreground hover:text-foreground hover:bg-foreground/8 transition-all duration-200"
-        >
-          <!-- Hamburger icon -->
-          <svg id="icon-hamburger" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="4" y1="6" x2="20" y2="6"/>
-            <line x1="4" y1="12" x2="20" y2="12"/>
-            <line x1="4" y1="18" x2="20" y2="18"/>
-          </svg>
-          <!-- Close icon -->
-          <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        </button>
-
       </div>
-    </div>
-
-    <!-- Mobile menu dropdown -->
-    <div
-      id="mobile-menu"
-      class="md:hidden overflow-hidden transition-all duration-300 ease-in-out max-h-0 opacity-0"
-      aria-hidden="true"
-      inert
-    >
-      <nav aria-label="Mobile navigation" class="flex flex-col pt-3 pb-2 gap-1 border-t border-border/40 mt-3">
-        {name && (
-          <a
-            href={`/${currentLocale}/`}
-            data-spy-home
-            aria-current={isHome() ? 'page' : undefined}
-            class={mobileLinkClass}
-          >
-            {homeLabel}
-          </a>
-        )}
-        {nav.map((item) => (
-          <I18NDebug key={item.text}>
-            <a
-              class={mobileLinkClass}
-              data-spy={spyKey(item.path)}
-              href={resolveHref(item.path)}
-              aria-current={isActive(item.path) ? "page" : undefined}
-            >
-              {item.text}
-            </a>
-          </I18NDebug>
-          </>
-        ))}
-      </nav>
     </div>
 
   </div>
@@ -292,57 +240,14 @@ const mobileLinkClass =
   }
 
   // ── Hamburger menu ────────────────────────────────────────────
-  function initMobileMenu() {
-    const toggle = document.getElementById('menu-toggle');
-    const menu = document.getElementById('mobile-menu');
-    const hamburger = document.getElementById('icon-hamburger');
-    const close = document.getElementById('icon-close');
-    if (!toggle || !menu || !hamburger || !close) return;
-
-    let open = false;
-
-    function setMenu(state: boolean) {
-      open = state;
-      toggle!.setAttribute('aria-expanded', String(state));
-      menu!.setAttribute('aria-hidden', String(!state));
-      // `inert` keeps the collapsed menu out of the tab order and the
-      // accessibility tree; aria-hidden alone leaves its links focusable.
-      menu!.toggleAttribute('inert', !state);
-      if (state) {
-        menu!.classList.remove('max-h-0', 'opacity-0');
-        menu!.classList.add('max-h-[999px]', 'opacity-100');
-        hamburger!.classList.add('hidden');
-        close!.classList.remove('hidden');
-      } else {
-        menu!.classList.add('max-h-0', 'opacity-0');
-        menu!.classList.remove('max-h-[999px]', 'opacity-100');
-        hamburger!.classList.remove('hidden');
-        close!.classList.add('hidden');
-      }
-    }
-
-    toggle.addEventListener('click', () => setMenu(!open));
-
-    // Close when a nav link is clicked
-    menu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => setMenu(false));
-    });
-
-    // Close on outside click
-    document.addEventListener('click', (e) => {
-      const header = document.querySelector('[data-testid="site-header"]');
-      if (open && header && !header.contains(e.target as Node)) {
-        setMenu(false);
-      }
-    });
-  }
+  // Removed in favour of a single row: three labels fit beside the theme and
+  // language controls at 320px, and a menu that hides the only navigation
+  // behind a tap is a cost with no benefit at that size.
 
   initTheme();
-  initMobileMenu();
   initScrollSpy();
   document.addEventListener('astro:after-swap', () => {
     initTheme();
-    initMobileMenu();
     initScrollSpy();
   });
 </script>

@@ -129,6 +129,71 @@ describe('Navigation E2E', () => {
   });
 
   /**
+   * Three labels fit beside the theme and language controls down to 320px, so
+   * the hamburger and its dropdown are gone. This pins the decision: the nav
+   * has to stay visible at phone widths, not collapse behind a tap.
+   */
+  describe('Navigation — Phone header', () => {
+    it('should show the nav links without a hamburger on a phone', async () => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto(`${BASE_URL}/en/`, { waitUntil: 'networkidle' });
+
+      expect(await page.locator('#menu-toggle').count()).toBe(0);
+      expect(await page.locator('#mobile-menu').count()).toBe(0);
+
+      const nav = page.locator('[data-testid="main-nav"]');
+      expect(await nav.isVisible()).toBe(true);
+      const etiquetas = await nav.locator('a').allInnerTexts();
+      expect(etiquetas.map((texto) => texto.trim())).toEqual(['Home', 'Projects', 'Blog']);
+    });
+
+    it('should fit the phone header at 320px without horizontal scroll', async () => {
+      await page.setViewportSize({ width: 320, height: 700 });
+      await page.goto(`${BASE_URL}/en/`, { waitUntil: 'networkidle' });
+
+      const cabe = await page.evaluate(
+        () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+      );
+      expect(cabe).toBe(true);
+
+      // The last navigation link has to stay left of the controls, not under them.
+      const ultimo = await page.locator('[data-testid="nav-blog"]').boundingBox();
+      const controles = await page.locator('[data-testid="locale-switcher"]').boundingBox();
+      expect(ultimo).not.toBeNull();
+      expect(controles).not.toBeNull();
+      expect(Math.round(ultimo!.x + ultimo!.width)).toBeLessThan(Math.round(controles!.x));
+    });
+
+    it('should keep the résumé reachable from the footer', async () => {
+      const resume = page.locator('[data-testid="footer-resume"]');
+      expect(await resume.count()).toBe(1);
+      expect(await resume.getAttribute('href')).toContain('Resume.pdf');
+      expect(await resume.getAttribute('target')).toBe('_blank');
+    });
+
+    /**
+     * The floating arrow followed the viewport on every screen, half-visible
+     * over the content. Going back up belongs at the end of the page.
+     */
+    it('should offer back to top at the end of the page, not over it', async () => {
+      expect(await page.locator('#scroll-top').count()).toBe(0);
+
+      const enlace = page.locator('[data-testid="back-to-top"]');
+      expect(await enlace.count()).toBe(1);
+      expect(await enlace.getAttribute('href')).toBe('#top');
+      // Icon only: the accessible name has to come from the label.
+      expect((await enlace.getAttribute('aria-label'))?.trim().length).toBeGreaterThan(0);
+      expect(await page.locator('#top').count()).toBe(1);
+
+      // It sits inside the footer, so it cannot overlap the content.
+      const dentroDelFooter = await enlace.evaluate((el) =>
+        Boolean(el.closest('[data-testid="site-footer"]')),
+      );
+      expect(dentroDelFooter).toBe(true);
+    });
+  });
+
+  /**
    * The home label used to be a prop with an English default ("home"). Every
    * page except the homepage forgot to pass it, so Spanish blog posts showed
    * "home" in an otherwise Spanish menu. It is resolved inside the header now;

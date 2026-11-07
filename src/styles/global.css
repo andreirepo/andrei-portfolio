@@ -278,15 +278,18 @@ html {
   filter: brightness(0.86) saturate(0.92);
 }
 
-.avatar--lg { width: 96px; height: 96px; }
+/* 128px: at 96 the circle read as a badge next to a 64px heading in a 768px
+   column. It is a portrait, so it should hold the same optical weight as the
+   name rather than sit in the corner of it. */
+.avatar--lg { width: 128px; height: 128px; }
 
 /* Smaller circle gets a smaller gap, or the ring eats the face */
-.avatar--sm { width: 56px; height: 56px; outline-offset: 3px; }
+.avatar--sm { width: 64px; height: 64px; outline-offset: 3px; }
 
 /* Narrow phones: shrink the circle so the availability label still
    fits on one line beside it. */
 @media (max-width: 340px) {
-  .avatar--sm { width: 46px; height: 46px; }
+  .avatar--sm { width: 52px; height: 52px; }
 }
 
 /* ─── Hero: proof grid ───────────────────────────────────────────────── */
@@ -335,13 +338,6 @@ html {
 
 [data-testid="main-nav"] a[aria-current="page"] {
   color: var(--foreground);
-}
-
-#mobile-menu a[aria-current="page"] {
-  color: var(--amber-text);
-  font-weight: 500;
-  border-left: 2px solid var(--amber-accent);
-  padding-left: 0.5rem;
 }
 
 /* ─── Section heading rhythm ─────────────────────────────────────────── */

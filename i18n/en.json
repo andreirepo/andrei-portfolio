@@ -4,7 +4,8 @@
     "home": "Home",
     "projects": "Projects",
     "resume": "Résumé",
-    "blog": "Blog"
+    "blog": "Blog",
+    "back_top": "Back to top"
   },
   "hero": {
     "title": "Senior QA Engineer",
@@ -22,8 +23,8 @@
     "cta_resume": "Résumé",
     "cta_linkedin": "LinkedIn",
     "location": "Remote · Spain (CET) · EU / UK / US overlap · Available now",
-    "cta_cal": "Book a 15-min call about a role",
-    "cta_cal_note": "For recruiters and hiring managers · video or phone"
+    "cta_cal": "Let’s talk",
+    "cta_cal_note": "For recruiters and hiring managers · 15 minutes about the role, video or phone"
   },
   "projects": {
     "title": "Projects",
