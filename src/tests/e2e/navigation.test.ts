@@ -181,6 +181,8 @@ describe('Navigation E2E', () => {
       const enlace = page.locator('[data-testid="back-to-top"]');
       expect(await enlace.count()).toBe(1);
       expect(await enlace.getAttribute('href')).toBe('#top');
+      // Icon only: the accessible name has to come from the label.
+      expect((await enlace.getAttribute('aria-label'))?.trim().length).toBeGreaterThan(0);
       expect(await page.locator('#top').count()).toBe(1);
 
       // It sits inside the footer, so it cannot overlap the content.
