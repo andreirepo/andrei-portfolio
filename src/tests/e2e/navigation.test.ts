@@ -191,7 +191,9 @@ describe('Navigation E2E', () => {
       // The portrait closes the row at the column's right edge.
       expect(Math.abs(columna!.x + columna!.width - (retrato!.x + retrato!.width))).toBeLessThanOrEqual(2);
 
-      // And the gap between them is a breath, not a void.
+      // A breath, not a void. Below 48 the portrait crowds the name; above
+      // 200 the row reads as two unrelated things (the old layout had 277).
+      // Measured at 108 with the 5.5rem name and the 160px portrait.
       const hueco = Math.round(retrato!.x - (nombre!.x + nombre!.width));
       expect(hueco).toBeGreaterThan(48);
       expect(hueco).toBeLessThan(200);
