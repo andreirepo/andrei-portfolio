@@ -4,7 +4,8 @@
     "home": "Inicio",
     "projects": "Proyectos",
     "resume": "CV",
-    "blog": "Blog"
+    "blog": "Blog",
+    "back_top": "Volver arriba"
   },
   "hero": {
     "title": "Ingeniero QA Senior",
@@ -22,8 +23,8 @@
     "cta_resume": "CV",
     "cta_linkedin": "LinkedIn",
     "location": "Remoto · España (CET) · Solapamiento UE / UK / US · Disponible ya",
-    "cta_cal": "Reserva 15 min para hablar del puesto",
-    "cta_cal_note": "Para recruiters y hiring managers · vídeo o teléfono"
+    "cta_cal": "Reserva una llamada de 15 min",
+    "cta_cal_note": "Para recruiters y hiring managers · sobre el puesto, vídeo o teléfono"
   },
   "projects": {
     "title": "Proyectos",

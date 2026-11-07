@@ -1,4 +1,8 @@
 ---
+import { useI18n } from "@ariaskit/astro-i18n";
+import { type LocaleSchema } from "@/src/types";
+import { RESUME_HREF } from "@/src/lib/page-helpers";
+
 type Option = { key:string; value:string }
 
 interface Props {
@@ -12,6 +16,14 @@ interface Props {
 }
 
 const { email_label, email_url, github_label, github_url, linkedin_label, linkedin_url, id } = Astro.props as Props
+
+/**
+ * Chrome, not content: the footer's own labels are resolved here for the same
+ * reason the header resolves its two — a page that forgets to pass a prop ends
+ * up with an English label inside a Spanish page, and there was no page passing
+ * these.
+ */
+const { t } = useI18n<LocaleSchema>({ ssg: { astro: Astro } });
 
 // py-1 keeps the pointer target at 24px (WCAG 2.2 SC 2.5.8) without
 // changing the line the row sits on.
@@ -54,7 +66,30 @@ const linkClass =
                     {linkedin_label.value}
                 </a>
             )}
+            {/* The résumé used to sit in the header at every width; on a phone it
+                pushed the nav off the row, so the footer carries it instead —
+                this is the one place reachable from every page. */}
+            <a data-testid="footer-resume" href={RESUME_HREF} target="_blank" rel="noopener noreferrer" onclick="window.umami?.track('Resume Download')" class={linkClass}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <path d="M14 2v6h6"/>
+                </svg>
+                {t("nav.resume")}
+            </a>
         </nav>
 
+    </div>
+
+    {/* A floating arrow followed the viewport on every screen, half-visible and
+        over the content. Going back up is a thing you do from the end of the
+        page, so it lives at the end of the page. */}
+    <div class="mt-4 flex justify-end">
+        <a data-testid="back-to-top" href="#top" class="inline-flex items-center gap-1.5 py-1 text-muted-foreground transition-colors duration-200 hover:text-amber-text">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 19V5"/>
+                <path d="m5 12 7-7 7 7"/>
+            </svg>
+            {t("nav.back_top")}
+        </a>
     </div>
 </footer>

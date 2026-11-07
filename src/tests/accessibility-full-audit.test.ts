@@ -27,7 +27,6 @@ const NEUTRALISE = `
   .section-fade-in { animation: none !important; opacity: 1 !important; transform: none !important; }
   [class*="hero-animate"] { animation: none !important; opacity: 1 !important; transform: none !important; }
   .animate-ping { animation: none !important; }
-  #scroll-top { display: none !important; }
 `;
 
 /** Blog post routes, discovered from the build output the CI downloads. */
