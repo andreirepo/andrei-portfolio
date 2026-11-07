@@ -1,6 +1,10 @@
 ---
 import I18NDebug from "@ariaskit/astro-i18n/I18NDebug.astro";
 /**
+ * The name is the h1 right beside these images, so the portrait carries an
+ * empty alt: a screen reader that already says "Andrei Repo" should not hear
+ * it a second time because of the photo.
+ *
  * Cropped from the original 6000x4000 photograph to a square where the head
  * fills ~80% of the frame. The uncropped shot is a wide studio frame, so a
  * circle taken from it showed mostly wall and a 50px face.
@@ -78,7 +82,7 @@ const linkBtn =
                 sizes={profileSizes}
                 width="64"
                 height="64"
-                alt={name}
+                alt=""
                 loading="eager"
                 decoding="async"
             />
@@ -106,7 +110,7 @@ const linkBtn =
                 sizes={profileSizes}
                 width="160"
                 height="160"
-                alt={name}
+                alt=""
                 loading="eager"
                 decoding="async"
             />
