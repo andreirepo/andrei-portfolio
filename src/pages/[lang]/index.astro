@@ -49,13 +49,18 @@ const heroProps = {
   linkedinHref: t("contact.linkedin_url"),
 };
 
+// Order is editorial: the lead card is the one most recruiters will read. A
+// shipped product with a compliance requirement (byte-exact output against an
+// accepted AEAT filing, browser-only, tested) says more about how this person
+// works than the site you are already looking at, which closes the list.
 const projects = [
   {
-    name: t("projects.item_1.name"),
-    description: t("projects.item_1.description"),
-    link: t("projects.item_1.link"),
-    image: "/projects/portfolio.webp",
-    alt: t("projects.shot_of").replace("{name}", t("projects.item_1.name")),
+    // Repository is private, so the card links to the live app only.
+    name: t("projects.item_3.name"),
+    description: t("projects.item_3.description"),
+    demo: t("projects.item_3.demo"),
+    image: "/projects/declara720.webp",
+    alt: t("projects.shot_of").replace("{name}", t("projects.item_3.name")),
   },
   {
     name: t("projects.item_2.name"),
@@ -66,12 +71,11 @@ const projects = [
     alt: t("projects.shot_of").replace("{name}", t("projects.item_2.name")),
   },
   {
-    // Repository is private, so the card links to the live app only.
-    name: t("projects.item_3.name"),
-    description: t("projects.item_3.description"),
-    demo: t("projects.item_3.demo"),
-    image: "/projects/declara720.webp",
-    alt: t("projects.shot_of").replace("{name}", t("projects.item_3.name")),
+    name: t("projects.item_1.name"),
+    description: t("projects.item_1.description"),
+    link: t("projects.item_1.link"),
+    image: "/projects/portfolio.webp",
+    alt: t("projects.shot_of").replace("{name}", t("projects.item_1.name")),
   },
 ];
 

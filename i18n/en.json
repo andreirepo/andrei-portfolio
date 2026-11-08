@@ -40,7 +40,7 @@
     },
     "item_3": {
       "name": "declara720",
-      "description": "Generator and validator for the Modelo 720 fixed-width file (securities block), running entirely in the browser with no server or accounts. The 500-character record format was reconstructed from an accepted AEAT filing and verified byte for byte, with 55 tests and a preview deployment on every PR.",
+      "description": "Browser-only generator and validator for the Modelo 720 fixed-width file (securities block): no server, no accounts, no network calls, enforced by a Content-Security-Policy. The 500-character record format was reconstructed from an accepted AEAT filing and checked byte for byte, with 76 unit and 61 browser tests.",
       "demo": "https://declara720.com"
     },
     "shot_of": "Screenshot of {name}"

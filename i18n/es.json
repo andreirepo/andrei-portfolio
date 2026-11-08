@@ -40,7 +40,7 @@
     },
     "item_3": {
       "name": "declara720",
-      "description": "Generador y validador del fichero del Modelo 720 (bloque de valores) que corre entero en el navegador, sin servidor ni cuentas. Formato de 500 caracteres reconstruido desde una presentación aceptada por la AEAT y verificado byte a byte, con 55 tests y previews en cada PR.",
+      "description": "Generador y validador del fichero del Modelo 720 (bloque de valores) que corre entero en el navegador: sin servidor, sin cuentas y sin llamadas de red, garantizado por una Content-Security-Policy. El formato de 500 caracteres se reconstruyó desde una presentación aceptada por la AEAT y se comprueba byte a byte, con 76 tests unitarios y 61 de navegador.",
       "demo": "https://declara720.com"
     },
     "shot_of": "Captura de {name}"
