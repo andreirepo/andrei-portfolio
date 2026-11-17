@@ -37,6 +37,10 @@ export class HomePage extends BasePage {
     return this.page.locator('[data-testid="projects-section"] img');
   }
 
+  get projectItems() {
+    return this.page.locator('[data-testid="projects-section"] li');
+  }
+
 
   // ── Sections ──────────────────────────────────────────────────────────────
 

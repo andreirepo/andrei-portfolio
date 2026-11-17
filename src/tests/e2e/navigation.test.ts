@@ -113,7 +113,9 @@ describe('Navigation E2E', () => {
 
     it('should show a screenshot for every project', async () => {
       const imagenes = homePage.projectImages;
-      expect(await imagenes.count()).toBe(3);
+      // Every project card carries a screenshot; the count is derived so a new
+      // project cannot pass by silently reusing the previous total.
+      expect(await imagenes.count()).toBe(await homePage.projectItems.count());
       const alts = await imagenes.evaluateAll((imgs) => imgs.map((i) => i.getAttribute('alt') ?? ''));
       for (const alt of alts) expect(alt.length).toBeGreaterThan(0);
       const cargadas = await imagenes.evaluateAll((imgs) =>
