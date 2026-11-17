@@ -43,6 +43,11 @@
       "description": "Generador y validador del fichero del Modelo 720 (bloque de valores) que corre entero en el navegador: sin servidor, sin cuentas y sin llamadas de red, garantizado por una Content-Security-Policy. El formato de 500 caracteres se reconstruyó desde una presentación aceptada por la AEAT y se comprueba byte a byte, con 76 tests unitarios y 61 de navegador.",
       "demo": "https://declara720.com"
     },
+    "item_4": {
+      "name": "Entrenador de Blackjack",
+      "description": "Entrenador de estrategia básica que reparte manos reales de seis barajas, evalúa cada hit, stand, double y split y resalta la celda correspondiente en la tabla de estrategia. Feedback inmediato, soporte de splits, precisión de la sesión y tabla para las reglas S17/DAS, hecho con React y self-hosted detrás de Traefik.",
+      "demo": "https://andreirepo.com/apps/blackjack/"
+    },
     "shot_of": "Captura de {name}"
   },
   "contact": {

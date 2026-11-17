@@ -43,6 +43,11 @@
       "description": "Browser-only generator and validator for the Modelo 720 fixed-width file (securities block): no server, no accounts, no network calls, enforced by a Content-Security-Policy. The 500-character record format was reconstructed from an accepted AEAT filing and checked byte for byte, with 76 unit and 61 browser tests.",
       "demo": "https://declara720.com"
     },
+    "item_4": {
+      "name": "Blackjack Trainer",
+      "description": "Basic-strategy trainer that deals real six-deck hands, grades every hit, stand, double and split, and highlights the matching cell on the strategy chart. Instant feedback, split support, session accuracy and a chart for the S17/DAS ruleset, built with React and self-hosted behind Traefik.",
+      "demo": "https://andreirepo.com/apps/blackjack/"
+    },
     "shot_of": "Screenshot of {name}"
   },
   "contact": {
